@@ -42,7 +42,7 @@ const OfferSlider = () => {
                     <SwiperSlide key={index}>
                         {/* Image */}
                         <div className="flex justify-center">
-                            <Image src={speaker.img} alt="al idaad offer product" width={1920} height={1068} className="w-screen h-80" />
+                            <Image src={speaker.img} alt="al idaad offer product" width={1920} height={1068} className="w-screen h-80 rounded" />
                         </div>
                     </SwiperSlide>
                 ))}
