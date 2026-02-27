@@ -17,7 +17,7 @@ const NavItems = () => {
     return (
         <>
             {/* Desktop Nav */}
-            <div className="hidden lg:flex gap-4 items-center">
+            <div className="hidden lg:flex gap-6 items-center">
                 {links.map(({ href, label }) => {
                     const isActive = pathname === href;
                     return (
