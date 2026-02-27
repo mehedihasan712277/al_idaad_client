@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Outfit, Poppins, Proza_Libre } from "next/font/google";
+import Navbar from "@/components/shared/Navbar";
 
 const outfit = Outfit({
     subsets: ["latin"],
@@ -37,6 +38,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={`${outfit.variable} ${poppins.variable} ${proza.variable} antialiased bg-bg_main text-text_dark font-outfit`}>
+                <Navbar></Navbar>
                 {children}
             </body>
         </html>
