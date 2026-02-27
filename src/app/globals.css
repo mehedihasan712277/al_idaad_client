@@ -1,26 +1,91 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+    --font-outfit: var(--font-outfit);
+    --font-poppins: var(--font-poppins);
+    --font-proza-libre: var(--font-proza-libre);
+
+    /* primary color */
+    --color-brand: var(--color-brand);
+    --color-selected: var(--color-selected);
+
+    /* background color */
+    --color-bg_main: var(--color-bg_main);
+    --color-bg_secondary: var(--color-bg_secondary);
+
+    /* text color */
+    --color-text_dark: var(--color-text_dark);
+    --color-text_normal: var(--color-text_normal);
+    --color-text_light: var(--color-text_light);
+
+    /* border color */
+    --color-border: var(--color-border);
+
+    /* ----------responsive--------- */
+    /* mobile-first */
+    --breakpoint-ms: 300px;
+    --breakpoint-mm: 350px;
+    --breakpoint-ml: 425px;
+    --breakpoint-mp: 500px;
+    --breakpoint-mv: 570px;
+    --breakpoint-sm: 640px;
+
+    /* DEFAULT (keep) */
+    --breakpoint-md: 768px;
+
+    /* custom mid */
+    --breakpoint-blm: 850px;
+
+    /* DEFAULT (keep) */
+    --breakpoint-lg: 1024px;
+
+    /* custom large */
+    --breakpoint-blb: 1100px;
+    --breakpoint-xl: 1280px;
+
+    /* wide screens */
+    --breakpoint-ls: 1360px;
+    --breakpoint-lm: 1512px;
+    --breakpoint-ds: 1700px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@layer base {
+    :root {
+        --color-brand: #1c2333;
+        --color-selected: #323a47;
+
+        --color-bg_main: #ffffff;
+        --color-bg_secondary: #e6e6e6;
+
+        --color-text_dark: #17313e;
+        --color-text_normal: #415e72;
+        --color-text_light: #e6e6e6;
+
+        --color-border: #dddddd;
+    }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+button {
+    cursor: pointer;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ---------------------custom scroll bar------------------- */
+/* --------------------- Light Theme Scrollbar ------------------- */
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background-color: #f1f3f5; /* soft light gray */
+    border-radius: 40px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #c5cbd3; /* subtle neutral */
+    border-radius: 40px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #aeb6c0;
 }
