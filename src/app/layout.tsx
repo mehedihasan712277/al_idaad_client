@@ -37,7 +37,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={`${outfit.variable} ${poppins.variable} ${proza.variable} antialiased bg-bg_main text-text_dark font-outfit`}>
+            <body
+                className={`${outfit.variable} ${poppins.variable} ${proza.variable} antialiased bg-bg_main text-text_dark font-outfit select-none`}
+            >
                 <div className="max-w-480 mx-auto">
                     <Navbar></Navbar>
                     {children}
