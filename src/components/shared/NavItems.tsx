@@ -1,19 +1,47 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+type CartItem = {
+    url: string;
+    title: string;
+    price: string;
+    category: string;
+    quantity: number;
+};
 
 const NavItems = () => {
     const pathname = usePathname();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
     const links = [
         { href: "/", label: "Home" },
         { href: "/all-products", label: "All Products" },
         { href: "/blog", label: "Blog" },
     ];
+
+    useEffect(() => {
+        const loadCart = () => {
+            const storedCart = localStorage.getItem("cart");
+            if (storedCart) {
+                setCartItems(JSON.parse(storedCart));
+            } else {
+                setCartItems([]);
+            }
+        };
+
+        loadCart();
+
+        // reload cart when drawer opens
+        if (isCartOpen) {
+            loadCart();
+        }
+    }, [isCartOpen]);
 
     return (
         <>
@@ -197,23 +225,61 @@ const NavItems = () => {
                         </svg>
                     </button>
                 </div>
-                <div className="flex flex-col items-center justify-center h-[calc(100%-73px)] text-gray-400 gap-2">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="48"
-                        height="48"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    >
-                        <circle cx="8" cy="21" r="1" />
-                        <circle cx="19" cy="21" r="1" />
-                        <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-                    </svg>
-                    <p className="text-sm font-medium">No products added</p>
+                <div className="p-4 h-[calc(100%-73px)] overflow-y-auto custom-scrollbar">
+                    {cartItems.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center h-full text-gray-400 gap-2">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="48"
+                                height="48"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <circle cx="8" cy="21" r="1" />
+                                <circle cx="19" cy="21" r="1" />
+                                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+                            </svg>
+                            <p className="text-sm font-medium">No products added</p>
+                        </div>
+                    ) : (
+                        <>
+                            {cartItems.map((item, index) => (
+                                <div key={index} className="flex gap-3 mb-4 border-b border-border pb-3">
+                                    <Image src={item.url} width={64} height={80} alt={item.title} className="w-16 h-20 object-cover rounded" />
+                                    <div className="flex flex-col justify-between flex-1">
+                                        <div>
+                                            <p className="text-sm font-semibold">{item.title}</p>
+                                            <p className="text-xs text-gray-500">{item.category}</p>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-red-500 font-semibold text-sm">{item.price}</span>
+                                            <span className="text-xs bg-gray-100 px-2 py-1 rounded">x{item.quantity}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+
+                            {/* Total */}
+                            <div className="border-t border-border pt-3 mt-4">
+                                <p className="flex justify-between font-semibold">
+                                    <span>Total:</span>
+                                    <span>
+                                        ৳{" "}
+                                        {cartItems
+                                            .reduce((total, item) => {
+                                                const numericPrice = Number(item.price.replace(/[^\d]/g, ""));
+                                                return total + numericPrice * item.quantity;
+                                            }, 0)
+                                            .toLocaleString()}
+                                    </span>
+                                </p>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </>
