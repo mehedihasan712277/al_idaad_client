@@ -43,6 +43,36 @@ const NavItems = () => {
         }
     }, [isCartOpen]);
 
+    // helper function to manage cart items
+    const updateCart = (updatedCart: CartItem[]) => {
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+        setCartItems(updatedCart);
+    };
+
+    const increaseQty = (index: number) => {
+        const updatedCart = [...cartItems];
+        updatedCart[index].quantity += 1;
+        updateCart(updatedCart);
+    };
+
+    const decreaseQty = (index: number) => {
+        const updatedCart = [...cartItems];
+
+        if (updatedCart[index].quantity > 1) {
+            updatedCart[index].quantity -= 1;
+        } else {
+            updatedCart.splice(index, 1); // remove if 1
+        }
+
+        updateCart(updatedCart);
+    };
+
+    const removeItem = (index: number) => {
+        const updatedCart = [...cartItems];
+        updatedCart.splice(index, 1);
+        updateCart(updatedCart);
+    };
+
     return (
         <>
             {/* Desktop Nav */}
@@ -67,9 +97,10 @@ const NavItems = () => {
                     );
                 })}
 
+                {/* desktop cart icon */}
                 <button
                     onClick={() => setIsCartOpen(true)}
-                    className="w-12 h-12 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full"
+                    className="relative w-12 h-12 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -86,6 +117,11 @@ const NavItems = () => {
                         <circle cx="19" cy="21" r="1" />
                         <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
                     </svg>
+                    {cartItems.length > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                            {cartItems.reduce((total, item) => total + item.quantity, 0)}
+                        </span>
+                    )}
                 </button>
             </div>
 
@@ -93,7 +129,7 @@ const NavItems = () => {
             <div className="flex lg:hidden items-center gap-1">
                 <button
                     onClick={() => setIsCartOpen(true)}
-                    className="w-12 h-12 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full"
+                    className="relative w-12 h-12 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full"
                 >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -110,6 +146,11 @@ const NavItems = () => {
                         <circle cx="19" cy="21" r="1" />
                         <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
                     </svg>
+                    {cartItems.length > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                            {cartItems.reduce((total, item) => total + item.quantity, 0)}
+                        </span>
+                    )}
                 </button>
 
                 <button
@@ -250,14 +291,41 @@ const NavItems = () => {
                             {cartItems.map((item, index) => (
                                 <div key={index} className="flex gap-3 mb-4 border-b border-border pb-3">
                                     <Image src={item.url} width={64} height={80} alt={item.title} className="w-16 h-20 object-cover rounded" />
+
                                     <div className="flex flex-col justify-between flex-1">
-                                        <div>
-                                            <p className="text-sm font-semibold">{item.title}</p>
-                                            <p className="text-xs text-gray-500">{item.category}</p>
+                                        <div className="flex justify-between">
+                                            <div>
+                                                <p className="text-sm font-semibold">{item.title}</p>
+                                                <p className="text-xs text-gray-500">{item.category}</p>
+                                            </div>
+
+                                            {/* Remove Button */}
+                                            <button onClick={() => removeItem(index)} className="text-xs text-red-500 hover:underline">
+                                                Remove
+                                            </button>
                                         </div>
-                                        <div className="flex justify-between items-center">
+
+                                        <div className="flex justify-between items-center mt-2">
                                             <span className="text-red-500 font-semibold text-sm">{item.price}</span>
-                                            <span className="text-xs bg-gray-100 px-2 py-1 rounded">x{item.quantity}</span>
+
+                                            {/* Quantity Controls */}
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => decreaseQty(index)}
+                                                    className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center text-sm"
+                                                >
+                                                    -
+                                                </button>
+
+                                                <span className="text-sm font-semibold">{item.quantity}</span>
+
+                                                <button
+                                                    onClick={() => increaseQty(index)}
+                                                    className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center text-sm"
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
