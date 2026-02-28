@@ -1,6 +1,7 @@
 import Image from "next/image";
 import ButtonContainer from "./ButtonContainer";
 type Prouct = {
+    _id: string;
     url: string;
     title: string;
     price: string;

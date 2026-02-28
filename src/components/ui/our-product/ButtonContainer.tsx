@@ -1,6 +1,7 @@
 "use client";
 
 type Product = {
+    _id: string;
     url: string;
     title: string;
     price: string;
@@ -13,7 +14,7 @@ const ButtonContainer = ({ product }: { product: Product }) => {
         const cart = existingCart ? JSON.parse(existingCart) : [];
 
         // check if product already exists
-        const existingProductIndex = cart.findIndex((item: Product & { quantity: number }) => item.url === product.url);
+        const existingProductIndex = cart.findIndex((item: Product & { quantity: number }) => item._id === product._id);
 
         if (existingProductIndex !== -1) {
             cart[existingProductIndex].quantity += 1;
