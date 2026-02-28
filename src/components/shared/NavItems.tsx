@@ -84,12 +84,12 @@ const NavItems = () => {
                             key={href}
                             href={href}
                             className={`relative pb-1 transition-colors duration-200 group font-bold
-                                ${isActive ? "text-blue-600" : "text-text_normal hover:text-blue-500"}
+                                ${isActive ? "text-brand" : "text-text_normal "}
                             `}
                         >
                             {label}
                             <span
-                                className={`absolute bottom-0 left-0 h-0.5 bg-blue-600 transition-all duration-300 ease-out
+                                className={`absolute bottom-0 left-0 h-0.5 bg-brand transition-all duration-300 ease-out
                                     ${isActive ? "w-full" : "w-0 group-hover:w-full"}
                                 `}
                             />
@@ -223,12 +223,12 @@ const NavItems = () => {
                                 href={href}
                                 onClick={() => setIsMenuOpen(false)}
                                 className={`relative px-3 py-3 rounded-lg font-bold transition-colors duration-200 group overflow-hidden
-                                    ${isActive ? "text-blue-600 bg-blue-50" : "text-text_normal hover:text-blue-500 hover:bg-gray-50"}
+                                    ${isActive ? "text-brand bg-blue-50" : "text-text_normal  hover:bg-gray-50"}
                                 `}
                             >
                                 {label}
                                 <span
-                                    className={`absolute bottom-0 left-0 h-0.5 bg-blue-600 transition-all duration-300 ease-out
+                                    className={`absolute bottom-0 left-0 h-0.5 bg-brand transition-all duration-300 ease-out
                                         ${isActive ? "w-full" : "w-0 group-hover:w-full"}
                                     `}
                                 />

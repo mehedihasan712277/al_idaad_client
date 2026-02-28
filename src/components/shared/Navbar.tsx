@@ -1,4 +1,5 @@
-import logo from "@/assets/logo_idaad.jpeg";
+// import logo from "@/assets/logo_idaad.jpeg";
+import logo from "@/assets/logo.png";
 import Image from "next/image";
 import NavItems from "./NavItems";
 

@@ -23,7 +23,7 @@ const OfferSlider = () => {
                 effect={"fade"}
                 centeredSlides={true}
                 autoplay={{
-                    delay: 1500,
+                    delay: 2500,
                     disableOnInteraction: false,
                 }}
                 loop={true}
@@ -34,10 +34,10 @@ const OfferSlider = () => {
                 className="mySwiper"
             >
                 {[
-                    { img: "https://i.postimg.cc/4xsMcQJq/thobe-1.jpg" },
-                    { img: "https://i.postimg.cc/K8xVTDZW/thobe-2.jpg" },
-                    { img: "https://i.postimg.cc/wjgPNQ6n/thobe-3.jpg" },
-                    { img: "https://i.postimg.cc/HkdKM9pK/thobe-4.jpg" },
+                    { img: "https://i.postimg.cc/V5PC9DSM/offer-main.png" },
+                    { img: "https://i.postimg.cc/DwgXsQ7Q/offer.png" },
+                    // { img: "https://i.postimg.cc/kMtp7Gy1/offer-t.jpg" },
+                    // { img: "https://i.postimg.cc/HkdKM9pK/thobe-4.jpg" },
                 ].map((speaker, index) => (
                     <SwiperSlide key={index}>
                         {/* Image */}

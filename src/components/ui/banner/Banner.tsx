@@ -34,7 +34,7 @@ const Banner = () => {
                 className="mySwiper"
             >
                 {[
-                    { img: "https://i.postimg.cc/4xsMcQJq/thobe-1.jpg" },
+                    { img: "https://i.postimg.cc/wvdd2yXn/offer-jubba.webp" },
                     { img: "https://i.postimg.cc/K8xVTDZW/thobe-2.jpg" },
                     { img: "https://i.postimg.cc/wjgPNQ6n/thobe-3.jpg" },
                     { img: "https://i.postimg.cc/HkdKM9pK/thobe-4.jpg" },
