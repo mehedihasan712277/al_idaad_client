@@ -30,7 +30,7 @@ const FeatureProductSlider = () => {
                 spaceBetween={10}
                 breakpoints={{
                     640: {
-                        spaceBetween: 30,
+                        spaceBetween: 20,
                     },
                 }}
                 navigation={false}

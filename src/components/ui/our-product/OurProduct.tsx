@@ -61,9 +61,9 @@ const OurProduct = () => {
     ];
     return (
         <div>
-            <p className="text-3xl font-poppins text-center font-semibold mb-8">Our Product</p>
+            <p className="heading">Our Product</p>
 
-            <div className="flex flex-wrap justify-between sm:justify-center lg:justify-between gap-0 sm:gap-4 mx-auto max-w-233 xl:max-w-full">
+            <div className="flex flex-wrap justify-between sm:justify-center lg:justify-between gap-0 sm:gap-4 mx-auto max-w-233 xl:max-w-full space-y-6">
                 {data.map((e, i) => (
                     <div key={i}>
                         <ProductCard data={e}></ProductCard>

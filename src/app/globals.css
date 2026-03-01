@@ -213,13 +213,16 @@ button {
     }
 }
 
-/* Small devices (portrait tablets and large phones, 600px and up) */
-/* @media only screen and (min-width: 600px) {...} */
+.heading {
+    font-family: "Poppins", sans-serif; /* font-poppins */
+    font-size: 1.5rem; /* text-2xl = 24px */
+    font-weight: 600; /* font-semibold */
+    margin-bottom: 10px;
+}
 
-/* Medium devices (landscape tablets, 768px and up) */
-/* @media only screen and (min-width: 768px) {...} */
-
-/* Large devices (laptops/desktops, 992px and up) */
-/* @media only screen and (min-width: 992px) {...} */
-
-/* Extra large devices (large laptops and desktops, 1200px and up) */
+/* sm:text-3xl (640px and up) */
+@media (min-width: 640px) {
+    .heading {
+        font-size: 1.875rem; /* text-3xl = 30px */
+    }
+}

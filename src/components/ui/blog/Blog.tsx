@@ -1,6 +1,7 @@
 import Link from "next/link";
 import BlogCard from "./BlogCard";
 import { getBlogs } from "@/utils/fetchData";
+import BlogSlider from "./BlogSlider";
 
 const Blog = async () => {
     const blogData = await getBlogs();
@@ -8,14 +9,27 @@ const Blog = async () => {
     return (
         <div>
             <p className="text-3xl font-poppins text-center font-semibold mb-8">Our Latest News</p>
-            <div className="flex justify-between">
+            <div className="hidden xl:flex justify-between">
                 {blogData.slice(0, 4).map((ele) => (
                     <div key={ele._id}>
                         <BlogCard data={ele}></BlogCard>
                     </div>
                 ))}
             </div>
-            <div className="flex w-full justify-end mt-4">
+
+            <div className="hidden lg:flex xl:hidden justify-center gap-4">
+                {blogData.slice(0, 3).map((ele) => (
+                    <div key={ele._id}>
+                        <BlogCard data={ele}></BlogCard>
+                    </div>
+                ))}
+            </div>
+
+            <div className="lg:hidden">
+                <BlogSlider data={blogData}></BlogSlider>
+            </div>
+
+            <div className="flex w-full justify-end lg:justify-center xl:justify-end mt-4">
                 <Link href="/blog" className="text-text_normal flex items-end gap-1 w-fit">
                     <span className="hover:underline transition duration-150">Explore more</span>
                     <svg

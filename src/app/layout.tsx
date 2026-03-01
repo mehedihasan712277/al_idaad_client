@@ -3,6 +3,7 @@ import "./globals.css";
 import { Outfit, Poppins, Proza_Libre } from "next/font/google";
 import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
+import { Toaster } from "react-hot-toast";
 
 const outfit = Outfit({
     subsets: ["latin"],
@@ -44,6 +45,8 @@ export default function RootLayout({
                 <div className="max-w-480 mx-auto">
                     <Navbar></Navbar>
                     {children}
+                    <Toaster position="bottom-right" reverseOrder={false} />
+
                     <Footer></Footer>
                 </div>
             </body>

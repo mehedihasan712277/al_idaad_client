@@ -1,5 +1,7 @@
 "use client";
 
+import toast from "react-hot-toast";
+
 type Product = {
     _id: string;
     url: string;
@@ -24,7 +26,7 @@ const ButtonContainer = ({ product }: { product: Product }) => {
 
         localStorage.setItem("cart", JSON.stringify(cart));
 
-        alert("Product added to cart 🛒");
+        toast.success("Product added to cart 🛒");
     };
 
     return (
@@ -48,8 +50,7 @@ const ButtonContainer = ({ product }: { product: Product }) => {
                 </svg>
             </button>
 
-            <button className="text-text_dark hover:text-text_light transition duration-150 active:scale-90">
-                {/* Arrow Icon */}
+            {/* <button className="text-text_dark hover:text-text_light transition duration-150 active:scale-90">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -64,7 +65,7 @@ const ButtonContainer = ({ product }: { product: Product }) => {
                     <path d="M5 12h14" />
                     <path d="m12 5 7 7-7 7" />
                 </svg>
-            </button>
+            </button> */}
         </div>
     );
 };

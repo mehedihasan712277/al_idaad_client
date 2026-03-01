@@ -27,7 +27,7 @@ const BlogDetailsPage = async ({ params }: { params: Promise<{ id: string }> }) 
     const { title, description, category, createdAt, thumbnail } = blog as BlogType;
 
     return (
-        <div className="max-w-200 mx-auto space-y-4 py-20">
+        <div className="max-w-200 mx-auto space-y-4 px-4 py-20">
             <h1 className="text-3xl font-bold text-main">{title}</h1>
 
             <div className="flex justify-between items-center">

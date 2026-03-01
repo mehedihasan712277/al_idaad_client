@@ -19,7 +19,7 @@ const OfferSlider = () => {
         <>
             <Swiper
                 slidesPerView={"auto"}
-                spaceBetween={30}
+                // spaceBetween={0}
                 effect={"fade"}
                 centeredSlides={true}
                 autoplay={{

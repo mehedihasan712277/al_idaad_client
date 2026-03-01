@@ -3,11 +3,12 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Navigation } from "swiper/modules";
-import Image from "next/image";
 import { useRef, useState } from "react";
 import type { Swiper as SwiperType } from "swiper";
+import { BlogType } from "@/utils/types";
+import BlogCard from "./BlogCard";
 
-const BestSoldProductSlider = () => {
+const BlogSlider = ({ data }: { data: BlogType[] }) => {
     const swiperRef = useRef<SwiperType | null>(null);
     const [isBeginning, setIsBeginning] = useState(true);
     const [isEnd, setIsEnd] = useState(false);
@@ -28,11 +29,6 @@ const BestSoldProductSlider = () => {
             <Swiper
                 slidesPerView={"auto"}
                 spaceBetween={10}
-                breakpoints={{
-                    640: {
-                        spaceBetween: 20,
-                    },
-                }}
                 navigation={false}
                 modules={[Navigation]}
                 onSwiper={handleSwiper}
@@ -41,20 +37,9 @@ const BestSoldProductSlider = () => {
                 onReachEnd={() => setIsEnd(true)}
                 className="mySwiper"
             >
-                {[
-                    { img: "https://i.postimg.cc/90crChFW/product-4.webp" },
-                    { img: "https://i.postimg.cc/s2ff0cxd/product-2.jpg" },
-                    { img: "https://i.postimg.cc/Vsqfj4q9/mt-3.webp" },
-                    { img: "https://i.postimg.cc/50B6h0Jn/product-6.jpg" },
-                    { img: "https://i.postimg.cc/SQ6SWV68/mt-1.webp" },
-                    { img: "https://i.postimg.cc/zDCznpCC/mt-2.webp" },
-                    { img: "https://i.postimg.cc/Vsqfj4q9/mt-3.webp" },
-                    { img: "https://i.postimg.cc/3wrrbBRg/product-3.webp" },
-                ].map((speaker, index) => (
-                    <SwiperSlide key={index} className="w-62.5!">
-                        <div className="flex justify-center rounded-lg overflow-hidden">
-                            <Image src={speaker.img} alt="al idaad BestSoldProductSlider" width={1920} height={1068} className="w-62.5 h-93.75" />
-                        </div>
+                {data.map((ele) => (
+                    <SwiperSlide key={ele._id} className="w-75!">
+                        <BlogCard data={ele}></BlogCard>
                     </SwiperSlide>
                 ))}
             </Swiper>
@@ -101,4 +86,4 @@ const BestSoldProductSlider = () => {
     );
 };
 
-export default BestSoldProductSlider;
+export default BlogSlider;
