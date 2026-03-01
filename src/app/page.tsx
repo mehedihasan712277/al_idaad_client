@@ -27,13 +27,13 @@ const Homepage = () => {
                     </div>
                 </div>
             </div>
-            {/* <div className="space-y-20 py-20 px-4 max-w-7xl mx-auto">
+            <div className="space-y-20 py-20 px-4 max-w-7xl mx-auto">
                 <FeaturedProduct></FeaturedProduct>
-                <Offer></Offer>
+                {/* <Offer></Offer>
                 <BestSoldProduct></BestSoldProduct>
                 <OurProduct></OurProduct>
-                <Blog></Blog>
-            </div> */}
+                <Blog></Blog> */}
+            </div>
         </div>
     );
 };

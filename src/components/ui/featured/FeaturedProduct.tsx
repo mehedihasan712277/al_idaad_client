@@ -3,7 +3,7 @@ import FeatureProductSlider from "./FeatureProductSlider";
 const FeaturedProduct = () => {
     return (
         <div>
-            <p className="text-3xl font-poppins text-center font-semibold mb-8">Featured Product</p>
+            <p className="text-2xl sm:text-3xl font-poppins text-center font-semibold mb-8">Featured Product</p>
             <FeatureProductSlider></FeatureProductSlider>
         </div>
     );
