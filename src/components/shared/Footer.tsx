@@ -2,6 +2,9 @@ import facebook from "@/assets/facebook.png";
 import whatsapp from "@/assets/whatsapp.png";
 import mail from "@/assets/mail.png";
 import call from "@/assets/call.png";
+import tiktok from "@/assets/tiktok.png";
+import instagram from "@/assets/instagram.png";
+
 import Image from "next/image";
 import Link from "next/link";
 const Footer = () => {
@@ -14,17 +17,17 @@ const Footer = () => {
                         <p className="font-proza-libre">A symbol of trust, quality & elegency</p>
                     </div>
                     <div className="flex gap-6 items-center">
-                        <a href="">
+                        <a href="https://www.facebook.com/share/187FiqDCFr" target="_blank">
                             <Image src={facebook} alt="idaad facbook"></Image>
                         </a>
-                        <a href="">
+                        <a href="https://wa.me/8801734874385" target="_blank">
                             <Image src={whatsapp} alt="idaad whatsapp"></Image>
                         </a>
-                        <a href="">
-                            <Image src={mail} alt="idaad email"></Image>
+                        <a href="https://www.tiktok.com/@al_idaad?_r=1&_t=ZS-94JLSULG4lI" target="_blank">
+                            <Image src={tiktok} alt="idaad tiktok"></Image>
                         </a>
-                        <a href="">
-                            <Image src={call} alt="idaad phone number"></Image>
+                        <a href="https://www.instagram.com/al_idaad?igsh=MXA1NmF0Njd2dzN6Nw==" target="_blank">
+                            <Image src={instagram} alt="idaad instagram"></Image>
                         </a>
                     </div>
                 </div>
@@ -47,7 +50,7 @@ const Footer = () => {
                             <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
                             <rect x="2" y="4" width="20" height="16" rx="2" />
                         </svg>
-                        <p>abc@gmail.com</p>
+                        <a href="mailto:alidaadshop@gmail.com">alidaadshop@gmail.com</a>
                     </div>
                     <div className="flex items-center gap-2">
                         <svg
@@ -64,7 +67,7 @@ const Footer = () => {
                         >
                             <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
                         </svg>
-                        <p>0123456789</p>
+                        <a href="tel:+8801734874385">01734874385</a>
                     </div>
                     <div className="flex items-center gap-2">
                         <svg
