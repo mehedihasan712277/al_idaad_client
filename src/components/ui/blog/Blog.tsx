@@ -11,7 +11,7 @@ const Blog = async () => {
             <div className="flex justify-between">
                 {blogData.slice(0, 4).map((ele) => (
                     <div key={ele._id}>
-                        <BlogCard url={ele.thumbnail}></BlogCard>
+                        <BlogCard data={ele}></BlogCard>
                     </div>
                 ))}
             </div>

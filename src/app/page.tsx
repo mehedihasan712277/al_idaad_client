@@ -11,7 +11,7 @@ const Homepage = () => {
         <div>
             <div className="relative">
                 <Banner></Banner>
-                <div className="absolute top-0 left-0 right-0 z-100 h-150 flex justify-center items-center bg-black/75">
+                <div className="absolute top-0 left-0 right-0 z-1 h-150 flex justify-center items-center bg-black/75">
                     <div className="text-white text-center space-y-3">
                         <h1 className="text-8xl font-proza-libre font-bold">Al Idaad</h1>
                         <p className="text-2xl tracking-widest text-gray-200">A symbol of trust, quality & elegance</p>
