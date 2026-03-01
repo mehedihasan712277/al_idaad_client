@@ -6,7 +6,7 @@ import NavItems from "./NavItems";
 const Navbar = () => {
     return (
         <nav className="border border-b border-border">
-            <div className="flex justify-between items-center py-4 px-4 max-w-375 mx-auto">
+            <div className="flex justify-between items-center py-4 px-4 max-w-7xl mx-auto">
                 <Image src={logo} width={200} height={200} alt="al idaad" className="w-16 h-16"></Image>
                 <NavItems></NavItems>
             </div>

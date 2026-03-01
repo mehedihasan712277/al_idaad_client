@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Outfit, Poppins, Proza_Libre } from "next/font/google";
 import Navbar from "@/components/shared/Navbar";
+import Footer from "@/components/shared/Footer";
 
 const outfit = Outfit({
     subsets: ["latin"],
@@ -43,6 +44,7 @@ export default function RootLayout({
                 <div className="max-w-480 mx-auto">
                     <Navbar></Navbar>
                     {children}
+                    <Footer></Footer>
                 </div>
             </body>
         </html>

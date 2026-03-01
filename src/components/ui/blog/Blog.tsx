@@ -1,28 +1,17 @@
 import Link from "next/link";
 import BlogCard from "./BlogCard";
+import { getBlogs } from "@/utils/fetchData";
 
-const Blog = () => {
-    const data = [
-        {
-            url: "https://i.postimg.cc/TPTKHhc9/blog-1.webp",
-        },
-        {
-            url: "https://i.postimg.cc/mrTP6hSS/blog-2.webp",
-        },
-        {
-            url: "https://i.postimg.cc/R0vWbqTQ/blog-3.webp",
-        },
-        {
-            url: "https://i.postimg.cc/TPTKHhc9/blog-1.webp",
-        },
-    ];
+const Blog = async () => {
+    const blogData = await getBlogs();
+
     return (
         <div>
             <p className="text-3xl font-poppins text-center font-semibold mb-8">Our Latest News</p>
             <div className="flex justify-between">
-                {data.map((ele, i) => (
-                    <div key={i}>
-                        <BlogCard url={ele.url}></BlogCard>
+                {blogData.slice(0, 4).map((ele) => (
+                    <div key={ele._id}>
+                        <BlogCard url={ele.thumbnail}></BlogCard>
                     </div>
                 ))}
             </div>

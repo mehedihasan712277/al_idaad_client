@@ -4,12 +4,30 @@ import Blog from "@/components/ui/blog/Blog";
 import FeaturedProduct from "@/components/ui/featured/FeaturedProduct";
 import Offer from "@/components/ui/offer/Offer";
 import OurProduct from "@/components/ui/our-product/OurProduct";
+import Link from "next/link";
 
 const Homepage = () => {
     return (
         <div>
-            <Banner></Banner>
-            <div className="space-y-20 py-20 max-w-7xl mx-auto">
+            <div className="relative">
+                <Banner></Banner>
+                <div className="absolute top-0 left-0 right-0 z-100 h-150 flex justify-center items-center bg-black/75">
+                    <div className="text-white text-center space-y-3">
+                        <h1 className="text-8xl font-proza-libre font-bold">Al Idaad</h1>
+                        <p className="text-2xl tracking-widest text-gray-200">A symbol of trust, quality & elegance</p>
+
+                        <div className="w-fit mx-auto mt-8">
+                            <Link
+                                href="/all-products"
+                                className="px-4 py-2 rounded-full border-border border cursor-pointer hover:bg-white hover:text-text_dark transition duration-150"
+                            >
+                                See Products
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="space-y-20 py-20 px-4 max-w-7xl mx-auto">
                 <FeaturedProduct></FeaturedProduct>
                 <Offer></Offer>
                 <BestSoldProduct></BestSoldProduct>
