@@ -31,7 +31,7 @@ const Homepage = () => {
                 <FeaturedProduct></FeaturedProduct>
                 <Offer></Offer>
                 <BestSoldProduct></BestSoldProduct>
-                {/* <OurProduct></OurProduct> */}
+                <OurProduct></OurProduct>
                 {/* <Blog></Blog> */}
             </div>
         </div>
