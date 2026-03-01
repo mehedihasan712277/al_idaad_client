@@ -1,7 +1,5 @@
 import facebook from "@/assets/facebook.png";
 import whatsapp from "@/assets/whatsapp.png";
-import mail from "@/assets/mail.png";
-import call from "@/assets/call.png";
 import tiktok from "@/assets/tiktok.png";
 import instagram from "@/assets/instagram.png";
 
