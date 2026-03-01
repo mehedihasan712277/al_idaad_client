@@ -6,66 +6,26 @@
     --font-proza-libre: var(--font-proza-libre);
 
     /* primary color */
-    --color-brand: var(--color-brand);
-    --color-selected: var(--color-selected);
+    --color-brand: #c2aa78;
+    --color-selected: #323a47;
 
     /* background color */
-    --color-bg_main: var(--color-bg_main);
-    --color-bg_secondary: var(--color-bg_secondary);
+    --color-bg_main: #ffffff;
+    --color-bg_secondary: #e6e6e6;
 
     /* text color */
-    --color-text_dark: var(--color-text_dark);
-    --color-text_normal: var(--color-text_normal);
-    --color-text_light: var(--color-text_light);
+    --color-text_dark: #17313e;
+    --color-text_normal: #415e72;
+    --color-text_light: #c0c0c0;
 
     /* border color */
-    --color-border: var(--color-border);
+    --color-border: #dddddd;
 
     /* ----------responsive--------- */
-    /* mobile-first */
-    --breakpoint-ms: 300px;
-    --breakpoint-mm: 350px;
-    --breakpoint-ml: 425px;
-    --breakpoint-mp: 500px;
-    --breakpoint-mv: 570px;
-    --breakpoint-sm: 640px;
-
-    /* DEFAULT (keep) */
-    --breakpoint-md: 768px;
-
-    /* custom mid */
-    --breakpoint-blm: 850px;
-
-    /* DEFAULT (keep) */
-    --breakpoint-lg: 1024px;
-
-    /* custom large */
-    --breakpoint-blb: 1100px;
-    --breakpoint-xl: 1280px;
-
-    /* wide screens */
-    --breakpoint-ls: 1360px;
-    --breakpoint-lm: 1512px;
-    --breakpoint-ds: 1700px;
 }
 
-@layer base {
-    :root {
-        --color-brand: #c2aa78;
-        --color-selected: #323a47;
-
-        --color-bg_main: #ffffff;
-        --color-bg_secondary: #e6e6e6;
-
-        --color-text_dark: #17313e;
-        --color-text_normal: #415e72;
-        --color-text_light: #c0c0c0;
-
-        --color-border: #dddddd;
-    }
-}
 .ProseMirror h1 {
-    font-size: 1.875rem; /* 30px */
+    font-size: 1.875rem;
     font-weight: 700;
     margin-bottom: 1rem;
     margin-top: 1.5rem;
@@ -73,7 +33,7 @@
 }
 
 .ProseMirror h2 {
-    font-size: 1.5rem; /* 24px */
+    font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 0.75rem;
     margin-top: 1.25rem;
@@ -81,7 +41,7 @@
 }
 
 .ProseMirror h3 {
-    font-size: 1.25rem; /* 20px */
+    font-size: 1.25rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
     margin-top: 1rem;
@@ -131,7 +91,6 @@
     display: block;
 }
 
-/* Text alignment support */
 .ProseMirror [style*="text-align: left"] {
     text-align: left;
 }
@@ -144,7 +103,6 @@
     text-align: right;
 }
 
-/* Better placeholder styling if you add the Placeholder extension */
 .ProseMirror p.is-editor-empty:first-child::before {
     color: #adb5bd;
     content: attr(data-placeholder);
@@ -158,19 +116,17 @@ button {
 }
 
 /* ---------------------custom scroll bar------------------- */
-/* --------------------- Light Theme Scrollbar ------------------- */
-
 .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-    background-color: #f1f3f5; /* soft light gray */
+    background-color: #f1f3f5;
     border-radius: 40px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #c5cbd3; /* subtle neutral */
+    background-color: #c5cbd3;
     border-radius: 40px;
 }
 
@@ -185,22 +141,22 @@ button {
 }
 
 .swiper-slide {
-    /* Center slide text vertically */
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
 /* ---------------------------------swiper nav buttons---------------------------------- */
 .feature-slider-wrapper {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
+
 .feature-slider-controls {
     display: flex;
     align-items: center;
     gap: 12px;
-    /* change alignment to taste: flex-start = left, center, flex-end = right */
     justify-content: center;
 }
 
@@ -229,7 +185,6 @@ button {
     height: 20px;
 }
 
-/* Active (click) state */
 .feature-slider-btn:active:not(.feature-slider-btn--disabled) {
     transform: scale(0.92);
     background-color: var(--color-brand);
@@ -237,7 +192,6 @@ button {
     color: #fff;
 }
 
-/* Hover state */
 .feature-slider-btn:hover:not(.feature-slider-btn--disabled) {
     background-color: var(--color-brand);
     border-color: var(--color-brand);
@@ -245,7 +199,6 @@ button {
     transform: scale(1.07);
 }
 
-/* Disabled / inactive state */
 .feature-slider-btn--disabled {
     opacity: 0.35;
     cursor: not-allowed;
