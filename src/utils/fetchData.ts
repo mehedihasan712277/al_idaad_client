@@ -8,9 +8,11 @@ import {
     GetAllBlogsResponseType,
     GetAllCategoriesResponseType,
     GetSingleBlogCategoryResponseType,
+    GetSingleBlogResponseType,
     GetSingleCategoryResponseType,
 } from "./types";
 
+// ----------------------------------------------------------------------------------------------------
 // get all blogs
 export const getBlogs = async (): Promise<BlogType[]> => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs`, {
@@ -21,7 +23,20 @@ export const getBlogs = async (): Promise<BlogType[]> => {
 
     return result.data;
 };
+// get single blog
+export const getSingleBlog = async (id: string): Promise<BlogType> => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blogs/${id}`, {
+        next: { revalidate: 300 },
+    });
 
+    if (!res) {
+        throw new Error("Failed to fetch blog");
+    }
+
+    const data: GetSingleBlogResponseType = await res.json();
+    return data.data;
+};
+// ----------------------------------------------------------------------------------------------------
 // get all blog categories
 export const getBlogCategories = async (): Promise<BlogCategoryType[]> => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/blog-categories`, {
@@ -43,7 +58,7 @@ export const getBlogCategory = async (id: string): Promise<BlogCategoryType> => 
 
     return result.data;
 };
-
+// ----------------------------------------------------------------------------------------------------
 // get all product categories
 export const getCategories = async (): Promise<CategoryType[]> => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`, {
@@ -65,7 +80,7 @@ export const getCategory = async (id: string): Promise<CategoryType> => {
 
     return result.data;
 };
-
+// ----------------------------------------------------------------------------------------------------
 // get banners
 export const getBanners = async (): Promise<BannerType[]> => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/banners`, {
@@ -76,3 +91,4 @@ export const getBanners = async (): Promise<BannerType[]> => {
 
     return result.data;
 };
+// ----------------------------------------------------------------------------------------------------
