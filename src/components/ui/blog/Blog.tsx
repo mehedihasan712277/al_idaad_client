@@ -17,7 +17,7 @@ const Blog = async () => {
             </div>
             <div className="flex w-full justify-end mt-4">
                 <Link href="/blog" className="text-text_normal flex items-end gap-1 w-fit">
-                    <span>Explore more</span>
+                    <span className="hover:underline transition duration-150">Explore more</span>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="20"

@@ -8,9 +8,9 @@ import Link from "next/link";
 const Footer = () => {
     return (
         <div className="bg-[#181818] px-4 py-20 text-text_light">
-            <div className="max-w-7xl mx-auto flex justify-between border-b border-gray-800 pb-8 mb-8">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:justify-between gap-10 border-b border-gray-800 pb-8 mb-8">
                 <div className="space-y-4">
-                    <div className="pb-4 w-fit">
+                    <div className="md:pb-4 w-fit">
                         <p className="font-proza-libre text-4xl font-semibold">Al Idaad</p>
                         <p className="font-proza-libre">A symbol of trust, quality & elegency</p>
                     </div>

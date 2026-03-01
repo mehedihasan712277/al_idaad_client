@@ -38,7 +38,13 @@ const BannerSlider = ({ data }: { data: BannerType[] }) => {
                     <SwiperSlide key={ele._id}>
                         {/* Image */}
                         <div className="flex justify-center">
-                            <Image src={ele.url} alt="al idaad banner" width={1920} height={1068} className="w-screen h-150" />
+                            <Image
+                                src={ele.url}
+                                alt="al idaad banner"
+                                width={1920}
+                                height={1068}
+                                className="w-screen h-50 banner sm:h-75! md:h-90! lg:h-120! xl:h-150!"
+                            />
                         </div>
                     </SwiperSlide>
                 ))}

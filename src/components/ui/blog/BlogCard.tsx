@@ -11,9 +11,17 @@ const BlogCard = ({ data }: { data: BlogType }) => {
     return (
         <Link href={`/blog/details/${_id}`}>
             <div className="w-75">
-                <Image src={thumbnail} width={300} height={200} alt="al idaad blog" className="w-75 h-50 rounded"></Image>
-                <p className="text-xl font-semibold truncate">{title}</p>
-                <p className="text-sm text-text_normal font-semibold">{formatMongoDate(createdAt)}</p>
+                <div className="w-75 h-50 overflow-hidden">
+                    <Image
+                        src={thumbnail}
+                        width={300}
+                        height={200}
+                        alt="al idaad blog"
+                        className="w-75 h-50 rounded hover:scale-110 transition duration-500"
+                    ></Image>
+                </div>
+                <p className="text-xl font-semibold truncate mt-2 px-1 hover:text-blue-400 duration-150">{title}</p>
+                <p className="text-sm text-text_normal font-semibold px-1">{formatMongoDate(createdAt)}</p>
             </div>
         </Link>
     );
