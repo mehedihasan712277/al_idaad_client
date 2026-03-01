@@ -27,7 +27,12 @@ const BestSoldProductSlider = () => {
         <div className="feature-slider-wrapper">
             <Swiper
                 slidesPerView={"auto"}
-                spaceBetween={30}
+                spaceBetween={10}
+                breakpoints={{
+                    640: {
+                        spaceBetween: 30,
+                    },
+                }}
                 navigation={false}
                 modules={[Navigation]}
                 onSwiper={handleSwiper}
