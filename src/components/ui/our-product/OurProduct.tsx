@@ -63,7 +63,7 @@ const OurProduct = () => {
         <div>
             <p className="heading">Our Product</p>
 
-            <div className="flex flex-wrap justify-between sm:justify-normal md:grid md:grid-cols-3 lg:grid-cols-4 gap-0 space-y-6 sm:space-y-0 sm:gap-4 w-full">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 space-y-6 gap-4 w-full">
                 {data.map((e, i) => (
                     <div key={i}>
                         <ProductCard data={e}></ProductCard>
