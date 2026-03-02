@@ -177,7 +177,7 @@ const BlogPageClient = ({ blogData, blogCategoryData }: Props) => {
                         </div>
                     ))
                 ) : (
-                    <div className="col-span-3 text-center text-text_normal py-20">No blogs found in this category.</div>
+                    <div className="lg:min-w-154 xl:min-w-248 text-center text-text_normal py-20">No blogs found in this category.</div>
                 )}
             </div>
         </div>
