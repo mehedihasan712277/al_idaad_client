@@ -10,13 +10,13 @@ type Prouct = {
 const ProductCard = ({ data }: { data: Prouct }) => {
     const { url, title, price, category } = data;
     return (
-        <div className="space-y-1 w-[calc(50vw-24px)] md:w-[calc(33vw-24px)] lg:w-[calc(25vw-24px)] xl:w-75 relative box-border">
+        <div className="space-y-1 w-[calc(50vw-32px)] md:w-[calc(33vw-24px)] lg:w-[calc(25vw-24px)] xl:w-75 relative box-border">
             <Image
                 src={url}
                 alt="product"
                 width={300}
                 height={450}
-                className="w-[calc(50vw-24px)] md:w-[calc(33vw-24px)] lg:w-[calc(25vw-24px)] xl:w-75 aspect-2/3 rounded"
+                className="w-[calc(50vw-32px)] md:w-[calc(33vw-24px)] lg:w-[calc(25vw-24px)] xl:w-75 aspect-2/3 rounded"
             ></Image>
             <div className="px-1">
                 <p className="font-semibold">{title}</p>
