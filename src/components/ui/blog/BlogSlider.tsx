@@ -6,7 +6,7 @@ import { Navigation } from "swiper/modules";
 import { useRef, useState } from "react";
 import type { Swiper as SwiperType } from "swiper";
 import { BlogType } from "@/utils/types";
-import BlogCard from "./BlogCard";
+import BlogCardHome from "./BlogCardHome";
 
 const BlogSlider = ({ data }: { data: BlogType[] }) => {
     const swiperRef = useRef<SwiperType | null>(null);
@@ -39,7 +39,7 @@ const BlogSlider = ({ data }: { data: BlogType[] }) => {
             >
                 {data.map((ele) => (
                     <SwiperSlide key={ele._id} className="w-75!">
-                        <BlogCard data={ele}></BlogCard>
+                        <BlogCardHome data={ele}></BlogCardHome>
                     </SwiperSlide>
                 ))}
             </Swiper>

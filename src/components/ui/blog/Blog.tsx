@@ -1,7 +1,8 @@
 import Link from "next/link";
-import BlogCard from "./BlogCard";
+
 import { getBlogs } from "@/utils/fetchData";
 import BlogSlider from "./BlogSlider";
+import BlogCardHome from "./BlogCardHome";
 
 const Blog = async () => {
     const blogData = await getBlogs();
@@ -12,7 +13,7 @@ const Blog = async () => {
             <div className="hidden xl:flex justify-between">
                 {blogData.slice(0, 4).map((ele) => (
                     <div key={ele._id}>
-                        <BlogCard data={ele}></BlogCard>
+                        <BlogCardHome data={ele}></BlogCardHome>
                     </div>
                 ))}
             </div>
@@ -20,7 +21,7 @@ const Blog = async () => {
             <div className="hidden lg:flex xl:hidden justify-center gap-4">
                 {blogData.slice(0, 3).map((ele) => (
                     <div key={ele._id}>
-                        <BlogCard data={ele}></BlogCard>
+                        <BlogCardHome data={ele}></BlogCardHome>
                     </div>
                 ))}
             </div>

@@ -220,9 +220,22 @@ button {
     margin-bottom: 10px;
 }
 
-/* sm:text-3xl (640px and up) */
 @media (min-width: 640px) {
     .heading {
         font-size: 1.875rem; /* text-3xl = 30px */
+    }
+}
+
+@media (min-width: 450px) {
+    .blogCardImgContainer {
+        width: 45vw;
+        height: 25vw;
+    }
+    .blogCardContainer {
+        width: 45vw;
+    }
+    .blogCardImg {
+        width: 45vw;
+        height: 25vw;
     }
 }
