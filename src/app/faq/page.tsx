@@ -191,7 +191,7 @@ const faqs = [
     {
         id: 10,
         question: "How do I contact customer support?",
-        answer: "We're here to help! You can reach us through multiple channels: use our live chat feature on the website (bottom right corner), email us at support@al-idaat.com, or call our hotline during business hours (10 AM – 8 PM, 7 days a week).\n\nYou can also reach us through our social media pages on Facebook and Instagram. We typically respond to all inquiries within 24 hours, but usually much faster during business hours.",
+        answer: "We're here to help! You can reach us through multiple channels: use our live chat feature on the website (bottom right corner), email us at alidaadshop@gmail.com, or call our hotline during business hours (10 AM – 8 PM, 7 days a week).\n\nYou can also reach us through our social media pages on Facebook and Instagram. We typically respond to all inquiries within 24 hours, but usually much faster during business hours.",
         icon: (
             <svg
                 width="20"
@@ -235,7 +235,6 @@ function FAQItem({ faq, isOpen, onToggle }: { faq: (typeof faqs)[0]; isOpen: boo
                     className={`flex-1 font-semibold text-[15px] leading-snug transition-colors duration-200 ${
                         isOpen ? "text-amber-600" : "text-stone-800"
                     }`}
-                    style={{ fontFamily: "'DM Sans', sans-serif" }}
                 >
                     {faq.question}
                 </span>
@@ -267,11 +266,7 @@ function FAQItem({ faq, isOpen, onToggle }: { faq: (typeof faqs)[0]; isOpen: boo
                     <div className="px-6 pb-5 pt-1 bg-white">
                         <div className="pl-14">
                             {faq.answer.split("\n\n").map((para, i) => (
-                                <p
-                                    key={i}
-                                    className={`text-stone-500 text-sm leading-relaxed ${i > 0 ? "mt-3" : ""}`}
-                                    style={{ fontFamily: "'DM Sans', sans-serif" }}
-                                >
+                                <p key={i} className={`text-stone-500 text-sm leading-relaxed ${i > 0 ? "mt-3" : ""}`}>
                                     {para}
                                 </p>
                             ))}
@@ -292,26 +287,19 @@ export default function FAQ() {
 
     return (
         <>
-            <style>{`@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap');`}</style>
-
             <section className="min-h-screen bg-stone-50 py-20 px-4">
                 <div className="max-w-2xl mx-auto">
                     {/* Header */}
                     <div className="text-center mb-14">
-                        <span
-                            className="inline-block text-xs font-semibold tracking-widest uppercase text-amber-500 mb-4"
-                            style={{ fontFamily: "'DM Sans', sans-serif" }}
-                        >
-                            Support Center
-                        </span>
-                        <h1 className="text-4xl font-bold text-stone-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+                        <span className="inline-block text-xs font-semibold tracking-widest uppercase text-amber-500 mb-4">Support Center</span>
+                        <h1 className="text-4xl font-bold text-stone-900 mb-4">
                             Frequently Asked
                             <br />
                             <span className="text-amber-500">Questions</span>
                         </h1>
-                        <p className="text-stone-400 text-sm max-w-sm mx-auto leading-relaxed" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                        <p className="text-stone-400 text-sm max-w-sm mx-auto leading-relaxed">
                             Everything you need to know about shopping with Al-Idaat. Can&apos;t find what you&apos;re looking for?{" "}
-                            <a href="mailto:support@al-idaat.com" className="text-amber-500 hover:underline">
+                            <a href="mailto:alidaadshop@gmail.com" className="text-amber-500 hover:underline">
                                 Contact us.
                             </a>
                         </p>
@@ -325,10 +313,10 @@ export default function FAQ() {
                     </div>
 
                     {/* Footer note */}
-                    <p className="text-center text-stone-400 text-xs mt-10" style={{ fontFamily: "'DM Sans', sans-serif" }}>
+                    <p className="text-center text-stone-400 text-xs mt-10">
                         Still have questions? Email us at{" "}
-                        <a href="mailto:support@al-idaat.com" className="text-amber-500 hover:underline">
-                            support@al-idaat.com
+                        <a href="mailto:alidaadshop@gmail.com" className="text-amber-500 hover:underline">
+                            alidaadshop@gmail.com
                         </a>
                     </p>
                 </div>

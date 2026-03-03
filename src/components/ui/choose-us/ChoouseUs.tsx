@@ -63,7 +63,9 @@ const Counter = ({ end, duration = 2000, suffix = "" }: CounterProps) => {
 const ChooseUs = () => {
     return (
         <section>
-            <h2 className="heading text-center">Why Choose Aliddad</h2>
+            <h2 className="heading text-center">
+                Why Choose <span className="text-brand">Al Idaad</span>
+            </h2>
 
             <p className="text-center">Your trusted partner for quality products and exceptional service across Bangladesh</p>
 

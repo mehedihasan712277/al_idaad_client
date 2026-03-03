@@ -23,7 +23,8 @@ const NavItems = () => {
         { href: "/", label: "Home" },
         { href: "/all-products", label: "All Products" },
         { href: "/blog", label: "Blog" },
-        { href: "/faq", label: "FAQ" }, // 👈 new link
+        { href: "/faq", label: "FAQ" },
+        { href: "/contact", label: "Contact Us" },
     ];
 
     useEffect(() => {
