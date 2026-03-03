@@ -69,61 +69,63 @@ const ChooseUs = () => {
 
             <p className="text-center font-medium mt-16 mb-12">TRUSTED BY THOUSANDS OF CUSTOMERS ACROSS BANGLADESH</p>
 
-            <div className="flex w-full text-center divide-x divide-gray-200">
-                <div className="flex-1 px-6 py-4">
-                    <div className="text-5xl font-bold">
+            <div className="flex flex-col sm:grid sm:grid-cols-2 md:flex w-full text-center md:divide-x md:divide-gray-200">
+                <div className="flex-1 px-4 xl:px-6 py-4">
+                    <div className="text-4xl sm:text-3xl md:text-4xl xl:text-5xl font-bold">
                         <Counter end={1000} suffix="+" />
                     </div>
-                    <p className="text-text_normal font-light mt-2">Happy Customers Nationwide</p>
+                    <p className="text-text_normal sm:font-light mt-2 text-xl sm:text-sm md:text-[16px]">Happy Customers Nationwide</p>
                 </div>
 
-                <div className="flex-1 px-6 py-4">
-                    <div className="text-5xl font-bold">
+                <div className="flex-1 px-4 xl:px-6 py-4">
+                    <div className="text-4xl sm:text-3xl md:text-4xl xl:text-5xl font-bold">
                         <Counter end={500} suffix="+" />
                     </div>
-                    <p className="text-text_normal font-light mt-2">Premium Products Available</p>
+                    <p className="text-text_normal sm:font-light mt-2 text-xl sm:text-sm md:text-[16px]">Premium Products Available</p>
                 </div>
 
-                <div className="flex-1 px-6 py-4">
-                    <div className="text-5xl font-bold">
+                <div className="flex-1 px-4 xl:px-6 py-4">
+                    <div className="text-4xl sm:text-3xl md:text-4xl xl:text-5xl font-bold">
                         <Counter end={99} suffix="%" />
                     </div>
-                    <p className="text-text_normal font-light mt-2">Customer Satisfaction Rate</p>
+                    <p className="text-text_normal sm:font-light mt-2 text-xl sm:text-sm md:text-[16px]">Customer Satisfaction Rate</p>
                 </div>
 
-                <div className="flex-1 px-6 py-4">
-                    <div className="text-5xl font-bold">24/7</div>
-                    <p className="text-text_normal font-light mt-2">Customer Support Available</p>
+                <div className="flex-1 px-4 xl:px-6 py-4">
+                    <div className="text-4xl sm:text-3xl md:text-4xl xl:text-5xl font-bold">24/7</div>
+                    <p className="text-text_normal sm:font-light mt-2 text-xl sm:text-sm md:text-[16px]">Customer Support Available</p>
                 </div>
             </div>
 
-            <div className="flex justify-between gap-5 mt-20">
-                <div className="flex flex-col items-center gap-3 p-8 rounded-xl shadow hover:shadow-xl transition duration-150 flex-1">
+            <div className="flex flex-col sm:flex-row sm:justify-between gap-5 mt-20">
+                <div className="flex flex-col items-center gap-3 p-6 lg:p-8 rounded-xl shadow hover:shadow-xl transition duration-150 flex-1">
                     <Image src={delivery} width={50} height={50} alt="al idaad delivery"></Image>
 
-                    <p className="text-center font-bold text-xl">Fast Delivery</p>
-                    <p className="text-center text-text_normal">Quick delivery across Bangladesh with Pathao courier</p>
+                    <p className="text-center font-bold text-2xl sm:text-xl">Fast Delivery</p>
+                    <p className="text-center text-text_normal sm:text-sm xl:text-[16px]">Quick delivery across Bangladesh with Pathao courier</p>
                 </div>
 
-                <div className="flex flex-col items-center gap-3 p-8 rounded-xl shadow hover:shadow-xl transition duration-150 flex-1">
+                <div className="flex flex-col items-center gap-3 p-6 lg:p-8 rounded-xl shadow hover:shadow-xl transition duration-150 flex-1">
                     <Image src={hundred} width={50} height={50} alt="al idaad delivery"></Image>
 
                     <p className="text-center font-bold text-xl">100% Authentic</p>
-                    <p className="text-center text-text_normal">All products are genuine and sourced from authorized distributors</p>
+                    <p className="text-center text-text_normal text-sm xl:text-[16px]">
+                        All products are genuine and sourced from authorized distributors
+                    </p>
                 </div>
 
-                <div className="flex flex-col items-center gap-3 p-8 rounded-xl shadow hover:shadow-xl transition duration-150 flex-1">
+                <div className="flex flex-col items-center gap-3 p-6 lg:p-8 rounded-xl shadow hover:shadow-xl transition duration-150 flex-1">
                     <Image src={rtn} width={50} height={50} alt="al idaad delivery"></Image>
 
                     <p className="text-center font-bold text-xl">Easy Returns</p>
-                    <p className="text-center text-text_normal">Hassle-free 7-day return policy for your peace of mind</p>
+                    <p className="text-center text-text_normal text-sm xl:text-[16px]">Hassle-free 7-day return policy for your peace of mind</p>
                 </div>
             </div>
 
             <div>
                 <p className="text-center my-10 text-text_normal">Trusted by customers nationwide</p>
 
-                <div className="flex justify-center gap-6">
+                <div className="grid grid-cols-2 w-fit mx-auto md:flex md:justify-center gap-6">
                     <div className="flex items-center gap-1">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"

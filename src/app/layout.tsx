@@ -42,7 +42,7 @@ export default function RootLayout({
             <body
                 className={`${outfit.variable} ${poppins.variable} ${proza.variable} antialiased bg-bg_main text-text_dark font-outfit select-none`}
             >
-                <div className="max-w-480 mx-auto">
+                <div className="max-w-480 mx-auto pt-18 md:pt-25">
                     <Navbar></Navbar>
                     {children}
                     <Toaster position="bottom-right" reverseOrder={false} />
