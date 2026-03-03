@@ -1,6 +1,7 @@
 import Banner from "@/components/ui/banner/Banner";
 import BestSoldProduct from "@/components/ui/best-selling/BestSoldProduct";
 import Blog from "@/components/ui/blog/Blog";
+import ChoouseUs from "@/components/ui/choose-us/ChoouseUs";
 import FeaturedProduct from "@/components/ui/featured/FeaturedProduct";
 import Offer from "@/components/ui/offer/Offer";
 import OurProduct from "@/components/ui/our-product/OurProduct";
@@ -32,6 +33,7 @@ const Homepage = () => {
                 <Offer></Offer>
                 <BestSoldProduct></BestSoldProduct>
                 <OurProduct></OurProduct>
+                <ChoouseUs></ChoouseUs>
                 <Blog></Blog>
             </div>
         </div>
