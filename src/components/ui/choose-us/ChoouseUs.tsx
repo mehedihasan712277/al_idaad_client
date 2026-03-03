@@ -69,7 +69,7 @@ const ChooseUs = () => {
 
             <p className="text-center font-medium mt-16 mb-12">TRUSTED BY THOUSANDS OF CUSTOMERS ACROSS BANGLADESH</p>
 
-            <div className="flex flex-col sm:grid sm:grid-cols-2 md:flex w-full text-center md:divide-x md:divide-gray-200">
+            <div className="flex flex-col sm:grid sm:grid-cols-2 md:flex md:flex-row w-full text-center md:divide-x md:divide-gray-200">
                 <div className="flex-1 px-4 xl:px-6 py-4">
                     <div className="text-4xl sm:text-3xl md:text-4xl xl:text-5xl font-bold">
                         <Counter end={1000} suffix="+" />
