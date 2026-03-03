@@ -1,3 +1,4 @@
+import Link from "next/link";
 import ProductCard from "./ProductCard";
 
 const OurProduct = () => {
@@ -69,6 +70,15 @@ const OurProduct = () => {
                         <ProductCard data={e}></ProductCard>
                     </div>
                 ))}
+            </div>
+
+            <div className="flex justify-center mt-10">
+                <Link
+                    href="/all-products"
+                    className="bg-brand px-4 py-2 rounded w-fit border border-brand hover:bg-transparent hover:text-brand transition duration-150 ease-in-out font-semibold"
+                >
+                    View All Products
+                </Link>
             </div>
         </div>
     );
