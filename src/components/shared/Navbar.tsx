@@ -111,33 +111,36 @@ const Navbar = () => {
 
     const totalQty = cartItems.reduce((total, item) => total + item.quantity, 0);
 
-    const iconBtnClass = "relative w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full";
-
     return (
         <>
             <nav
                 className={`
-                    fixed top-0 left-0 right-0 z-50
-                    bg-bg_main border-b border-border
-                    transform
-                    ${visible ? "translate-y-0" : "-translate-y-full"}
-                    ${animate ? "transition-transform duration-500 ease-in-out" : "transition-none"}
-                    ${fade ? "opacity-0 animate-fadeIn" : "opacity-100"}
-                `}
+    fixed top-0 left-0 right-0 z-50
+    border-b border-border
+    transform
+    ${visible ? "translate-y-0" : "-translate-y-full"}
+    ${animate ? "transition-transform duration-500 ease-in-out" : "transition-none"}
+    ${fade ? "opacity-0 animate-fadeIn" : "opacity-100"}
+    ${animate ? "bg-black/70" : "bg-bg_main"}
+  `}
             >
                 <div className="h-18 md:h-25 px-4 max-w-7xl mx-auto flex items-center">
                     {/* ── MOBILE LAYOUT (< lg): hamburger left | logo center | search+cart right ── */}
                     <div className="flex lg:hidden w-full items-center">
                         {/* Left: hamburger */}
                         <div className="flex items-center rotate-90">
-                            <button onClick={() => setIsMenuOpen(true)} className={iconBtnClass} aria-label="Open menu">
+                            <button
+                                onClick={() => setIsMenuOpen(true)}
+                                className={`relative w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${animate ? "text-white" : "text-text_normal"}`}
+                                aria-label="Open menu"
+                            >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="22"
                                     height="22"
                                     viewBox="0 0 24 24"
                                     fill="none"
-                                    stroke="#17313e"
+                                    stroke="currentColor"
                                     strokeWidth="2"
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
@@ -150,11 +153,19 @@ const Navbar = () => {
                         </div>
 
                         {/* Center: logo */}
-                        <h1 className="flex-1 text-center text-3xl font-bold font-proza-libre select-none">Al Idaad</h1>
+                        <h1
+                            className={`flex-1 text-center text-3xl font-bold font-proza-libre select-none
+        ${animate ? "text-white" : "text-text_normal"}`}
+                        >
+                            Al Idaad
+                        </h1>
 
                         {/* Right: search + cart */}
                         <div className="flex items-center gap-1">
-                            <button className={iconBtnClass} aria-label="Search">
+                            <button
+                                className={`relative w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${animate ? "text-white" : "text-text_normal"}`}
+                                aria-label="Search"
+                            >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="24"
@@ -171,7 +182,11 @@ const Navbar = () => {
                                 </svg>
                             </button>
 
-                            <button onClick={() => setIsCartOpen(true)} className={iconBtnClass} aria-label="Cart">
+                            <button
+                                onClick={() => setIsCartOpen(true)}
+                                className={`relative w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${animate ? "text-white" : "text-text_normal"}`}
+                                aria-label="Cart"
+                            >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="24"
@@ -199,7 +214,7 @@ const Navbar = () => {
                     {/* ── DESKTOP LAYOUT (lg+): logo | center links | icons ── */}
                     <div className="hidden lg:flex w-full items-center justify-between">
                         {/* Logo */}
-                        <h1 className="text-3xl font-bold font-proza-libre select-none">Al Idaad</h1>
+                        <h1 className={`text-3xl font-bold font-proza-libre select-none ${animate ? "text-white" : "text-text_normal"}`}>Al Idaad</h1>
 
                         {/* Center nav links */}
                         <div className="flex gap-4 items-center">
@@ -210,12 +225,28 @@ const Navbar = () => {
                                         key={href}
                                         href={href}
                                         className={`relative py-1.5 pb-1 transition-colors duration-200 group font-bold text-sm
-                                            ${isActive ? "text-brand" : "text-text_normal"}`}
+                ${
+                    animate
+                        ? isActive
+                            ? "text-yellow-400" // active link color on dark bg
+                            : "text-white hover:text-gray-300" // inactive link color on dark bg
+                        : isActive
+                          ? "text-brand"
+                          : "text-text_normal"
+                }`}
                                     >
                                         {label}
                                         <span
-                                            className={`absolute bottom-0 left-0 h-0.5 bg-brand transition-all duration-300 ease-out
-                                            ${isActive ? "w-full" : "w-0 group-hover:w-full"}`}
+                                            className={`absolute bottom-0 left-0 h-0.5 transition-all duration-300 ease-out
+                  ${
+                      animate
+                          ? isActive
+                              ? "w-full bg-yellow-400"
+                              : "w-0 group-hover:w-full bg-white/70"
+                          : isActive
+                            ? "w-full bg-brand"
+                            : "w-0 group-hover:w-full bg-brand"
+                  }`}
                                         />
                                     </Link>
                                 );
@@ -224,7 +255,11 @@ const Navbar = () => {
 
                         {/* Right icons */}
                         <div className="flex items-center gap-1">
-                            <button className={iconBtnClass} aria-label="Search">
+                            <button
+                                className={`relative w-10 h-10 hover:bg-white/20 active:scale-95 transition duration-150 flex justify-center items-center rounded-full
+            ${animate ? "text-white" : "text-text_normal"}`}
+                                aria-label="Search"
+                            >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="24"
@@ -240,7 +275,12 @@ const Navbar = () => {
                                     <circle cx="11" cy="11" r="8" />
                                 </svg>
                             </button>
-                            <button onClick={() => setIsCartOpen(true)} className={iconBtnClass} aria-label="Cart">
+                            <button
+                                className={`relative w-10 h-10 hover:bg-white/20 active:scale-95 transition duration-150 flex justify-center items-center rounded-full
+            ${animate ? "text-white" : "text-text_normal"}`}
+                                onClick={() => setIsCartOpen(true)}
+                                aria-label="Cart"
+                            >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="24"
