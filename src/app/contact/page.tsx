@@ -3,7 +3,8 @@
 // import instagram from "@/assets/instagram.png";
 // import tiktok from "@/assets/tiktok.png";
 
-import Image, { StaticImageData } from "next/image";
+// import Image, { StaticImageData } from "next/image";
+import Image from "next/image";
 import { useState } from "react";
 
 interface ContactCard {
