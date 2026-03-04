@@ -1,5 +1,9 @@
 "use client";
+// import fb from "@/assets/facebook.png";
+// import instagram from "@/assets/instagram.png";
+// import tiktok from "@/assets/tiktok.png";
 
+import Image, { StaticImageData } from "next/image";
 import { useState } from "react";
 
 interface ContactCard {
@@ -15,42 +19,41 @@ interface SocialLink {
     name: string;
     handle: string;
     href: string;
+    // icon: StaticImageData;
+    icon: string;
 }
 
 const contactCards: ContactCard[] = [
     {
         label: "WhatsApp",
-        value: "+880 1XXX-XXXXXX",
+        value: "+8801734874385",
         sub: "Chat with us directly",
         gradient: "from-[#25D366] to-[#128C7E]",
         shadow: "shadow-green-300/40",
-        href: "https://wa.me/8801XXXXXXXXX",
+        href: "https://wa.me/8801734874385",
     },
     {
         label: "Our Location",
-        value: "123 Main Street",
-        sub: "Dhaka, Bangladesh 1200",
+        value: "Lucky Plaza, Agrabad",
+        sub: "Chittagong, Bangladesh",
         gradient: "from-[#FF6B6B] to-[#FF3CAC]",
         shadow: "shadow-pink-300/40",
         href: "https://maps.google.com",
     },
     {
         label: "Email Us",
-        value: "hello@yourshop.com",
+        value: "alidaadshop@gmail.com",
         sub: "Reply within 24 hours",
         gradient: "from-[#6C63FF] to-[#3B82F6]",
         shadow: "shadow-violet-300/40",
-        href: "mailto:hello@yourshop.com",
+        href: "mailto:alidaadshop@gmail.com",
     },
 ];
 
 const socialLinks: SocialLink[] = [
-    { name: "Facebook", handle: "@yourshop", href: "#" },
-    { name: "Instagram", handle: "@yourshop", href: "#" },
-    // { name: "Twitter / X", handle: "@yourshop", href: "#" },
-    // { name: "LinkedIn", handle: "Your Shop", href: "#" },
-    // { name: "YouTube", handle: "Your Shop Channel", href: "#" },
-    { name: "TikTok", handle: "@yourshop", href: "#" },
+    { name: "Facebook", handle: "Al Idaad", href: "#", icon: "https://res.cloudinary.com/durvy5ois/image/upload/v1772582111/facebook_dqdr7j.png" },
+    { name: "Instagram", handle: "Al Idaad", href: "#", icon: "https://res.cloudinary.com/durvy5ois/image/upload/v1772582115/instagram_wgifjn.png" },
+    { name: "TikTok", handle: "Al Idaad", href: "#", icon: "https://res.cloudinary.com/durvy5ois/image/upload/v1772582112/tik-tok_ygyaa5.png" },
 ];
 
 const hours = [
@@ -63,7 +66,7 @@ export default function ContactPage() {
 
     return (
         <div className="min-h-screen bg-[#F4F6FB] text-[#1a1a2e]">
-            <main className="max-w-6xl mx-auto px-6 py-16">
+            <main className="max-w-7xl mx-auto py-20 px-4">
                 {/* HEADING */}
                 <div className="mb-11">
                     <p className="text-[11px] font-bold tracking-widest uppercase text-violet-500 mb-2">✦ Get in touch</p>
@@ -159,9 +162,14 @@ export default function ContactPage() {
                                     href={s.href}
                                     className="flex justify-between items-center px-4 py-3 rounded-lg border-border border bg-gray-50 hover:bg-white transition"
                                 >
-                                    <div>
-                                        <p className="font-semibold text-sm">{s.name}</p>
-                                        <p className="text-xs text-gray-400">{s.handle}</p>
+                                    <div className="flex items-center gap-3">
+                                        <div className="size-9 rounded-lg overflow-hidden flex items-center justify-center bg-white  shrink-0">
+                                            <Image src={s.icon} alt={s.name} width={28} height={28} className="object-contain" />
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold text-sm">{s.name}</p>
+                                            <p className="text-xs text-gray-400">{s.handle}</p>
+                                        </div>
                                     </div>
                                     <span className="text-gray-400">→</span>
                                 </a>
@@ -176,7 +184,7 @@ export default function ContactPage() {
                         <h2 className="font-bold text-xl mb-1">Ready to place an order?</h2>
                         <p className="text-white/80 text-sm">Message us on WhatsApp — fastest response guaranteed.</p>
                     </div>
-                    <a href="https://wa.me/8801XXXXXXXXX" className="bg-white text-[#128C7E] font-bold px-6 py-3 rounded-lg">
+                    <a href="https://wa.me/8801734874385" className="bg-white text-[#128C7E] font-bold px-6 py-3 rounded-lg">
                         Chat on WhatsApp
                     </a>
                 </div>
