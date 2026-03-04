@@ -116,11 +116,12 @@ const Navbar = () => {
             <nav
                 className={`
     fixed top-0 left-0 right-0 z-50
+    border border-border
     transform
     ${visible ? "translate-y-0" : "-translate-y-full"}
     ${animate ? "transition-transform duration-500 ease-in-out" : "transition-none"}
     ${fade ? "opacity-0 animate-fadeIn" : "opacity-100"}
-    ${animate ? "bg-black/70 mx-3 mt-4 rounded-2xl" : "bg-bg_main"}
+    ${animate ? "bg-black/70 border-none mx-3 mt-4 rounded-2xl" : "bg-bg_main"}
   `}
             >
                 <div className="h-18 md:h-25 px-4 max-w-7xl mx-auto flex items-center">
