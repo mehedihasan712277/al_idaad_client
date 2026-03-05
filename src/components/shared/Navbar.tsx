@@ -4,7 +4,26 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
-import { useCart } from "./CartContext";
+import { CartItem, useCart } from "./CartContext";
+
+// ─── Helper: human-readable subtitle for a cart line item ────────────────────
+
+const getItemSubtitle = (item: CartItem): string | null => {
+    if (item.selectedVariant) {
+        const v = item.selectedVariant;
+        const parts: string[] = [`Size: ${v.size}`];
+        if (v.color) parts.push(`Color: ${v.color}`);
+        if (v.chest) parts.push(`Chest: ${v.chest}"`);
+        if (v.length) parts.push(`Length: ${v.length}"`);
+        return parts.join(" · ");
+    }
+    if (item.selectedAttarSize) {
+        return `${item.selectedAttarSize.ml} ml`;
+    }
+    return null;
+};
+
+// ─── Navbar ───────────────────────────────────────────────────────────────────
 
 const Navbar = () => {
     const pathname = usePathname();
@@ -62,21 +81,22 @@ const Navbar = () => {
                 fadeRef.current = newFade;
             }
         };
-
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    // const CartBadge = ({ animate: a }: { animate: boolean }) => (
+
+    // );
+
     return (
         <>
             <nav
-                className={`
-                    fixed top-0 left-0 right-0 z-50 border border-border transform
-                    ${visible ? "translate-y-0" : "-translate-y-full"}
-                    ${animate ? "transition-transform duration-500 ease-in-out" : "transition-none"}
-                    ${fade ? "opacity-0 animate-fadeIn" : "opacity-100"}
-                    ${animate ? "bg-black/70 border-none mx-3 mt-4 rounded-2xl" : "bg-bg_main"}
-                `}
+                className={`fixed top-0 left-0 right-0 z-50 border border-border transform
+                ${visible ? "translate-y-0" : "-translate-y-full"}
+                ${animate ? "transition-transform duration-500 ease-in-out" : "transition-none"}
+                ${fade ? "opacity-0 animate-fadeIn" : "opacity-100"}
+                ${animate ? "bg-black/70 border-none mx-3 mt-4 rounded-2xl" : "bg-bg_main"}`}
             >
                 <div className="h-18 md:h-25 px-4 max-w-7xl mx-auto flex items-center">
                     {/* ── MOBILE ── */}
@@ -131,7 +151,7 @@ const Navbar = () => {
                             </button>
                             <button
                                 onClick={() => setIsCartOpen(true)}
-                                className={`relative w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${animate ? "text-white" : "text-text_normal"}`}
+                                className={`relative w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${animate ? "text-white hover:bg-white/20" : "text-text_normal"}`}
                                 aria-label="Cart"
                             >
                                 <svg
@@ -162,35 +182,19 @@ const Navbar = () => {
                     <div className="hidden lg:flex w-full items-center justify-between">
                         <h1 className={`text-3xl font-bold font-proza-libre select-none ${animate ? "text-white" : "text-text_normal"}`}>Al Idaad</h1>
                         <div className="flex gap-4 items-center">
-                            {links.map(({ href, label }) => {
+                            {links.map(({ href, label }, i) => {
                                 const isActive = pathname === href;
                                 return (
                                     <Link
-                                        key={href}
+                                        key={i}
                                         href={href}
                                         className={`relative py-1.5 pb-1 transition-colors duration-200 group font-bold text-sm
-                                            ${
-                                                animate
-                                                    ? isActive
-                                                        ? "text-yellow-400"
-                                                        : "text-white hover:text-gray-300"
-                                                    : isActive
-                                                      ? "text-brand"
-                                                      : "text-text_normal"
-                                            }`}
+                                            ${animate ? (isActive ? "text-yellow-400" : "text-white hover:text-gray-300") : isActive ? "text-brand" : "text-text_normal"}`}
                                     >
                                         {label}
                                         <span
                                             className={`absolute bottom-0 left-0 h-0.5 transition-all duration-300 ease-out
-                                            ${
-                                                animate
-                                                    ? isActive
-                                                        ? "w-full bg-yellow-400"
-                                                        : "w-0 group-hover:w-full bg-white/70"
-                                                    : isActive
-                                                      ? "w-full bg-brand"
-                                                      : "w-0 group-hover:w-full bg-brand"
-                                            }`}
+                                            ${animate ? (isActive ? "w-full bg-yellow-400" : "w-0 group-hover:w-full bg-white/70") : isActive ? "w-full bg-brand" : "w-0 group-hover:w-full bg-brand"}`}
                                         />
                                     </Link>
                                 );
@@ -218,7 +222,7 @@ const Navbar = () => {
                             </button>
                             <button
                                 onClick={() => setIsCartOpen(true)}
-                                className={`relative w-10 h-10 hover:bg-white/20 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${animate ? "text-white" : "text-text_normal"}`}
+                                className={`relative w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${animate ? "text-white hover:bg-white/20" : "text-text_normal"}`}
                                 aria-label="Cart"
                             >
                                 <svg
@@ -284,11 +288,11 @@ const Navbar = () => {
                     </button>
                 </div>
                 <nav className="flex flex-col px-4 py-4 gap-1">
-                    {links.map(({ href, label }) => {
+                    {links.map(({ href, label }, i) => {
                         const isActive = pathname === href;
                         return (
                             <Link
-                                key={href}
+                                key={i}
                                 href={href}
                                 onClick={() => setIsMenuOpen(false)}
                                 className={`relative px-3 py-3 rounded-lg font-bold transition-colors duration-200 group overflow-hidden ${isActive ? "text-brand bg-blue-50" : "text-text_normal hover:bg-gray-50"}`}
@@ -334,7 +338,6 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex flex-col h-[calc(100%-73px)]">
-                    {/* Scrollable items */}
                     <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
                         {items.length === 0 ? (
                             <div className="flex flex-col items-center justify-center h-full text-gray-400 gap-3">
@@ -357,51 +360,60 @@ const Navbar = () => {
                             </div>
                         ) : (
                             <div className="space-y-3">
-                                {items.map((item) => (
-                                    <div key={item._id} className="flex gap-3 border-b border-gray-100 pb-3">
-                                        <Image
-                                            src={item.thumbnail}
-                                            width={64}
-                                            height={80}
-                                            alt={item.name}
-                                            className="w-16 h-20 object-cover rounded shrink-0"
-                                        />
-                                        <div className="flex flex-col justify-between flex-1 min-w-0">
-                                            <div className="flex justify-between gap-1">
-                                                <div className="min-w-0">
-                                                    <p className="text-sm font-semibold truncate">{item.name}</p>
-                                                    <p className="text-xs text-gray-500">{item.category.name}</p>
+                                {items.map((item) => {
+                                    const subtitle = getItemSubtitle(item);
+                                    return (
+                                        <div key={item.cartKey} className="flex gap-3 border-b border-gray-100 pb-3">
+                                            <Image
+                                                src={item.thumbnail}
+                                                width={64}
+                                                height={80}
+                                                alt={item.name}
+                                                className="w-16 h-20 object-cover rounded-lg shrink-0"
+                                            />
+                                            <div className="flex flex-col justify-between flex-1 min-w-0">
+                                                <div className="flex justify-between gap-1">
+                                                    <div className="min-w-0">
+                                                        <p className="text-sm font-semibold text-text_normal truncate">{item.name}</p>
+                                                        <p className="text-xs text-gray-400">{item.category.name}</p>
+                                                        {/* Variant / Attar label */}
+                                                        {subtitle && (
+                                                            <span className="inline-block mt-1 text-[10px] font-semibold bg-brand/10 text-brand px-2 py-0.5 rounded-full">
+                                                                {subtitle}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <button
+                                                        onClick={() => removeItem(item.cartKey)}
+                                                        className="text-xs text-red-400 hover:text-red-600 shrink-0 transition-colors"
+                                                    >
+                                                        ✕
+                                                    </button>
                                                 </div>
-                                                <button
-                                                    onClick={() => removeItem(item._id)}
-                                                    className="text-xs text-red-400 hover:text-red-600 shrink-0 transition-colors"
-                                                >
-                                                    ✕
-                                                </button>
-                                            </div>
-                                            <div className="flex justify-between items-center mt-2">
-                                                <span className="text-brand font-bold text-sm">
-                                                    ৳ {(item.price * item.quantity).toLocaleString()}
-                                                </span>
-                                                <div className="flex items-center gap-1.5">
-                                                    <button
-                                                        onClick={() => decreaseQty(item._id)}
-                                                        className="w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center text-sm font-medium transition-colors"
-                                                    >
-                                                        −
-                                                    </button>
-                                                    <span className="text-sm font-semibold w-5 text-center">{item.quantity}</span>
-                                                    <button
-                                                        onClick={() => increaseQty(item._id)}
-                                                        className="w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center text-sm font-medium transition-colors"
-                                                    >
-                                                        +
-                                                    </button>
+                                                <div className="flex justify-between items-center mt-2">
+                                                    <span className="text-brand font-bold text-sm">
+                                                        ৳ {(item.price * item.quantity).toLocaleString()}
+                                                    </span>
+                                                    <div className="flex items-center gap-1.5">
+                                                        <button
+                                                            onClick={() => decreaseQty(item.cartKey)}
+                                                            className="w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center text-sm font-medium transition-colors"
+                                                        >
+                                                            −
+                                                        </button>
+                                                        <span className="text-sm font-semibold w-5 text-center">{item.quantity}</span>
+                                                        <button
+                                                            onClick={() => increaseQty(item.cartKey)}
+                                                            className="w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center text-sm font-medium transition-colors"
+                                                        >
+                                                            +
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         )}
                     </div>
@@ -409,14 +421,16 @@ const Navbar = () => {
                     {/* Sticky footer */}
                     {items.length > 0 && (
                         <div className="border-t border-gray-100 p-4 space-y-3 bg-white">
-                            <div className="flex justify-between text-sm text-gray-500">
-                                <span>Subtotal ({totalQty} items)</span>
-                                <span className="font-semibold text-text_normal">৳ {totalPrice.toLocaleString()}</span>
+                            <div className="flex justify-between text-sm">
+                                <span className="text-gray-500">
+                                    Subtotal ({totalQty} item{totalQty > 1 ? "s" : ""})
+                                </span>
+                                <span className="font-bold text-text_normal">৳ {totalPrice.toLocaleString()}</span>
                             </div>
                             <Link
                                 href="/checkout"
                                 onClick={() => setIsCartOpen(false)}
-                                className="block w-full bg-brand text-white text-center py-3 rounded-lg font-semibold hover:opacity-90 active:scale-95 transition duration-150"
+                                className="block w-full bg-brand text-white text-center py-3 rounded-xl font-bold text-sm hover:opacity-90 active:scale-95 transition duration-150"
                             >
                                 Proceed to Checkout
                             </Link>

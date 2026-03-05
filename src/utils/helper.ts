@@ -1,4 +1,5 @@
 import DOMPurify from "dompurify";
+import { ProductType, ProductVariant, AttarSize } from "@/utils/types";
 
 export const formatMongoDate = (isoDate: string): string => {
     const date = new Date(isoDate);
@@ -59,4 +60,27 @@ export const processImageHTML = (html: string) => {
         ALLOWED_TAGS: ["p", "br", "b", "i", "em", "strong", "a", "ul", "ol", "li", "h1", "h2", "h3", "h4", "h5", "h6", "img", "figure", "figcaption"],
         ALLOWED_ATTR: ["src", "alt", "width", "height", "style", "class", "draggable", "href"],
     });
+};
+
+// -------------------------------------------------------------------------
+
+/**
+ * Builds a unique cart key for a product + its selected variant/attar.
+ *
+ * Same product, different selection = different key = separate cart line item.
+ *
+ * Examples:
+ *   plain product  →  "abc123"
+ *   thobe XL white →  "abc123__v_XL_white"
+ *   attar 12ml     →  "abc123__a_12ml"
+ */
+export const buildCartKey = (product: ProductType, variant?: ProductVariant, attarSize?: AttarSize): string => {
+    if (variant) {
+        const colorPart = variant.color ? `_${variant.color}` : "";
+        return `${product._id}__v_${variant.size}${colorPart}`;
+    }
+    if (attarSize) {
+        return `${product._id}__a_${attarSize.ml}ml`;
+    }
+    return product._id;
 };
