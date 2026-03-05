@@ -7,9 +7,12 @@ import {
     GetAllBlogCategoriesResponseType,
     GetAllBlogsResponseType,
     GetAllCategoriesResponseType,
+    GetAllProductsResponseType,
     GetSingleBlogCategoryResponseType,
     GetSingleBlogResponseType,
     GetSingleCategoryResponseType,
+    GetSingleProductResponseType,
+    ProductType,
 } from "./types";
 
 // ----------------------------------------------------------------------------------------------------
@@ -85,6 +88,7 @@ export const getCategory = async (id: string): Promise<CategoryType> => {
 export const getBanners = async (): Promise<BannerType[]> => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/banners`, {
         next: { revalidate: 300 },
+        cache: "force-cache",
     });
 
     const result: GetAllBannersResponseType = await res.json();
@@ -92,3 +96,26 @@ export const getBanners = async (): Promise<BannerType[]> => {
     return result.data;
 };
 // ----------------------------------------------------------------------------------------------------
+// get all products
+export const getProducts = async (): Promise<ProductType[]> => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`, {
+        next: { revalidate: 300 },
+    });
+
+    const result: GetAllProductsResponseType = await res.json();
+
+    return result.data;
+};
+// get product blog
+export const getSingleProduct = async (id: string): Promise<ProductType> => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`, {
+        next: { revalidate: 300 },
+    });
+
+    if (!res) {
+        throw new Error("Failed to fetch blog");
+    }
+
+    const data: GetSingleProductResponseType = await res.json();
+    return data.data;
+};

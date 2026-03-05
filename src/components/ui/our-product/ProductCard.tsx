@@ -1,19 +1,14 @@
 import Image from "next/image";
 import ButtonContainer from "./ButtonContainer";
-type Prouct = {
-    _id: string;
-    url: string;
-    title: string;
-    price: string;
-    category: string;
-};
-const ProductCard = ({ data }: { data: Prouct }) => {
-    const { url, title, price, category } = data;
+import { ProductType } from "@/utils/types";
+
+const ProductCard = ({ data }: { data: ProductType }) => {
+    const { thumbnail, name, price, category } = data;
     return (
         <div className="space-y-1 w-[calc(50vw-32px)] md:w-[calc(33vw-24px)] lg:w-[calc(25vw-24px)] xl:w-75 relative box-border">
             <div className="w-[calc(50vw-32px)] md:w-[calc(33vw-24px)] lg:w-[calc(25vw-24px)] xl:w-75 aspect-2/3 rounded overflow-hidden">
                 <Image
-                    src={url}
+                    src={thumbnail}
                     alt="product"
                     width={300}
                     height={450}
@@ -21,14 +16,14 @@ const ProductCard = ({ data }: { data: Prouct }) => {
                 ></Image>
             </div>
             <div className="px-1">
-                <p className="font-semibold">{title}</p>
+                <p className="font-semibold">{name}</p>
                 <div className="flex items-center justify-between">
-                    <span className="font-semibold text-text_normal">{price.split(" ")[1]} BDT</span>
+                    <span className="font-semibold text-text_normal">{price} BDT</span>
                     <div>
                         <ButtonContainer product={data} />
                     </div>
                 </div>
-                <span className="bg-yellow-400 px-3 py-1 rounded-full font-semibold  text-xs absolute top-2 right-2">{category}</span>
+                <span className="bg-yellow-400 px-3 py-1 rounded-full font-semibold  text-xs absolute top-2 right-2">{category.name}</span>
             </div>
         </div>
     );

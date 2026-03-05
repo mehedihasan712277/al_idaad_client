@@ -89,3 +89,60 @@ export interface GetAllBannersResponseType {
     count: number;
     data: BannerType[];
 }
+
+// product------------------------------------
+export interface ProductVariant {
+    size: string;
+    color?: string;
+    chest?: number;
+    length?: number;
+    price?: number;
+}
+
+export interface AttarSize {
+    ml: number;
+    price: number;
+}
+
+export interface ProductType {
+    _id: string;
+    name: string;
+    description: string;
+    brand?: string;
+    category: {
+        _id: string;
+        name: string;
+    };
+    categoryIdList: string[];
+    price: number;
+    discountPercentage?: number;
+
+    inStock: boolean;
+
+    isFeatured?: boolean;
+    isBestSelling?: boolean;
+
+    // For thobe
+    variants?: ProductVariant[];
+
+    // For attar
+    attarSizes?: AttarSize[];
+
+    thumbnail: string;
+    images: string[];
+    ratings: number;
+    reviews?: string[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface GetAllProductsResponseType {
+    success: boolean;
+    count: number;
+    data: ProductType[];
+}
+
+export interface GetSingleProductResponseType {
+    success: boolean;
+    data: ProductType;
+}
