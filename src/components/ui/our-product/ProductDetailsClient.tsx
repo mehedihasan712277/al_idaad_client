@@ -1,0 +1,453 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { ProductType, ProductVariant, AttarSize } from "@/utils/types";
+import { useCart } from "@/components/shared/CartContext";
+import { buildCartKey } from "@/utils/helper";
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+const StarRating = ({ rating }: { rating: number }) => (
+    <div className="flex items-center gap-0.5">
+        {[1, 2, 3, 4, 5].map((star) => (
+            <svg
+                key={star}
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill={star <= Math.round(rating) ? "currentColor" : "none"}
+                stroke="currentColor"
+                strokeWidth="2"
+                className={star <= Math.round(rating) ? "text-yellow-400" : "text-gray-300"}
+            >
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+        ))}
+        <span className="text-xs text-gray-500 ml-1 font-medium">{rating.toFixed(1)}</span>
+    </div>
+);
+
+// ─── Main Component ───────────────────────────────────────────────────────────
+
+const ProductDetailsClient = ({ product }: { product: ProductType }) => {
+    const { addItem, isInCart, items } = useCart();
+
+    const { name, description, brand, category, price, discountPercentage, inStock, variants, attarSizes, thumbnail, images, ratings } = product;
+
+    const hasVariants = Array.isArray(variants) && variants.length > 0;
+    const hasAttarSizes = Array.isArray(attarSizes) && attarSizes.length > 0;
+
+    // ── Image gallery state ───────────────────────────────────────────────────
+    const allImages = [thumbnail, ...images.filter((img) => img !== thumbnail)];
+    const [activeImage, setActiveImage] = useState(0);
+
+    // ── Selection state ───────────────────────────────────────────────────────
+    const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
+    const [selectedAttar, setSelectedAttar] = useState<AttarSize | null>(null);
+
+    // ── Derived ───────────────────────────────────────────────────────────────
+    const resolvedPrice = (() => {
+        if (hasVariants && selectedVariant?.price != null) return selectedVariant.price;
+        if (hasAttarSizes && selectedAttar) return selectedAttar.price;
+        return price;
+    })();
+
+    const discountedPrice = discountPercentage ? Math.round(resolvedPrice * (1 - discountPercentage / 100)) : null;
+
+    const displayPrice = discountedPrice ?? resolvedPrice;
+
+    const cartKey = buildCartKey(product, selectedVariant ?? undefined, selectedAttar ?? undefined);
+    const alreadyInCart = isInCart(cartKey);
+
+    // How many of this specific selection are in cart
+    const qtyInCart = items.find((i) => i.cartKey === cartKey)?.quantity ?? 0;
+
+    const canAdd = (() => {
+        if (!inStock) return false;
+        if (hasVariants) return selectedVariant !== null;
+        if (hasAttarSizes) return selectedAttar !== null;
+        return true;
+    })();
+
+    const handleAddToCart = () => {
+        if (!canAdd) {
+            if (!inStock) return;
+            toast.error(hasVariants ? "Please select a size first" : "Please select an amount first");
+            return;
+        }
+        addItem({
+            product,
+            selectedVariant: selectedVariant ?? undefined,
+            selectedAttarSize: selectedAttar ?? undefined,
+            resolvedPrice,
+        });
+        toast.success("Added to cart 🛒");
+    };
+
+    return (
+        <div className="max-w-7xl mx-auto px-4">
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-2 text-xs text-gray-400 mb-6">
+                <Link href="/" className="hover:text-text_normal transition">
+                    Home
+                </Link>
+                <span>/</span>
+                <Link href="/all-products" className="hover:text-text_normal transition">
+                    All Products
+                </Link>
+                <span>/</span>
+                <Link href={`/all-products?category=${category._id}`} className="hover:text-text_normal transition">
+                    {category.name}
+                </Link>
+                <span>/</span>
+                <span className="text-text_normal font-medium truncate max-w-50">{name}</span>
+            </nav>
+
+            {/* ── Main grid ── */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 xl:gap-14">
+                {/* ── LEFT: Image Gallery ── */}
+                <div className="flex flex-col-reverse sm:flex-row gap-3">
+                    {/* Thumbnail strip */}
+                    {allImages.length > 1 && (
+                        <div className="flex sm:flex-col gap-2 overflow-x-auto sm:overflow-y-auto sm:max-h-140 pb-1 sm:pb-0 sm:pr-1 custom-scrollbar shrink-0">
+                            {allImages.map((img, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setActiveImage(i)}
+                                    className={`shrink-0 w-16 h-20 rounded-lg overflow-hidden border-2 transition-all duration-150
+                                            ${activeImage === i ? "border-brand" : "border-transparent hover:border-gray-300"}`}
+                                >
+                                    <Image src={img} alt={`${name} view ${i + 1}`} width={64} height={80} className="w-full h-full object-cover" />
+                                </button>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Main image */}
+                    <div className="flex-1 relative">
+                        {/* Badges */}
+                        <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
+                            {!inStock && <span className="bg-gray-800 text-white text-xs font-bold px-3 py-1 rounded-full">Out of Stock</span>}
+                            {Boolean(discountPercentage) && inStock && (
+                                <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">-{discountPercentage}%</span>
+                            )}
+                            <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full">{category.name}</span>
+                        </div>
+
+                        <div className="aspect-2/3 w-full rounded-2xl overflow-hidden bg-gray-100">
+                            <Image src={allImages[activeImage]} alt={name} width={600} height={900} className="w-full h-full object-cover" priority />
+                        </div>
+                    </div>
+                </div>
+
+                {/* ── RIGHT: Product Info ── */}
+                <div className="flex flex-col">
+                    {/* Category + brand */}
+                    <div className="flex items-center gap-2 mb-3">
+                        <span className="text-xs font-semibold text-brand uppercase tracking-widest">{category.name}</span>
+                        {brand && (
+                            <>
+                                <span className="text-gray-300">·</span>
+                                <span className="text-xs text-gray-400 font-medium">{brand}</span>
+                            </>
+                        )}
+                    </div>
+
+                    {/* Name */}
+                    <h1 className="text-2xl md:text-3xl font-bold text-text_normal leading-tight mb-3">{name}</h1>
+
+                    {/* Rating */}
+                    <div className="mb-4">
+                        <StarRating rating={ratings} />
+                    </div>
+
+                    {/* Price */}
+                    <div className="flex items-baseline gap-3 mb-5">
+                        <span className="text-3xl font-bold text-brand">৳ {displayPrice.toLocaleString()}</span>
+                        {discountedPrice && (
+                            <span className="text-lg text-gray-400 line-through font-medium">৳ {resolvedPrice.toLocaleString()}</span>
+                        )}
+                        {(hasVariants && !selectedVariant) || (hasAttarSizes && !selectedAttar) ? (
+                            <span className="text-xs text-gray-400 italic">
+                                {hasVariants ? "Select size for exact price" : "Select amount for exact price"}
+                            </span>
+                        ) : null}
+                    </div>
+
+                    {/* Divider */}
+                    <div className="border-t border-border mb-5" />
+
+                    {/* ── VARIANT SELECTOR (Thobe) ── */}
+                    {hasVariants && (
+                        <div className="mb-6">
+                            <div className="flex items-center justify-between mb-3">
+                                <p className="text-sm font-bold text-text_normal">
+                                    Select Size
+                                    {selectedVariant && (
+                                        <span className="ml-2 text-brand font-semibold">
+                                            — {selectedVariant.size}
+                                            {selectedVariant.color ? ` / ${selectedVariant.color}` : ""}
+                                        </span>
+                                    )}
+                                </p>
+                                {selectedVariant && (
+                                    <button onClick={() => setSelectedVariant(null)} className="text-xs text-gray-400 hover:text-red-400 transition">
+                                        Clear
+                                    </button>
+                                )}
+                            </div>
+                            <div className="space-y-2">
+                                {variants!.map((v, i) => {
+                                    const isSelected = selectedVariant?.size === v.size && selectedVariant?.color === v.color;
+                                    const variantInCart = isInCart(buildCartKey(product, v));
+
+                                    return (
+                                        <button
+                                            key={i}
+                                            onClick={() => setSelectedVariant(isSelected ? null : v)}
+                                            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 text-left transition-all duration-150
+                                                    ${isSelected ? "border-brand bg-brand/5" : "border-gray-100 hover:border-gray-300 bg-gray-50"}`}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                {/* Radio dot */}
+                                                <div
+                                                    className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition
+                                                        ${isSelected ? "border-brand" : "border-gray-300"}`}
+                                                >
+                                                    {isSelected && <div className="w-2 h-2 rounded-full bg-brand" />}
+                                                </div>
+                                                <div>
+                                                    <p
+                                                        className={`text-sm font-semibold leading-tight ${isSelected ? "text-brand" : "text-text_normal"}`}
+                                                    >
+                                                        Size {v.size}
+                                                        {v.color ? ` · ${v.color}` : ""}
+                                                    </p>
+                                                    {(v.chest || v.length) && (
+                                                        <p className="text-xs text-gray-400 mt-0.5">
+                                                            {v.chest ? `Chest ${v.chest}"` : ""}
+                                                            {v.chest && v.length ? " · " : ""}
+                                                            {v.length ? `Length ${v.length}"` : ""}
+                                                        </p>
+                                                    )}
+                                                    {variantInCart && <p className="text-[10px] text-green-600 font-semibold mt-0.5">✓ In cart</p>}
+                                                </div>
+                                            </div>
+                                            <span className={`text-sm font-bold shrink-0 ${isSelected ? "text-brand" : "text-text_normal"}`}>
+                                                {v.price != null ? `৳ ${v.price.toLocaleString()}` : `৳ ${price.toLocaleString()}`}
+                                            </span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ── ATTAR SIZE SELECTOR ── */}
+                    {hasAttarSizes && (
+                        <div className="mb-6">
+                            <div className="flex items-center justify-between mb-3">
+                                <p className="text-sm font-bold text-text_normal">
+                                    Select Amount
+                                    {selectedAttar && <span className="ml-2 text-brand font-semibold">— {selectedAttar.ml} ml</span>}
+                                </p>
+                                {selectedAttar && (
+                                    <button onClick={() => setSelectedAttar(null)} className="text-xs text-gray-400 hover:text-red-400 transition">
+                                        Clear
+                                    </button>
+                                )}
+                            </div>
+                            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                                {attarSizes!.map((a, i) => {
+                                    const isSelected = selectedAttar?.ml === a.ml;
+                                    const attarInCart = isInCart(buildCartKey(product, undefined, a));
+
+                                    return (
+                                        <button
+                                            key={i}
+                                            onClick={() => setSelectedAttar(isSelected ? null : a)}
+                                            className={`relative flex flex-col items-center justify-center py-4 px-2 rounded-xl border-2 transition-all duration-150
+                                                    ${isSelected ? "border-brand bg-brand/5" : "border-gray-100 hover:border-gray-300 bg-gray-50"}`}
+                                        >
+                                            {/* Perfume bottle icon */}
+                                            <svg
+                                                className={`w-5 h-5 mb-1.5 ${isSelected ? "text-brand" : "text-gray-400"}`}
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="1.5"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                            >
+                                                <path d="M9 3h6l1 4H8z" />
+                                                <rect x="6" y="7" width="12" height="14" rx="3" />
+                                                <path d="M12 11v4M10 13h4" />
+                                            </svg>
+                                            <p className={`text-sm font-bold ${isSelected ? "text-brand" : "text-text_normal"}`}>{a.ml} ml</p>
+                                            <p className={`text-xs font-semibold mt-0.5 ${isSelected ? "text-brand" : "text-gray-500"}`}>
+                                                ৳ {a.price.toLocaleString()}
+                                            </p>
+                                            {attarInCart && (
+                                                <span className="absolute top-1 right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                                                    <svg
+                                                        width="8"
+                                                        height="8"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="white"
+                                                        strokeWidth="3"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    >
+                                                        <polyline points="20 6 9 17 4 12" />
+                                                    </svg>
+                                                </span>
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ── Add to Cart ── */}
+                    <div className="flex gap-3 mb-5">
+                        <button
+                            onClick={handleAddToCart}
+                            disabled={!inStock}
+                            className={`flex-1 flex items-center justify-center gap-2.5 py-4 rounded-2xl font-bold text-sm transition-all duration-150
+                                    ${
+                                        !inStock
+                                            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                                            : alreadyInCart
+                                              ? "bg-green-500 hover:bg-green-600 text-white active:scale-95"
+                                              : "bg-brand hover:opacity-90 text-white active:scale-95"
+                                    }`}
+                        >
+                            {!inStock ? (
+                                <>
+                                    <svg
+                                        width="18"
+                                        height="18"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <circle cx="12" cy="12" r="10" />
+                                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                                    </svg>
+                                    Out of Stock
+                                </>
+                            ) : (
+                                <>
+                                    <svg
+                                        width="18"
+                                        height="18"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <circle cx="8" cy="21" r="1" />
+                                        <circle cx="19" cy="21" r="1" />
+                                        <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+                                    </svg>
+                                    {alreadyInCart ? `In Cart (${qtyInCart}) — Add More` : "Add to Cart"}
+                                </>
+                            )}
+                        </button>
+
+                        {/* Go to cart shortcut — only shows when item is in cart */}
+                        {alreadyInCart && (
+                            <Link
+                                href="/checkout"
+                                className="flex items-center gap-2 px-5 py-4 rounded-2xl border-2 border-brand text-brand font-bold text-sm hover:bg-brand hover:text-white transition-all duration-150 active:scale-95 shrink-0"
+                            >
+                                Checkout
+                                <svg
+                                    width="14"
+                                    height="14"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="m9 18 6-6-6-6" />
+                                </svg>
+                            </Link>
+                        )}
+                    </div>
+
+                    {/* Selection prompt */}
+                    {inStock && !alreadyInCart && ((hasVariants && !selectedVariant) || (hasAttarSizes && !selectedAttar)) && (
+                        <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5 mb-5">
+                            ↑ {hasVariants ? "Select a size above" : "Select an amount above"} to add to cart
+                        </p>
+                    )}
+
+                    {/* ── Product Info ── */}
+                    <div className="border-t border-border pt-5 space-y-4">
+                        <div>
+                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Description</p>
+                            <div dangerouslySetInnerHTML={{ __html: description }} className="text-sm text-gray-600 leading-relaxed ProseMirror" />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                            <div className="bg-gray-50 rounded-xl px-4 py-3">
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Category</p>
+                                <p className="text-sm font-semibold text-text_normal">{category.name}</p>
+                            </div>
+                            {brand && (
+                                <div className="bg-gray-50 rounded-xl px-4 py-3">
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Brand</p>
+                                    <p className="text-sm font-semibold text-text_normal">{brand}</p>
+                                </div>
+                            )}
+                            <div className="bg-gray-50 rounded-xl px-4 py-3">
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Availability</p>
+                                <p className={`text-sm font-semibold ${inStock ? "text-green-600" : "text-red-500"}`}>
+                                    {inStock ? "In Stock" : "Out of Stock"}
+                                </p>
+                            </div>
+                            <div className="bg-gray-50 rounded-xl px-4 py-3">
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Rating</p>
+                                <p className="text-sm font-semibold text-text_normal">{ratings.toFixed(1)} / 5.0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ── Delivery note ── */}
+                    <div className="mt-5 flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3">
+                        <svg
+                            className="w-5 h-5 text-green-600 shrink-0"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                        </svg>
+                        <div>
+                            <p className="text-xs font-bold text-green-800">Cash on Delivery available</p>
+                            <p className="text-xs text-green-700">৳60 inside Dhaka · ৳120 outside Dhaka</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default ProductDetailsClient;

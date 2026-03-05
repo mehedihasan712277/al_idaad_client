@@ -106,7 +106,7 @@ export const getProducts = async (): Promise<ProductType[]> => {
 
     return result.data;
 };
-// get product blog
+// get single product
 export const getSingleProduct = async (id: string): Promise<ProductType> => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products/${id}`, {
         next: { revalidate: 300 },

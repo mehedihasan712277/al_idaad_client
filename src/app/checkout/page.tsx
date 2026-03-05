@@ -200,7 +200,7 @@ const CheckoutPage = () => {
                 paymentMethod: "cash_on_delivery",
             };
 
-            console.log("📦 Order payload:", JSON.stringify(orderPayload, null, 2));
+            // console.log("📦 Order payload:", JSON.stringify(orderPayload, null, 2));
 
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
                 method: "POST",
@@ -210,7 +210,7 @@ const CheckoutPage = () => {
 
             // ✅ Always read the body — even on error — so we know exactly what failed
             const data = await res.json();
-            console.log("🔁 Server response:", data);
+            // console.log("🔁 Server response:", data);
 
             if (!res.ok) {
                 // Show the server's own error message if it sent one
@@ -228,8 +228,8 @@ const CheckoutPage = () => {
             const newOrderId = data?.data?._id ?? data?._id ?? `ORD-${Date.now()}`;
             clearCart();
             setOrderId(newOrderId);
-        } catch (error) {
-            console.error("💥 Unexpected error:", error);
+        } catch {
+            // console.error("💥 Unexpected error:", error);
             toast.error("Something went wrong. Please check your connection and try again.");
         } finally {
             setLoading(false);
