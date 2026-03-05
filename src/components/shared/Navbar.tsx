@@ -182,11 +182,11 @@ const Navbar = () => {
                     <div className="hidden lg:flex w-full items-center justify-between">
                         <h1 className={`text-3xl font-bold font-proza-libre select-none ${animate ? "text-white" : "text-text_normal"}`}>Al Idaad</h1>
                         <div className="flex gap-4 items-center">
-                            {links.map(({ href, label }, i) => {
+                            {links.map(({ href, label }) => {
                                 const isActive = pathname === href;
                                 return (
                                     <Link
-                                        key={i}
+                                        key={href}
                                         href={href}
                                         className={`relative py-1.5 pb-1 transition-colors duration-200 group font-bold text-sm
                                             ${animate ? (isActive ? "text-yellow-400" : "text-white hover:text-gray-300") : isActive ? "text-brand" : "text-text_normal"}`}
@@ -288,11 +288,11 @@ const Navbar = () => {
                     </button>
                 </div>
                 <nav className="flex flex-col px-4 py-4 gap-1">
-                    {links.map(({ href, label }, i) => {
+                    {links.map(({ href, label }) => {
                         const isActive = pathname === href;
                         return (
                             <Link
-                                key={i}
+                                key={href}
                                 href={href}
                                 onClick={() => setIsMenuOpen(false)}
                                 className={`relative px-3 py-3 rounded-lg font-bold transition-colors duration-200 group overflow-hidden ${isActive ? "text-brand bg-blue-50" : "text-text_normal hover:bg-gray-50"}`}
