@@ -4,7 +4,6 @@ import { useCart } from "@/components/shared/CartContext";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-
 import toast from "react-hot-toast";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -34,27 +33,22 @@ const INITIAL_FORM: FormData = {
 const OrderSuccess = ({ orderId }: { orderId: string }) => (
     <div className="min-h-screen bg-bg_main flex items-center justify-center px-4">
         <div className="text-center max-w-md w-full">
-            {/* Animated checkmark */}
-            <div className="relative w-24 h-24 mx-auto mb-6">
-                <div className="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center animate-[scale-in_0.4s_ease-out]">
-                    <svg
-                        className="w-12 h-12 text-green-500"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                    >
-                        <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                </div>
+            <div className="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
+                <svg
+                    className="w-12 h-12 text-green-500"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                >
+                    <polyline points="20 6 9 17 4 12" />
+                </svg>
             </div>
-
             <h1 className="text-2xl font-bold text-text_normal mb-2">Order Placed!</h1>
             <p className="text-gray-500 text-sm mb-1">Your order ID is</p>
             <p className="font-mono font-bold text-brand text-lg mb-4">{orderId}</p>
-
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 text-left">
                 <div className="flex gap-3">
                     <svg
@@ -79,7 +73,6 @@ const OrderSuccess = ({ orderId }: { orderId: string }) => (
                     </div>
                 </div>
             </div>
-
             <div className="flex flex-col sm:flex-row gap-3">
                 <Link
                     href="/all-products"
@@ -98,7 +91,7 @@ const OrderSuccess = ({ orderId }: { orderId: string }) => (
     </div>
 );
 
-// ─── Main Checkout Page ───────────────────────────────────────────────────────
+// ─── Checkout Page ────────────────────────────────────────────────────────────
 
 const CheckoutPage = () => {
     const { items, totalPrice, totalQty, clearCart } = useCart();
@@ -107,7 +100,6 @@ const CheckoutPage = () => {
     const [loading, setLoading] = useState(false);
     const [orderId, setOrderId] = useState<string | null>(null);
 
-    // ── Redirect if cart is empty ─────────────────────────────────────────────
     if (items.length === 0 && !orderId) {
         return (
             <div className="min-h-screen bg-bg_main flex items-center justify-center px-4">
@@ -140,11 +132,9 @@ const CheckoutPage = () => {
 
     if (orderId) return <OrderSuccess orderId={orderId} />;
 
-    // ── Delivery charge logic ─────────────────────────────────────────────────
     const deliveryCharge = form.city.toLowerCase().includes("dhaka") ? 60 : 120;
     const grandTotal = totalPrice + deliveryCharge;
 
-    // ── Validation ────────────────────────────────────────────────────────────
     const validate = (): boolean => {
         const newErrors: Partial<FormData> = {};
         if (!form.fullName.trim()) newErrors.fullName = "Full name is required";
@@ -157,7 +147,7 @@ const CheckoutPage = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
         if (errors[name as keyof FormData]) {
@@ -165,7 +155,6 @@ const CheckoutPage = () => {
         }
     };
 
-    // ── Submit ────────────────────────────────────────────────────────────────
     const handleSubmit = async () => {
         if (!validate()) {
             toast.error("Please fill in all required fields");
@@ -174,47 +163,82 @@ const CheckoutPage = () => {
 
         setLoading(true);
         try {
-            const orderPayload = {
-                customer: form,
-                items: items.map((item) => ({
+            // ── Build order items — include variant/attar details if present ──
+            const orderItems = items.map((item) => {
+                const base = {
                     productId: item._id,
                     name: item.name,
                     quantity: item.quantity,
                     price: item.price,
                     thumbnail: item.thumbnail,
-                })),
+                };
+                // Attach variant info if this line item has one
+                if (item.selectedVariant) {
+                    return { ...base, variant: item.selectedVariant };
+                }
+                if (item.selectedAttarSize) {
+                    return { ...base, attarSize: item.selectedAttarSize };
+                }
+                return base;
+            });
+
+            const orderPayload = {
+                // Delivery details — flat fields (most APIs expect this, not nested)
+                fullName: form.fullName,
+                phone: form.phone,
+                altPhone: form.altPhone || undefined,
+                address: form.address,
+                city: form.city,
+                district: form.district,
+                note: form.note || undefined,
+
+                // Order details
+                items: orderItems,
                 subtotal: totalPrice,
                 deliveryCharge,
                 grandTotal,
                 paymentMethod: "cash_on_delivery",
             };
-            console.log(orderPayload);
+
+            console.log("📦 Order payload:", JSON.stringify(orderPayload, null, 2));
+
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(orderPayload),
             });
 
-            if (!res.ok) throw new Error("Order failed");
-
+            // ✅ Always read the body — even on error — so we know exactly what failed
             const data = await res.json();
-            // Expect your API to return { success: true, data: { _id: "..." } }
-            const newOrderId = data?.data?._id ?? `ORD-${Date.now()}`;
+            console.log("🔁 Server response:", data);
 
+            if (!res.ok) {
+                // Show the server's own error message if it sent one
+                const serverMessage =
+                    data?.message ||
+                    data?.error ||
+                    (Array.isArray(data?.errors)
+                        ? data.errors.map((e: { msg?: string; message?: string }) => e.msg ?? e.message).join(", ")
+                        : null) ||
+                    "Order failed. Please try again.";
+                toast.error(serverMessage);
+                return;
+            }
+
+            const newOrderId = data?.data?._id ?? data?._id ?? `ORD-${Date.now()}`;
             clearCart();
             setOrderId(newOrderId);
-        } catch {
-            toast.error("Something went wrong. Please try again.");
+        } catch (error) {
+            console.error("💥 Unexpected error:", error);
+            toast.error("Something went wrong. Please check your connection and try again.");
         } finally {
             setLoading(false);
         }
     };
 
-    // ── Render ────────────────────────────────────────────────────────────────
     return (
         <main className="min-h-screen bg-bg_main pt-24 md:pt-32 pb-16 px-4">
             <div className="max-w-6xl mx-auto">
-                {/* Header */}
                 <div className="mb-8">
                     <Link
                         href="/all-products"
@@ -241,17 +265,14 @@ const CheckoutPage = () => {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
-                    {/* ── LEFT: Form ────────────────────────────────────────── */}
+                    {/* ── LEFT ── */}
                     <div className="space-y-5">
-                        {/* Delivery Info */}
                         <section className="bg-white rounded-2xl border border-border p-6">
                             <h2 className="font-bold text-text_normal mb-5 flex items-center gap-2">
                                 <span className="w-6 h-6 bg-brand text-white rounded-full text-xs flex items-center justify-center font-bold">1</span>
                                 Delivery Information
                             </h2>
-
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {/* Full Name */}
                                 <div className="sm:col-span-2">
                                     <label className="block text-xs font-semibold text-gray-600 mb-1.5">
                                         Full Name <span className="text-red-500">*</span>
@@ -262,14 +283,10 @@ const CheckoutPage = () => {
                                         value={form.fullName}
                                         onChange={handleChange}
                                         placeholder="e.g. Abdullah Al Mamun"
-                                        className={`w-full px-4 py-2.5 rounded-xl border text-sm text-text_normal placeholder:text-gray-400 outline-none transition
-                                            focus:border-brand focus:ring-2 focus:ring-brand/20
-                                            ${errors.fullName ? "border-red-400 bg-red-50" : "border-border bg-gray-50"}`}
+                                        className={`w-full px-4 py-2.5 rounded-xl border text-sm text-text_normal placeholder:text-gray-400 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 ${errors.fullName ? "border-red-400 bg-red-50" : "border-border bg-gray-50"}`}
                                     />
                                     {errors.fullName && <p className="text-xs text-red-500 mt-1">{errors.fullName}</p>}
                                 </div>
-
-                                {/* Phone */}
                                 <div>
                                     <label className="block text-xs font-semibold text-gray-600 mb-1.5">
                                         Phone Number <span className="text-red-500">*</span>
@@ -280,14 +297,10 @@ const CheckoutPage = () => {
                                         value={form.phone}
                                         onChange={handleChange}
                                         placeholder="01XXXXXXXXX"
-                                        className={`w-full px-4 py-2.5 rounded-xl border text-sm text-text_normal placeholder:text-gray-400 outline-none transition
-                                            focus:border-brand focus:ring-2 focus:ring-brand/20
-                                            ${errors.phone ? "border-red-400 bg-red-50" : "border-border bg-gray-50"}`}
+                                        className={`w-full px-4 py-2.5 rounded-xl border text-sm text-text_normal placeholder:text-gray-400 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 ${errors.phone ? "border-red-400 bg-red-50" : "border-border bg-gray-50"}`}
                                     />
                                     {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
                                 </div>
-
-                                {/* Alt Phone */}
                                 <div>
                                     <label className="block text-xs font-semibold text-gray-600 mb-1.5">
                                         Alternative Phone <span className="text-gray-400 font-normal">(optional)</span>
@@ -301,8 +314,6 @@ const CheckoutPage = () => {
                                         className="w-full px-4 py-2.5 rounded-xl border border-border bg-gray-50 text-sm text-text_normal placeholder:text-gray-400 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20"
                                     />
                                 </div>
-
-                                {/* Address */}
                                 <div className="sm:col-span-2">
                                     <label className="block text-xs font-semibold text-gray-600 mb-1.5">
                                         Full Address <span className="text-red-500">*</span>
@@ -313,14 +324,10 @@ const CheckoutPage = () => {
                                         value={form.address}
                                         onChange={handleChange}
                                         placeholder="House no, road, area"
-                                        className={`w-full px-4 py-2.5 rounded-xl border text-sm text-text_normal placeholder:text-gray-400 outline-none transition
-                                            focus:border-brand focus:ring-2 focus:ring-brand/20
-                                            ${errors.address ? "border-red-400 bg-red-50" : "border-border bg-gray-50"}`}
+                                        className={`w-full px-4 py-2.5 rounded-xl border text-sm text-text_normal placeholder:text-gray-400 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 ${errors.address ? "border-red-400 bg-red-50" : "border-border bg-gray-50"}`}
                                     />
                                     {errors.address && <p className="text-xs text-red-500 mt-1">{errors.address}</p>}
                                 </div>
-
-                                {/* City */}
                                 <div>
                                     <label className="block text-xs font-semibold text-gray-600 mb-1.5">
                                         City / Thana <span className="text-red-500">*</span>
@@ -331,14 +338,10 @@ const CheckoutPage = () => {
                                         value={form.city}
                                         onChange={handleChange}
                                         placeholder="e.g. Dhaka, Mirpur"
-                                        className={`w-full px-4 py-2.5 rounded-xl border text-sm text-text_normal placeholder:text-gray-400 outline-none transition
-                                            focus:border-brand focus:ring-2 focus:ring-brand/20
-                                            ${errors.city ? "border-red-400 bg-red-50" : "border-border bg-gray-50"}`}
+                                        className={`w-full px-4 py-2.5 rounded-xl border text-sm text-text_normal placeholder:text-gray-400 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 ${errors.city ? "border-red-400 bg-red-50" : "border-border bg-gray-50"}`}
                                     />
                                     {errors.city && <p className="text-xs text-red-500 mt-1">{errors.city}</p>}
                                 </div>
-
-                                {/* District */}
                                 <div>
                                     <label className="block text-xs font-semibold text-gray-600 mb-1.5">
                                         District <span className="text-red-500">*</span>
@@ -349,14 +352,10 @@ const CheckoutPage = () => {
                                         value={form.district}
                                         onChange={handleChange}
                                         placeholder="e.g. Dhaka, Chattogram"
-                                        className={`w-full px-4 py-2.5 rounded-xl border text-sm text-text_normal placeholder:text-gray-400 outline-none transition
-                                            focus:border-brand focus:ring-2 focus:ring-brand/20
-                                            ${errors.district ? "border-red-400 bg-red-50" : "border-border bg-gray-50"}`}
+                                        className={`w-full px-4 py-2.5 rounded-xl border text-sm text-text_normal placeholder:text-gray-400 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 ${errors.district ? "border-red-400 bg-red-50" : "border-border bg-gray-50"}`}
                                     />
                                     {errors.district && <p className="text-xs text-red-500 mt-1">{errors.district}</p>}
                                 </div>
-
-                                {/* Note */}
                                 <div className="sm:col-span-2">
                                     <label className="block text-xs font-semibold text-gray-600 mb-1.5">
                                         Order Note <span className="text-gray-400 font-normal">(optional)</span>
@@ -373,7 +372,6 @@ const CheckoutPage = () => {
                             </div>
                         </section>
 
-                        {/* Payment Method */}
                         <section className="bg-white rounded-2xl border border-border p-6">
                             <h2 className="font-bold text-text_normal mb-4 flex items-center gap-2">
                                 <span className="w-6 h-6 bg-brand text-white rounded-full text-xs flex items-center justify-center font-bold">2</span>
@@ -397,47 +395,58 @@ const CheckoutPage = () => {
                                     strokeLinejoin="round"
                                 >
                                     <rect x="2" y="6" width="20" height="12" rx="2" />
-                                    <path d="M22 10H2" />
-                                    <path d="M7 15h.01M11 15h2" />
+                                    <path d="M22 10H2M7 15h.01M11 15h2" />
                                 </svg>
                             </div>
                         </section>
                     </div>
 
-                    {/* ── RIGHT: Order Summary ───────────────────────────────── */}
-                    <div className="space-y-4">
+                    {/* ── RIGHT ── */}
+                    <div>
                         <section className="bg-white rounded-2xl border border-border p-5 sticky top-32">
                             <h2 className="font-bold text-text_normal mb-4 flex items-center gap-2">
                                 <span className="w-6 h-6 bg-brand text-white rounded-full text-xs flex items-center justify-center font-bold">3</span>
                                 Order Summary
                             </h2>
 
-                            {/* Items */}
                             <div className="space-y-3 mb-4 max-h-64 overflow-y-auto custom-scrollbar pr-1">
-                                {items.map((item) => (
-                                    <div key={item._id} className="flex gap-3">
-                                        <div className="relative w-14 h-18 shrink-0">
-                                            <Image
-                                                src={item.thumbnail}
-                                                alt={item.name}
-                                                width={56}
-                                                height={72}
-                                                className="w-14 h-18 object-cover rounded-lg"
-                                            />
-                                            <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-brand text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                                                {item.quantity}
-                                            </span>
+                                {items.map((item) => {
+                                    // Show variant/attar label if present
+                                    const subtitle = item.selectedVariant
+                                        ? [item.selectedVariant.size, item.selectedVariant.color].filter(Boolean).join(" · ")
+                                        : item.selectedAttarSize
+                                          ? `${item.selectedAttarSize.ml} ml`
+                                          : null;
+
+                                    return (
+                                        <div key={item.cartKey} className="flex gap-3">
+                                            <div className="relative w-14 shrink-0">
+                                                <Image
+                                                    src={item.thumbnail}
+                                                    alt={item.name}
+                                                    width={56}
+                                                    height={72}
+                                                    className="w-14 h-18 object-cover rounded-lg"
+                                                />
+                                                <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-brand text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                                                    {item.quantity}
+                                                </span>
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-sm font-semibold text-text_normal leading-tight truncate">{item.name}</p>
+                                                <p className="text-xs text-gray-400 mt-0.5">{item.category.name}</p>
+                                                {subtitle && (
+                                                    <span className="inline-block mt-0.5 text-[10px] font-semibold bg-brand/10 text-brand px-2 py-0.5 rounded-full">
+                                                        {subtitle}
+                                                    </span>
+                                                )}
+                                                <p className="text-sm font-bold text-brand mt-1">৳ {(item.price * item.quantity).toLocaleString()}</p>
+                                            </div>
                                         </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-semibold text-text_normal leading-tight truncate">{item.name}</p>
-                                            <p className="text-xs text-gray-400 mt-0.5">{item.category.name}</p>
-                                            <p className="text-sm font-bold text-brand mt-1">৳ {(item.price * item.quantity).toLocaleString()}</p>
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
 
-                            {/* Divider */}
                             <div className="border-t border-border pt-4 space-y-2.5">
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-500">Subtotal</span>
@@ -460,7 +469,6 @@ const CheckoutPage = () => {
                                 </div>
                             </div>
 
-                            {/* Place Order Button */}
                             <button
                                 onClick={handleSubmit}
                                 disabled={loading}
