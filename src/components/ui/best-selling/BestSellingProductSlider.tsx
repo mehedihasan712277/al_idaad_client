@@ -8,7 +8,7 @@ import { useRef, useState } from "react";
 import type { Swiper as SwiperType } from "swiper";
 import { ProductType } from "@/utils/types";
 import Link from "next/link";
-import ButtonContainer from "../our-product/ButtonContainer";
+// import ButtonContainer from "../our-product/ButtonContainer";
 
 const BestSoldProductSlider = ({ product }: { product: ProductType[] }) => {
     const swiperRef = useRef<SwiperType | null>(null);
@@ -53,12 +53,13 @@ const BestSoldProductSlider = ({ product }: { product: ProductType[] }) => {
                             <Link href={`/all-products/details/${ele._id}`}>
                                 <p className="font-semibold text-sm line-clamp-1 hover:text-blue-400 transition duration-150">{ele.name}</p>
                             </Link>
-                            <div className="flex items-center justify-between mt-1">
+                            {/* <div className="flex items-center justify-between mt-1">
                                 <span className=" text-text_normal text-xl">{ele.price} BDT</span>
                                 <div className="pt-1">
                                     <ButtonContainer product={ele} />
                                 </div>
-                            </div>
+                            </div> */}
+                            <span className=" text-text_normal text-xl mt-1">{ele.price} BDT</span>
                         </div>
                     </SwiperSlide>
                 ))}
