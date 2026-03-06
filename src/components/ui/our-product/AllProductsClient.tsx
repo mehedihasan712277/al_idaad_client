@@ -261,7 +261,7 @@ const AllProductsClient = ({ products, categories }: AllProductsClientProps) => 
     return (
         <div className="relative flex min-h-screen">
             {/* ── Desktop Sidebar ───────────────────────────────────── */}
-            <aside className="hidden lg:flex flex-col lg:w-[calc(25vw-24px)] xl:w-75 shrink-0 sticky top-22 self-start h-[calc(100vh-88px)] bg-bg_main border-r border-border">
+            <aside className="hidden lg:flex flex-col lg:w-[calc(25vw-24px)] xl:w-75 shrink-0 sticky top-18 md:top-25 self-start h-[calc(100vh-100px)] md:h-[calc(100vh-100px)] bg-bg_main border-r border-border">
                 <SidebarContent
                     categories={categories}
                     selectedId={selectedId}
@@ -318,7 +318,7 @@ const AllProductsClient = ({ products, categories }: AllProductsClientProps) => 
             </div>
 
             {/* ── Products Area ─────────────────────────────────────── */}
-            <main className="flex-1 lg:pl-4 py-6 min-w-0">
+            <main className="flex-1 pt-4 lg:pl-4 min-w-0">
                 <div className="flex items-center justify-between mb-5 gap-4 flex-wrap">
                     <div className="flex items-center gap-2">
                         <p className="text-sm text-text_normal">
