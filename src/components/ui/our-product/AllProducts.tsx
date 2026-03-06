@@ -1,19 +1,11 @@
-import { getProducts } from "@/utils/fetchData";
-import ProductCard from "./ProductCard";
+import { getCategories, getProducts } from "@/utils/fetchData";
+import AllProductsClient from "./AllProductsClient";
 
 const AllProducts = async () => {
     const productData = await getProducts();
-    return (
-        <div>
-            <div className="flex flex-wrap gap-4">
-                {productData.map((e) => (
-                    <div key={e._id}>
-                        <ProductCard data={e}></ProductCard>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
+    const productCategories = await getCategories();
+
+    return <AllProductsClient products={productData} categories={productCategories} />;
 };
 
 export default AllProducts;
