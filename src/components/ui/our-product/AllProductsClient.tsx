@@ -318,8 +318,8 @@ const AllProductsClient = ({ products, categories }: AllProductsClientProps) => 
             </div>
 
             {/* ── Products Area ─────────────────────────────────────── */}
-            <main className="flex-1 pt-4 lg:pl-4 min-w-0">
-                <div className="flex items-center justify-between mb-5 gap-4 flex-wrap">
+            <main className="flex-1 lg:pl-4 min-w-0">
+                <div className="sticky top-18 md:top-25 z-1  py-4 bg-bg_main flex items-center justify-between gap-4 flex-wrap">
                     <div className="flex items-center gap-2">
                         <p className="text-sm text-text_normal">
                             <span className="font-bold text-text_dark">{sortedProducts.length}</span> products
