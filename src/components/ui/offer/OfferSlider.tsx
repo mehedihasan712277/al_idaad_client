@@ -42,14 +42,14 @@ const OfferSlider = () => {
                 ].map((speaker, index) => (
                     <SwiperSlide key={index}>
                         {/* Image */}
-                        <div className="flex justify-center relative w-full aspect-5/2">
+                        <div className="flex justify-center relative w-full aspect-5/3 lg:aspect-5/2">
                             <Link href={`/all-products`}>
                                 <Image
                                     src={speaker.img}
                                     alt="al idaad offer product"
                                     width={1920}
                                     height={1068}
-                                    className="absolute left-0 right-0 w-full aspect-5/2 rounded"
+                                    className="absolute left-0 right-0 w-full aspect-5/3 lg:aspect-5/2 rounded"
                                 />
                             </Link>
                         </div>

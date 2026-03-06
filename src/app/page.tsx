@@ -13,7 +13,7 @@ const Homepage = () => {
             <div className="relative">
                 <Banner></Banner>
             </div>
-            <div className="space-y-20 py-20 px-4 max-w-7xl mx-auto">
+            <div className="space-y-12 lg:space-y-20 py-20 px-4 max-w-7xl mx-auto">
                 <FeaturedProduct></FeaturedProduct>
                 <Offer></Offer>
                 <BestSoldProduct></BestSoldProduct>
