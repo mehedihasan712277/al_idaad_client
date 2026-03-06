@@ -53,18 +53,13 @@ const FeatureProductSlider = ({ product }: { product: ProductType[] }) => {
                             <Link href={`/all-products/details/${ele._id}`}>
                                 <p className="font-semibold text-sm line-clamp-1 hover:text-blue-400 transition duration-150">{ele.name}</p>
                             </Link>
-                            <div className="px-1 mt-2">
-                                <Link href={`/all-products/details/${ele._id}`}>
-                                    <p className="font-semibold text-sm line-clamp-1 hover:text-blue-400 transition duration-150">{ele.name}</p>
-                                </Link>
-                                {/* <div className="flex items-center justify-between mt-1">
+                            {/* <div className="flex items-center justify-between mt-1">
                                 <span className=" text-text_normal text-xl">{ele.price} BDT</span>
                                 <div className="pt-1">
                                     <ButtonContainer product={ele} />
                                 </div>
                             </div> */}
-                                <span className=" text-text_normal text-xl mt-1">{ele.price} BDT</span>
-                            </div>
+                            <span className=" text-text_normal text-xl mt-1">{ele.price} BDT</span>
                         </div>
                     </SwiperSlide>
                 ))}
