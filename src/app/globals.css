@@ -216,8 +216,8 @@ button {
 .heading {
     font-family: "Poppins", sans-serif; /* font-poppins */
     font-size: 1.5rem; /* text-2xl = 24px */
-    font-weight: 600; /* font-semibold */
-    margin-bottom: 10px;
+    /* font-weight: 600; font-semibold */
+    margin-bottom: 16px;
 }
 
 @media (min-width: 640px) {
