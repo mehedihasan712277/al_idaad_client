@@ -9,7 +9,7 @@ const Banner = async () => {
     if (!banners || banners.length === 0) return null;
 
     return (
-        <div className="relative w-full aspect-3/2 lg:aspect-3/1">
+        <div className="relative w-full h-70 sm:h-90 md:h-110 lg:h-130 xl:h-auto aspect-50/19">
             {/* Server-rendered static hero image */}
             <div className="absolute inset-0 z-10">
                 <Image
@@ -18,7 +18,7 @@ const Banner = async () => {
                     fill
                     priority
                     sizes="100vw"
-                    className="w-full aspect-3/2 lg:aspect-3/1 object-center"
+                    className="w-full h-70 sm:h-90 md:h-110 lg:h-130 xl:h-auto aspect-50/19 object-center object-cover"
                 />
             </div>
 
