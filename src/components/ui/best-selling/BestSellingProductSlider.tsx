@@ -6,8 +6,11 @@ import { Navigation } from "swiper/modules";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import type { Swiper as SwiperType } from "swiper";
+import { ProductType } from "@/utils/types";
+import Link from "next/link";
+import ButtonContainer from "../our-product/ButtonContainer";
 
-const BestSoldProductSlider = () => {
+const BestSoldProductSlider = ({ product }: { product: ProductType[] }) => {
     const swiperRef = useRef<SwiperType | null>(null);
     const [isBeginning, setIsBeginning] = useState(true);
     const [isEnd, setIsEnd] = useState(false);
@@ -41,19 +44,21 @@ const BestSoldProductSlider = () => {
                 onReachEnd={() => setIsEnd(true)}
                 className="mySwiper"
             >
-                {[
-                    { img: "https://i.postimg.cc/90crChFW/product-4.webp" },
-                    { img: "https://i.postimg.cc/s2ff0cxd/product-2.jpg" },
-                    { img: "https://i.postimg.cc/Vsqfj4q9/mt-3.webp" },
-                    { img: "https://i.postimg.cc/50B6h0Jn/product-6.jpg" },
-                    { img: "https://i.postimg.cc/SQ6SWV68/mt-1.webp" },
-                    { img: "https://i.postimg.cc/zDCznpCC/mt-2.webp" },
-                    { img: "https://i.postimg.cc/Vsqfj4q9/mt-3.webp" },
-                    { img: "https://i.postimg.cc/3wrrbBRg/product-3.webp" },
-                ].map((speaker, index) => (
-                    <SwiperSlide key={index} className="w-62.5!">
-                        <div className="flex justify-center rounded-lg overflow-hidden">
-                            <Image src={speaker.img} alt="al idaad BestSoldProductSlider" width={1920} height={1068} className="w-62.5 h-93.75" />
+                {product.map((ele) => (
+                    <SwiperSlide key={ele._id} className="w-50! md:w-62.5! relative">
+                        <Link href={`/all-products/details/${ele._id}`}>
+                            <Image src={ele.thumbnail} alt={ele.name} width={300} height={450} className="w-50 md:w-62.5 aspect-2/3 rounded" />
+                        </Link>
+                        <div className="px-1 mt-2">
+                            <Link href={`/all-products/details/${ele._id}`}>
+                                <p className="font-semibold text-sm line-clamp-1 hover:text-blue-400 transition duration-150">{ele.name}</p>
+                            </Link>
+                            <div className="flex items-center justify-between mt-1">
+                                <span className=" text-text_normal text-xl">{ele.price} BDT</span>
+                                <div className="pt-1">
+                                    <ButtonContainer product={ele} />
+                                </div>
+                            </div>
                         </div>
                     </SwiperSlide>
                 ))}

@@ -44,7 +44,7 @@ const BannerSlider = ({ data }: { data: BannerType[] }) => {
                                 width={1920}
                                 height={640}
                                 // className="w-screen h-50 banner sm:h-75! md:h-90! lg:h-120! xl:h-150!"
-                                className="w-screen aspect-3/2 lg:aspect-3/1"
+                                className="w-screen aspect-3/2 lg:aspect-3/1 object-center"
                             />
                         </div>
                     </SwiperSlide>
