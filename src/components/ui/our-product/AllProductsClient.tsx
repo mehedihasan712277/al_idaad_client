@@ -34,20 +34,13 @@ const findNode = (cats: AnyCategory[], id: string): AnyCategory | undefined => {
 };
 
 // ─── AnimatedCollapse ─────────────────────────────────────────────────────────
-// Uses max-height CSS transition — no useEffect, no JS measurement.
-// React's "derived state during render" pattern handles mount/unmount:
-// setting state during render (not in an effect) is explicitly supported
-// for adjusting state based on prop changes.
 
 const AnimatedCollapse = ({ open, children }: { open: boolean; children: React.ReactNode }) => {
     const [mounted, setMounted] = useState(open);
 
-    // Derived state during render — mounts immediately when open becomes true.
-    // React re-renders synchronously with the updated state; no effect needed.
     if (open && !mounted) setMounted(true);
 
     const handleTransitionEnd = () => {
-        // Unmount only after the closing transition fully completes
         if (!open) setMounted(false);
     };
 
@@ -56,7 +49,6 @@ const AnimatedCollapse = ({ open, children }: { open: boolean; children: React.R
     return (
         <div
             style={{
-                // Large-enough ceiling; actual content is far shorter in any tree
                 maxHeight: open ? "600px" : "0px",
                 overflow: "hidden",
                 transition: "max-height 260ms cubic-bezier(0.4, 0, 0.2, 1)",
@@ -81,56 +73,71 @@ const CategoryNode = ({ node, depth, selectedId, onSelect }: CategoryNodeProps) 
     const [expanded, setExpanded] = useState(false);
     const hasChildren = node.subCategories.length > 0;
     const isSelected = selectedId === node._id;
+    const isRoot = depth === 0;
 
     return (
-        <li>
-            <div className="flex items-center gap-1" style={{ paddingLeft: `${depth * 14}px` }}>
-                {/* Chevron */}
-                <button
-                    onClick={() => hasChildren && setExpanded((p) => !p)}
-                    aria-label={expanded ? "Collapse" : "Expand"}
-                    className={`w-5 h-5 flex items-center justify-center rounded shrink-0 transition-colors
-                        ${hasChildren ? "text-text_normal hover:text-brand cursor-pointer" : "invisible pointer-events-none"}`}
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="11"
-                        height="11"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        style={{
-                            transform: expanded ? "rotate(90deg)" : "rotate(0deg)",
-                            transition: "transform 260ms cubic-bezier(0.4, 0, 0.2, 1)",
-                        }}
+        <div className="mb-1">
+            <div className="flex items-center gap-2">
+                {/* Indicator — clicking it toggles expand when has children */}
+                {hasChildren ? (
+                    <button
+                        onClick={() => setExpanded((p) => !p)}
+                        aria-label={expanded ? "Collapse" : "Expand"}
+                        className={`shrink-0 w-4 h-4 rounded-sm flex items-center justify-center transition-colors cursor-pointer
+                            ${isSelected ? "bg-brand" : isRoot ? "bg-text_dark/20 hover:bg-text_dark/30" : "bg-border hover:bg-text_light/50"}`}
                     >
-                        <polyline points="9 18 15 12 9 6" />
-                    </svg>
-                </button>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="8"
+                            height="8"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke={isSelected ? "white" : "#415e72"}
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            style={{
+                                transform: expanded ? "rotate(90deg)" : "rotate(0deg)",
+                                transition: "transform 260ms cubic-bezier(0.4, 0, 0.2, 1)",
+                            }}
+                        >
+                            <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                    </button>
+                ) : (
+                    <span
+                        className={`shrink-0 w-4 h-4 rounded-sm border-2 transition-colors
+                            ${isSelected ? "border-brand bg-brand" : "border-border bg-transparent"}`}
+                    />
+                )}
 
                 {/* Label */}
                 <button
                     onClick={() => onSelect(node._id)}
-                    className={`flex-1 text-left py-1.5 px-2 rounded-lg text-sm font-medium transition-all duration-150
-                        ${isSelected ? "bg-brand text-white" : "text-text_normal hover:bg-brand/10 hover:text-brand"}`}
+                    className={`flex-1 text-left py-0.5 transition-colors duration-150
+                        ${
+                            isRoot
+                                ? `font-normal  ${isSelected ? "text-brand" : "text-text_dark hover:text-brand"}`
+                                : hasChildren
+                                  ? `font-normal   ${isSelected ? "text-brand" : "text-text_dark hover:text-brand"}`
+                                  : `font-normal  ${isSelected ? "text-brand" : "text-text_dark hover:text-brand"}`
+                        }`}
                 >
                     {node.name}
                 </button>
             </div>
 
+            {/* Children with tree connector line */}
             {hasChildren && (
                 <AnimatedCollapse open={expanded}>
-                    <ul className="mt-0.5 space-y-0.5 pt-0.5">
+                    <div className="border-l border-border ml-2 pl-4 mt-1 space-y-1">
                         {node.subCategories.map((child) => (
                             <CategoryNode key={child._id} node={child} depth={depth + 1} selectedId={selectedId} onSelect={onSelect} />
                         ))}
-                    </ul>
+                    </div>
                 </AnimatedCollapse>
             )}
-        </li>
+        </div>
     );
 };
 
@@ -153,22 +160,22 @@ const SidebarContent = ({ categories, selectedId, onSelect, filteredCount, total
             </p>
         </div>
 
-        <nav className="flex-1 overflow-y-auto pr-3 py-3 custom-scrollbar">
-            <ul className="space-y-0.5">
-                <li>
-                    <button
-                        onClick={() => onSelect("all")}
-                        className={`w-full text-left py-1.5 px-2 rounded-lg text-sm font-semibold transition-all duration-150 flex items-center gap-2
-                            ${selectedId === "all" ? "bg-brand text-white" : "text-text_normal hover:bg-brand/10 hover:text-brand"}`}
+        <nav className="flex-1 overflow-y-auto pr-3 py-4 custom-scrollbar">
+            {/* All Products */}
+            <div className="mb-3 pb-3 border-b border-border">
+                <div className="flex items-center gap-2">
+                    <span
+                        className={`shrink-0 w-4 h-4 rounded-sm flex items-center justify-center transition-colors
+                        ${selectedId === "all" ? "bg-brand" : "bg-text_dark/20"}`}
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            width="13"
-                            height="13"
+                            width="9"
+                            height="9"
                             viewBox="0 0 24 24"
                             fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
+                            stroke={selectedId === "all" ? "white" : "#415e72"}
+                            strokeWidth="2.5"
                             strokeLinecap="round"
                             strokeLinejoin="round"
                         >
@@ -177,16 +184,23 @@ const SidebarContent = ({ categories, selectedId, onSelect, filteredCount, total
                             <rect x="3" y="14" width="7" height="7" />
                             <rect x="14" y="14" width="7" height="7" />
                         </svg>
+                    </span>
+                    <button
+                        onClick={() => onSelect("all")}
+                        className={`flex-1 text-left font-semibold text-sm transition-colors duration-150
+                            ${selectedId === "all" ? "text-brand" : "text-text_dark hover:text-brand"}`}
+                    >
                         All Products
                     </button>
-                </li>
+                </div>
+            </div>
 
-                <li aria-hidden className="my-2 border-t border-border" />
-
+            {/* Category tree */}
+            <div className="space-y-2">
                 {categories.map((cat) => (
                     <CategoryNode key={cat._id} node={cat} depth={0} selectedId={selectedId} onSelect={onSelect} />
                 ))}
-            </ul>
+            </div>
         </nav>
     </div>
 );
@@ -261,7 +275,7 @@ const AllProductsClient = ({ products, categories }: AllProductsClientProps) => 
     return (
         <div className="relative flex min-h-screen">
             {/* ── Desktop Sidebar ───────────────────────────────────── */}
-            <aside className="hidden lg:flex flex-col lg:w-[calc(25vw-24px)] xl:w-75 shrink-0 sticky top-18 md:top-25 self-start h-[calc(100vh-100px)] md:h-[calc(100vh-100px)] bg-bg_main border-r border-border">
+            <aside className="hidden lg:flex flex-col lg:w-[calc(25vw-24px)] xl:w-75 shrink-0 sticky top-18 md:top-25 self-start h-[calc(100vh-72px)] md:h-[calc(100vh-100px)] bg-bg_main border-r border-border">
                 <SidebarContent
                     categories={categories}
                     selectedId={selectedId}
@@ -280,7 +294,7 @@ const AllProductsClient = ({ products, categories }: AllProductsClientProps) => 
 
             {/* ── Mobile Drawer ─────────────────────────────────────── */}
             <div
-                className={`fixed top-0 left-0 h-full w-72 bg-bg_main z-50 shadow-2xl transform transition-transform duration-300 ease-in-out lg:hidden
+                className={`fixed top-0 left-0 h-full w-72 bg-bg_main z-50 pl-4 transform transition-transform duration-300 ease-in-out lg:hidden
                     ${drawerOpen ? "translate-x-0" : "-translate-x-full"}`}
             >
                 <div className="flex items-center justify-between px-4 py-4 border-b border-border">
@@ -319,7 +333,7 @@ const AllProductsClient = ({ products, categories }: AllProductsClientProps) => 
 
             {/* ── Products Area ─────────────────────────────────────── */}
             <main className="flex-1 lg:pl-4 min-w-0">
-                <div className="sticky top-18 md:top-25 z-1  py-4 bg-bg_main flex items-center justify-between gap-4 flex-wrap">
+                <div className="sticky top-18 md:top-25 z-1 py-4 bg-bg_main flex items-center justify-between gap-4 flex-wrap">
                     <div className="flex items-center gap-2">
                         <p className="text-sm text-text_normal">
                             <span className="font-bold text-text_dark">{sortedProducts.length}</span> products
