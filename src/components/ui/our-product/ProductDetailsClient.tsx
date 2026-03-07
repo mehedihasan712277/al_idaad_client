@@ -104,7 +104,7 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
     };
 
     return (
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-7xl mx-auto">
             {/* Breadcrumb */}
             <nav className="flex items-center gap-2 text-xs text-gray-400 mb-6">
                 <Link href="/" className="hover:text-text_normal transition">
@@ -125,7 +125,7 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
             {/* ── Main grid ── */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 xl:gap-14">
                 {/* ── LEFT: Image Gallery ── */}
-                <div className="flex flex-col gap-3">
+                <div className="flex gap-4 justify-between lg:justify-start">
                     {/* Main image */}
                     <div className="relative">
                         {/* Badges */}
@@ -137,14 +137,14 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                             <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full">{category.name}</span>
                         </div>
 
-                        <div className="aspect-2/3 w-full rounded-2xl overflow-hidden bg-gray-100">
-                            <Image src={allImages[activeImage]} alt={name} width={600} height={900} className="w-full h-full object-cover" priority />
+                        <div className="aspect-2/3 lg:h-150 rounded-2xl overflow-hidden bg-gray-100">
+                            <Image src={allImages[activeImage]} alt={name} width={600} height={900} className="w-full aspect-2/3" priority />
                         </div>
                     </div>
 
                     {/* Thumbnail strip — below main image */}
                     {allImages.length > 1 && (
-                        <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
+                        <div className="flex gap-2 flex-col">
                             {allImages.map((img, i) => (
                                 <button
                                     key={i}
@@ -380,8 +380,8 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                             )}
                         </button>
 
-                        {/* Buy Now button */}
-                        {inStock && (
+                        {/* Buy Now button — hidden once item is in cart (Checkout button takes its place) */}
+                        {inStock && !alreadyInCart && (
                             <button
                                 onClick={handleBuyNow}
                                 className="flex items-center gap-2 px-5 py-4 rounded-2xl bg-text_normal text-white font-bold text-sm hover:opacity-90 active:scale-95 transition-all duration-150 shrink-0"
@@ -447,12 +447,6 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                                 <p className="text-sm font-semibold text-text_normal">{ratings.toFixed(1)} / 5.0</p>
                             </div>
                         </div>
-
-                        {/* Description — at the bottom */}
-                        <div className="pt-2">
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Description</p>
-                            <div dangerouslySetInnerHTML={{ __html: description }} className="text-sm text-gray-600 leading-relaxed ProseMirror" />
-                        </div>
                     </div>
 
                     {/* ── Delivery note ── */}
@@ -474,6 +468,11 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                         </div>
                     </div>
                 </div>
+            </div>
+            {/* Description — at the bottom */}
+            <div className="pt-2">
+                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Description</p>
+                <div dangerouslySetInnerHTML={{ __html: description }} className="text-sm text-gray-600 leading-relaxed ProseMirror" />
             </div>
         </div>
     );
