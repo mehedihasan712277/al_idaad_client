@@ -111,9 +111,12 @@ const CategoryNode = ({ node, depth, selectedId, onSelect }: CategoryNodeProps) 
                     />
                 )}
 
-                {/* Label */}
+                {/* Label — selects category AND toggles subcategories if any */}
                 <button
-                    onClick={() => onSelect(node._id)}
+                    onClick={() => {
+                        onSelect(node._id);
+                        if (hasChildren) setExpanded((p) => !p);
+                    }}
                     className={`flex-1 text-left py-0.5 transition-colors duration-150
                         ${
                             isRoot
@@ -267,9 +270,9 @@ const AllProductsClient = ({ products, categories }: AllProductsClientProps) => 
         return 0;
     });
 
+    // Only update the selected filter — drawer stays open on mobile
     const handleSelect = (id: string) => {
         setSelectedId(id);
-        setDrawerOpen(false);
     };
 
     return (
