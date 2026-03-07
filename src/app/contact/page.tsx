@@ -39,7 +39,7 @@ const contactCards: ContactCard[] = [
         sub: "Chittagong, Bangladesh",
         gradient: "from-[#FF6B6B] to-[#FF3CAC]",
         shadow: "shadow-pink-300/40",
-        href: "https://maps.google.com",
+        href: "https://maps.app.goo.gl/r2RjpQCgdSoF3TxPA",
     },
     {
         label: "Email Us",
@@ -52,9 +52,24 @@ const contactCards: ContactCard[] = [
 ];
 
 const socialLinks: SocialLink[] = [
-    { name: "Facebook", handle: "Al Idaad", href: "#", icon: "https://res.cloudinary.com/durvy5ois/image/upload/v1772582111/facebook_dqdr7j.png" },
-    { name: "Instagram", handle: "Al Idaad", href: "#", icon: "https://res.cloudinary.com/durvy5ois/image/upload/v1772582115/instagram_wgifjn.png" },
-    { name: "TikTok", handle: "Al Idaad", href: "#", icon: "https://res.cloudinary.com/durvy5ois/image/upload/v1772582112/tik-tok_ygyaa5.png" },
+    {
+        name: "Facebook",
+        handle: "Al Idaad",
+        href: "https://www.facebook.com/share/187FiqDCFr",
+        icon: "https://res.cloudinary.com/durvy5ois/image/upload/v1772582111/facebook_dqdr7j.png",
+    },
+    {
+        name: "Instagram",
+        handle: "Al Idaad",
+        href: "https://www.instagram.com/al_idaad?igsh=MXA1NmF0Njd2dzN6Nw==",
+        icon: "https://res.cloudinary.com/durvy5ois/image/upload/v1772582115/instagram_wgifjn.png",
+    },
+    {
+        name: "TikTok",
+        handle: "Al Idaad",
+        href: "https://www.tiktok.com/@al_idaad?_r=1&_t=ZS-94JLSULG4lI",
+        icon: "https://res.cloudinary.com/durvy5ois/image/upload/v1772582112/tik-tok_ygyaa5.png",
+    },
 ];
 
 const hours = [
@@ -123,7 +138,7 @@ export default function ContactPage() {
                                 <h2 className="font-bold text-lg">Our Store Location</h2>
                             </div>
                             <a
-                                href="https://maps.google.com"
+                                href="https://maps.app.goo.gl/r2RjpQCgdSoF3TxPA"
                                 target="_blank"
                                 rel="noreferrer"
                                 className="px-4 py-2 bg-pink-50 text-pink-500 rounded-lg text-sm font-semibold border-border border"
@@ -134,7 +149,7 @@ export default function ContactPage() {
 
                         <div className="h-64 rounded-xl overflow-hidden border-border border">
                             <iframe
-                                src="https://www.google.com/maps/embed?pb=!1m18..."
+                                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1845.348973029149!2d91.8096215!3d22.3272605!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30acd8ca508ffad1%3A0xb39d3f40b620b26b!2sLucky%20Plaza!5e0!3m2!1sen!2sbd!4v1772893809822!5m2!1sen!2sbd"
                                 loading="lazy"
                                 title="Shop Location"
                                 className="w-full h-full border-border border-0"
