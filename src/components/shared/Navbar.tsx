@@ -32,22 +32,12 @@ const Navbar = () => {
 
     const { items, totalQty, totalPrice, increaseQty, decreaseQty, removeItem } = useCart();
 
-    // Raw scroll-driven state — only ever written inside the scroll listener.
-    const [scrollVisible, setScrollVisible] = useState(true);
-    const [scrollAnimate, setScrollAnimate] = useState(false);
-    const [scrollFade, setScrollFade] = useState(false);
-    const visibleRef = useRef(scrollVisible);
-    const animateRef = useRef(scrollAnimate);
-    const fadeRef = useRef(scrollFade);
-
-    // Pages where the floating-pill animation should be disabled entirely.
-    // On these pages the navbar is always visible with the default bg.
-    const isStaticPage = pathname === "/all-products";
-
-    // Derived values used for rendering — override scroll state on static pages.
-    const visible = isStaticPage ? true : scrollVisible;
-    const animate = isStaticPage ? false : scrollAnimate;
-    const fade = isStaticPage ? false : scrollFade;
+    const [visible, setVisible] = useState(true);
+    const [animate, setAnimate] = useState(false);
+    const [fade, setFade] = useState(false);
+    const visibleRef = useRef(visible);
+    const animateRef = useRef(animate);
+    const fadeRef = useRef(fade);
 
     const links = [
         { href: "/", label: "Home" },
@@ -58,9 +48,6 @@ const Navbar = () => {
     ];
 
     useEffect(() => {
-        // No scroll listener needed on static pages.
-        if (isStaticPage) return;
-
         const handleScroll = () => {
             const scrollY = window.scrollY;
             let newVisible = visibleRef.current;
@@ -82,21 +69,25 @@ const Navbar = () => {
             }
 
             if (newVisible !== visibleRef.current) {
-                setScrollVisible(newVisible);
+                setVisible(newVisible);
                 visibleRef.current = newVisible;
             }
             if (newAnimate !== animateRef.current) {
-                setScrollAnimate(newAnimate);
+                setAnimate(newAnimate);
                 animateRef.current = newAnimate;
             }
             if (newFade !== fadeRef.current) {
-                setScrollFade(newFade);
+                setFade(newFade);
                 fadeRef.current = newFade;
             }
         };
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
-    }, [isStaticPage]);
+    }, []);
+
+    // const CartBadge = ({ animate: a }: { animate: boolean }) => (
+
+    // );
 
     return (
         <>
@@ -385,6 +376,7 @@ const Navbar = () => {
                                                     <div className="min-w-0">
                                                         <p className="text-sm font-semibold text-text_normal truncate">{item.name}</p>
                                                         <p className="text-xs text-gray-400">{item.category.name}</p>
+                                                        {/* Variant / Attar label */}
                                                         {subtitle && (
                                                             <span className="inline-block mt-1 text-[10px] font-semibold bg-brand/10 text-brand px-2 py-0.5 rounded-full">
                                                                 {subtitle}
@@ -426,6 +418,7 @@ const Navbar = () => {
                         )}
                     </div>
 
+                    {/* Sticky footer */}
                     {items.length > 0 && (
                         <div className="border-t border-gray-100 p-4 space-y-3 bg-white">
                             <div className="flex justify-between text-sm">
