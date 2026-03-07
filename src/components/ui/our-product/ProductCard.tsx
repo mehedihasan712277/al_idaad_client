@@ -20,10 +20,10 @@ const ProductCard = ({ data }: { data: ProductType }) => {
             </Link>
             <div className="px-1">
                 <Link href={`/all-products/details/${_id}`}>
-                    <p className="font-semibold">{name}</p>
+                    <p className="font-semibold my-1 hover:text-blue-500 transition duration-200">{name}</p>
                 </Link>
                 <div className="flex items-center justify-between">
-                    <span className="font-semibold text-text_normal">{price} BDT</span>
+                    <span className="text-xl text-text_normal">৳ {price}</span>
                     <div>
                         <ButtonContainer product={data} />
                     </div>

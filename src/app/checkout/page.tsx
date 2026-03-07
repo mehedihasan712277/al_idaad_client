@@ -94,7 +94,7 @@ const OrderSuccess = ({ orderId }: { orderId: string }) => (
 // ─── Checkout Page ────────────────────────────────────────────────────────────
 
 const CheckoutPage = () => {
-    const { items, totalPrice, totalQty, clearCart } = useCart();
+    const { items, totalPrice, totalQty, clearCart, increaseQty, decreaseQty, removeItem } = useCart();
     const [form, setForm] = useState<FormData>(INITIAL_FORM);
     const [errors, setErrors] = useState<Partial<FormData>>({});
     const [loading, setLoading] = useState(false);
@@ -163,7 +163,6 @@ const CheckoutPage = () => {
 
         setLoading(true);
         try {
-            // ── Build order items — include variant/attar details if present ──
             const orderItems = items.map((item) => {
                 const base = {
                     productId: item._id,
@@ -172,7 +171,6 @@ const CheckoutPage = () => {
                     price: item.price,
                     thumbnail: item.thumbnail,
                 };
-                // Attach variant info if this line item has one
                 if (item.selectedVariant) {
                     return { ...base, variant: item.selectedVariant };
                 }
@@ -183,7 +181,6 @@ const CheckoutPage = () => {
             });
 
             const orderPayload = {
-                // Delivery details — flat fields (most APIs expect this, not nested)
                 fullName: form.fullName,
                 phone: form.phone,
                 altPhone: form.altPhone || undefined,
@@ -191,8 +188,6 @@ const CheckoutPage = () => {
                 city: form.city,
                 district: form.district,
                 note: form.note || undefined,
-
-                // Order details
                 items: orderItems,
                 subtotal: totalPrice,
                 deliveryCharge,
@@ -200,20 +195,15 @@ const CheckoutPage = () => {
                 paymentMethod: "cash_on_delivery",
             };
 
-            // console.log("📦 Order payload:", JSON.stringify(orderPayload, null, 2));
-
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(orderPayload),
             });
 
-            // ✅ Always read the body — even on error — so we know exactly what failed
             const data = await res.json();
-            // console.log("🔁 Server response:", data);
 
             if (!res.ok) {
-                // Show the server's own error message if it sent one
                 const serverMessage =
                     data?.message ||
                     data?.error ||
@@ -229,7 +219,6 @@ const CheckoutPage = () => {
             clearCart();
             setOrderId(newOrderId);
         } catch {
-            // console.error("💥 Unexpected error:", error);
             toast.error("Something went wrong. Please check your connection and try again.");
         } finally {
             setLoading(false);
@@ -409,9 +398,8 @@ const CheckoutPage = () => {
                                 Order Summary
                             </h2>
 
-                            <div className="space-y-3 mb-4 max-h-64 overflow-y-auto custom-scrollbar pr-1">
+                            <div className="space-y-4 mb-4 max-h-105 overflow-y-auto custom-scrollbar pr-1">
                                 {items.map((item) => {
-                                    // Show variant/attar label if present
                                     const subtitle = item.selectedVariant
                                         ? [item.selectedVariant.size, item.selectedVariant.color].filter(Boolean).join(" · ")
                                         : item.selectedAttarSize
@@ -420,27 +408,95 @@ const CheckoutPage = () => {
 
                                     return (
                                         <div key={item.cartKey} className="flex gap-3">
+                                            {/* Thumbnail */}
                                             <div className="relative w-14 shrink-0">
                                                 <Image
                                                     src={item.thumbnail}
                                                     alt={item.name}
                                                     width={56}
-                                                    height={72}
-                                                    className="w-14 h-18 object-cover rounded-lg"
+                                                    height={84}
+                                                    className="w-14 rounded-lg object-cover"
+                                                    style={{ aspectRatio: "2/3" }}
                                                 />
-                                                <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-brand text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                                                    {item.quantity}
-                                                </span>
                                             </div>
+
+                                            {/* Info */}
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-semibold text-text_normal leading-tight truncate">{item.name}</p>
+                                                <div className="flex items-start justify-between gap-1">
+                                                    <p className="text-sm font-semibold text-text_normal leading-tight truncate flex-1">
+                                                        {item.name}
+                                                    </p>
+                                                    {/* Remove button */}
+                                                    <button
+                                                        onClick={() => removeItem(item.cartKey)}
+                                                        className="shrink-0 w-5 h-5 rounded-full bg-gray-100 hover:bg-red-100 hover:text-red-500 flex items-center justify-center transition ml-1"
+                                                        aria-label="Remove item"
+                                                    >
+                                                        <svg
+                                                            width="9"
+                                                            height="9"
+                                                            viewBox="0 0 24 24"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            strokeWidth="3"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        >
+                                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
                                                 <p className="text-xs text-gray-400 mt-0.5">{item.category.name}</p>
                                                 {subtitle && (
                                                     <span className="inline-block mt-0.5 text-[10px] font-semibold bg-brand/10 text-brand px-2 py-0.5 rounded-full">
                                                         {subtitle}
                                                     </span>
                                                 )}
-                                                <p className="text-sm font-bold text-brand mt-1">৳ {(item.price * item.quantity).toLocaleString()}</p>
+
+                                                {/* Qty controls + price */}
+                                                <div className="flex items-center justify-between mt-2">
+                                                    {/* Qty stepper */}
+                                                    <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-0.5">
+                                                        <button
+                                                            onClick={() => decreaseQty(item.cartKey)}
+                                                            className="w-6 h-6 rounded-md bg-white shadow-sm flex items-center justify-center hover:bg-red-50 hover:text-red-500 active:scale-90 transition"
+                                                            aria-label="Decrease quantity"
+                                                        >
+                                                            <svg
+                                                                width="10"
+                                                                height="10"
+                                                                viewBox="0 0 24 24"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                strokeWidth="3"
+                                                                strokeLinecap="round"
+                                                            >
+                                                                <line x1="5" y1="12" x2="19" y2="12" />
+                                                            </svg>
+                                                        </button>
+                                                        <span className="w-6 text-center text-xs font-bold text-text_normal">{item.quantity}</span>
+                                                        <button
+                                                            onClick={() => increaseQty(item.cartKey)}
+                                                            className="w-6 h-6 rounded-md bg-white shadow-sm flex items-center justify-center hover:bg-green-50 hover:text-green-600 active:scale-90 transition"
+                                                            aria-label="Increase quantity"
+                                                        >
+                                                            <svg
+                                                                width="10"
+                                                                height="10"
+                                                                viewBox="0 0 24 24"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                strokeWidth="3"
+                                                                strokeLinecap="round"
+                                                            >
+                                                                <line x1="12" y1="5" x2="12" y2="19" />
+                                                                <line x1="5" y1="12" x2="19" y2="12" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                    <p className="text-sm font-bold text-brand">৳ {(item.price * item.quantity).toLocaleString()}</p>
+                                                </div>
                                             </div>
                                         </div>
                                     );

@@ -67,7 +67,13 @@ const ButtonContainer = ({ product }: { product: ProductType }) => {
              * When modalOpen flips true → key changes → React REMOUNTS the modal
              * with fresh useState values. No useEffect reset needed at all.
              */}
-            <VariantSelectorModal key={modalOpen ? product._id : ""} product={product} isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+            <VariantSelectorModal
+                key={modalOpen ? product._id : ""}
+                product={product}
+                isOpen={modalOpen}
+                onClose={() => setModalOpen(false)}
+                text="Add to Cart"
+            />
         </>
     );
 };

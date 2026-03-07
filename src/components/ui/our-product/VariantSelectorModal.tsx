@@ -15,6 +15,10 @@ interface Props {
     product: ProductType;
     isOpen: boolean;
     onClose: () => void;
+    /** Optional: called after the item is successfully added to cart.
+     *  Use this to redirect (e.g. to /checkout) after "Buy Now" flows. */
+    onAfterAdd?: () => void;
+    text: string;
 }
 
 const formatVariantLabel = (v: ProductVariant): string => {
@@ -25,7 +29,7 @@ const formatVariantLabel = (v: ProductVariant): string => {
     return parts.join(" · ");
 };
 
-const VariantSelectorModal = ({ product, isOpen, onClose }: Props) => {
+const VariantSelectorModal = ({ product, isOpen, onClose, onAfterAdd, text }: Props) => {
     const { addItem, isInCart } = useCart();
 
     const hasVariants = Array.isArray(product.variants) && product.variants.length > 0;
@@ -59,6 +63,7 @@ const VariantSelectorModal = ({ product, isOpen, onClose }: Props) => {
         });
         toast.success("Added to cart 🛒");
         onClose();
+        onAfterAdd?.();
     };
 
     return (
@@ -73,7 +78,7 @@ const VariantSelectorModal = ({ product, isOpen, onClose }: Props) => {
             {/* Bottom sheet */}
             <div
                 className={`fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl
-                    transform transition-transform duration-300 ease-out
+                    transform transition-all duration-300 ease-out
                     ${isOpen ? "translate-y-0" : "translate-y-full"}`}
             >
                 {/* Drag handle */}
@@ -226,21 +231,23 @@ const VariantSelectorModal = ({ product, isOpen, onClose }: Props) => {
                                         : "bg-gray-100 text-gray-400 cursor-not-allowed"
                                 }`}
                         >
-                            <svg
-                                width="16"
-                                height="16"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            >
-                                <circle cx="8" cy="21" r="1" />
-                                <circle cx="19" cy="21" r="1" />
-                                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-                            </svg>
-                            {alreadyInCart ? "Add Again" : "Add to Cart"}
+                            {text === "Add to Cart" && (
+                                <svg
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <circle cx="8" cy="21" r="1" />
+                                    <circle cx="19" cy="21" r="1" />
+                                    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+                                </svg>
+                            )}
+                            {text === "Add to Cart" ? (alreadyInCart ? "Add Again" : `${text}`) : "Check Out"}
                         </button>
                     </div>
                 </div>

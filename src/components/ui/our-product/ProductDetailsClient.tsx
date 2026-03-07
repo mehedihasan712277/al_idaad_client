@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { ProductType, ProductVariant, AttarSize } from "@/utils/types";
 import { useCart } from "@/components/shared/CartContext";
@@ -34,6 +35,7 @@ const StarRating = ({ rating }: { rating: number }) => (
 
 const ProductDetailsClient = ({ product }: { product: ProductType }) => {
     const { addItem, isInCart, items } = useCart();
+    const router = useRouter();
 
     const { name, description, brand, category, price, discountPercentage, inStock, variants, attarSizes, thumbnail, images, ratings } = product;
 
@@ -56,13 +58,11 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
     })();
 
     const discountedPrice = discountPercentage ? Math.round(resolvedPrice * (1 - discountPercentage / 100)) : null;
-
     const displayPrice = discountedPrice ?? resolvedPrice;
 
     const cartKey = buildCartKey(product, selectedVariant ?? undefined, selectedAttar ?? undefined);
     const alreadyInCart = isInCart(cartKey);
 
-    // How many of this specific selection are in cart
     const qtyInCart = items.find((i) => i.cartKey === cartKey)?.quantity ?? 0;
 
     const canAdd = (() => {
@@ -87,6 +87,22 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
         toast.success("Added to cart 🛒");
     };
 
+    const handleBuyNow = () => {
+        if (!canAdd) {
+            if (!inStock) return;
+            toast.error(hasVariants ? "Please select a size first" : "Please select an amount first");
+            return;
+        }
+        addItem({
+            product,
+            selectedVariant: selectedVariant ?? undefined,
+            selectedAttarSize: selectedAttar ?? undefined,
+            resolvedPrice,
+        });
+        toast.success("Added to cart 🛒");
+        router.push("/checkout");
+    };
+
     return (
         <div className="max-w-7xl mx-auto px-4">
             {/* Breadcrumb */}
@@ -109,25 +125,9 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
             {/* ── Main grid ── */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 xl:gap-14">
                 {/* ── LEFT: Image Gallery ── */}
-                <div className="flex flex-col-reverse sm:flex-row gap-3">
-                    {/* Thumbnail strip */}
-                    {allImages.length > 1 && (
-                        <div className="flex sm:flex-col gap-2 overflow-x-auto sm:overflow-y-auto sm:max-h-140 pb-1 sm:pb-0 sm:pr-1 custom-scrollbar shrink-0">
-                            {allImages.map((img, i) => (
-                                <button
-                                    key={i}
-                                    onClick={() => setActiveImage(i)}
-                                    className={`shrink-0 w-16 h-20 rounded-lg overflow-hidden border-2 transition-all duration-150
-                                            ${activeImage === i ? "border-brand" : "border-transparent hover:border-gray-300"}`}
-                                >
-                                    <Image src={img} alt={`${name} view ${i + 1}`} width={64} height={80} className="w-full h-full object-cover" />
-                                </button>
-                            ))}
-                        </div>
-                    )}
-
+                <div className="flex flex-col gap-3">
                     {/* Main image */}
-                    <div className="flex-1 relative">
+                    <div className="relative">
                         {/* Badges */}
                         <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
                             {!inStock && <span className="bg-gray-800 text-white text-xs font-bold px-3 py-1 rounded-full">Out of Stock</span>}
@@ -141,6 +141,23 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                             <Image src={allImages[activeImage]} alt={name} width={600} height={900} className="w-full h-full object-cover" priority />
                         </div>
                     </div>
+
+                    {/* Thumbnail strip — below main image */}
+                    {allImages.length > 1 && (
+                        <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
+                            {allImages.map((img, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setActiveImage(i)}
+                                    className={`shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-150
+                                        ${activeImage === i ? "border-brand" : "border-transparent hover:border-gray-300"}`}
+                                    style={{ width: 64, height: 96 /* 2:3 ratio */ }}
+                                >
+                                    <Image src={img} alt={`${name} view ${i + 1}`} width={64} height={96} className="w-full h-full object-cover" />
+                                </button>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {/* ── RIGHT: Product Info ── */}
@@ -212,7 +229,6 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                                                     ${isSelected ? "border-brand bg-brand/5" : "border-gray-100 hover:border-gray-300 bg-gray-50"}`}
                                         >
                                             <div className="flex items-center gap-3">
-                                                {/* Radio dot */}
                                                 <div
                                                     className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition
                                                         ${isSelected ? "border-brand" : "border-gray-300"}`}
@@ -272,7 +288,6 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                                             className={`relative flex flex-col items-center justify-center py-4 px-2 rounded-xl border-2 transition-all duration-150
                                                     ${isSelected ? "border-brand bg-brand/5" : "border-gray-100 hover:border-gray-300 bg-gray-50"}`}
                                         >
-                                            {/* Perfume bottle icon */}
                                             <svg
                                                 className={`w-5 h-5 mb-1.5 ${isSelected ? "text-brand" : "text-gray-400"}`}
                                                 viewBox="0 0 24 24"
@@ -313,7 +328,7 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                         </div>
                     )}
 
-                    {/* ── Add to Cart ── */}
+                    {/* ── Add to Cart + Buy Now ── */}
                     <div className="flex gap-3 mb-5">
                         <button
                             onClick={handleAddToCart}
@@ -365,6 +380,19 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                             )}
                         </button>
 
+                        {/* Buy Now button */}
+                        {inStock && (
+                            <button
+                                onClick={handleBuyNow}
+                                className="flex items-center gap-2 px-5 py-4 rounded-2xl bg-text_normal text-white font-bold text-sm hover:opacity-90 active:scale-95 transition-all duration-150 shrink-0"
+                            >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                                </svg>
+                                Buy Now
+                            </button>
+                        )}
+
                         {/* Go to cart shortcut — only shows when item is in cart */}
                         {alreadyInCart && (
                             <Link
@@ -395,13 +423,8 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                         </p>
                     )}
 
-                    {/* ── Product Info ── */}
+                    {/* ── Product Meta Info ── */}
                     <div className="border-t border-border pt-5 space-y-4">
-                        <div>
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Description</p>
-                            <div dangerouslySetInnerHTML={{ __html: description }} className="text-sm text-gray-600 leading-relaxed ProseMirror" />
-                        </div>
-
                         <div className="grid grid-cols-2 gap-3">
                             <div className="bg-gray-50 rounded-xl px-4 py-3">
                                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Category</p>
@@ -423,6 +446,12 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Rating</p>
                                 <p className="text-sm font-semibold text-text_normal">{ratings.toFixed(1)} / 5.0</p>
                             </div>
+                        </div>
+
+                        {/* Description — at the bottom */}
+                        <div className="pt-2">
+                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Description</p>
+                            <div dangerouslySetInnerHTML={{ __html: description }} className="text-sm text-gray-600 leading-relaxed ProseMirror" />
                         </div>
                     </div>
 
