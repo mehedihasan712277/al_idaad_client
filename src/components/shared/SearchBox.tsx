@@ -111,10 +111,10 @@ const SearchBox: React.FC<SearchBoxProps> = ({ isOpen, onClose }) => {
     return (
         <>
             {/* Backdrop */}
-            <div className="fixed inset-0 bg-black/40 z-[60] backdrop-blur-sm" onClick={onClose} />
+            <div className="fixed inset-0 bg-black/40 z-60 backdrop-blur-sm" onClick={onClose} />
 
             {/* Search Panel */}
-            <div className="fixed top-0 left-0 right-0 z-[70] flex justify-center px-4 pt-6 sm:pt-16 animate-slideDown">
+            <div className="fixed top-0 left-0 right-0 z-70 flex justify-center px-4 pt-6 sm:pt-16 animate-slideDown">
                 <div className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden">
                     {/* Input row */}
                     <div className="flex items-center gap-3 px-5 py-4 border-b border-gray-100">
