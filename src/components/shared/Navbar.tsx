@@ -134,7 +134,7 @@ const Navbar = () => {
                 <div className="h-18 md:h-25 px-4 max-w-7xl mx-auto flex items-center">
                     {/* ── MOBILE ── */}
                     <div className="flex lg:hidden w-full items-center">
-                        <div className="flex items-center rotate-90">
+                        <div className="flex items-center">
                             <button
                                 onClick={() => setIsMenuOpen(true)}
                                 className={`w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${effectiveAnimate ? "text-white" : "text-text_normal"}`}
