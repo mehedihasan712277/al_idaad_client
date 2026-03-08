@@ -61,8 +61,11 @@ const VariantSelectorModal = ({ product, isOpen, onClose, onAfterAdd, text }: Pr
             selectedAttarSize: selectedAttar ?? undefined,
             resolvedPrice,
         });
-        toast.success("Added to cart 🛒");
-        onClose();
+        toast.success("Added to cart 🛒", {
+            position: "bottom-center",
+            duration: 500,
+        });
+        // onClose();
         onAfterAdd?.();
     };
 
@@ -209,9 +212,9 @@ const VariantSelectorModal = ({ product, isOpen, onClose, onAfterAdd, text }: Pr
                     )}
 
                     {/* ── Price + Add button ─────────────────────────────────── */}
-                    <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between">
+                    <div className="mt-5 pt-4 border-t border-gray-100 flex flex-col sm:flex-row items-center gap-4 sm:gap-0 justify-between">
                         <div>
-                            <p className="text-xs text-gray-400">
+                            <p className="text-xs text-gray-400 text-center sm:text-start">
                                 {hasVariants && !selectedVariant && "Select a size to see price"}
                                 {hasAttarSizes && !selectedAttar && "Select an amount to see price"}
                                 {((!hasVariants && !hasAttarSizes) || selectedVariant || selectedAttar) && "Unit price"}
@@ -222,7 +225,7 @@ const VariantSelectorModal = ({ product, isOpen, onClose, onAfterAdd, text }: Pr
                         <button
                             onClick={handleAdd}
                             disabled={!canAdd}
-                            className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition duration-150 active:scale-95
+                            className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition duration-150 active:scale-95 w-full sm:w-fit
                                 ${
                                     canAdd
                                         ? alreadyInCart
@@ -247,7 +250,7 @@ const VariantSelectorModal = ({ product, isOpen, onClose, onAfterAdd, text }: Pr
                                     <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
                                 </svg>
                             )}
-                            {text === "Add to Cart" ? (alreadyInCart ? "Add Again" : `${text}`) : "Check Out"}
+                            {text === "Add to Cart" ? (alreadyInCart ? "Click to Add One More" : `${text}`) : "Check Out"}
                         </button>
                     </div>
                 </div>
