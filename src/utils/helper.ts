@@ -84,3 +84,11 @@ export const buildCartKey = (product: ProductType, variant?: ProductVariant, att
     }
     return product._id;
 };
+
+//functin to calculate reduced price--------------------
+export const calculateReducedPrice = (price: string | number, discount: string | number): number => {
+    const num_price = Number(price);
+    const num_discount = Number(discount);
+    const reduced_price = num_price - Math.round(num_price * (num_discount / 100));
+    return reduced_price;
+};

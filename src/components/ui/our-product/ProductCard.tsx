@@ -2,9 +2,10 @@ import Image from "next/image";
 import ButtonContainer from "./ButtonContainer";
 import { ProductType } from "@/utils/types";
 import Link from "next/link";
+import { calculateReducedPrice } from "@/utils/helper";
 
 const ProductCard = ({ data }: { data: ProductType }) => {
-    const { _id, thumbnail, name, price, category } = data;
+    const { _id, thumbnail, name, price, category, discountPercentage } = data;
     return (
         <div className="space-y-1 w-[calc(50vw-32px)] md:w-[calc(33vw-24px)] lg:w-[calc(25vw-24px)] xl:w-75 relative box-border">
             <Link href={`/all-products/details/${_id}`}>
@@ -23,7 +24,20 @@ const ProductCard = ({ data }: { data: ProductType }) => {
                     <p className="font-semibold my-1 hover:text-blue-500 transition duration-200">{name}</p>
                 </Link>
                 <div className="flex items-center justify-between">
-                    <span className="text-xl text-text_normal">৳ {price}</span>
+                    <div>
+                        {Boolean(discountPercentage) ? (
+                            <div className="flex gap-1 items-baseline">
+                                <span className="text-xl text-text_normal">
+                                    ৳{calculateReducedPrice(price, discountPercentage as number | string)}
+                                </span>
+                                <span className="text-xs text-red-400">
+                                    <del>{price}</del>
+                                </span>
+                            </div>
+                        ) : (
+                            <span className="text-xl text-text_normal">৳ {price}</span>
+                        )}
+                    </div>
                     <div>
                         <ButtonContainer product={data} />
                     </div>

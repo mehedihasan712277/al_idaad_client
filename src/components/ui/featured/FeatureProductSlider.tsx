@@ -8,6 +8,7 @@ import { useRef, useState } from "react";
 import type { Swiper as SwiperType } from "swiper";
 import { ProductType } from "@/utils/types";
 import Link from "next/link";
+import { calculateReducedPrice } from "@/utils/helper";
 // import ButtonContainer from "../our-product/ButtonContainer";
 
 const FeatureProductSlider = ({ product }: { product: ProductType[] }) => {
@@ -59,7 +60,20 @@ const FeatureProductSlider = ({ product }: { product: ProductType[] }) => {
                                     <ButtonContainer product={ele} />
                                 </div>
                             </div> */}
-                            <span className=" text-text_normal text-xl mt-1">{ele.price} BDT</span>
+                            <div>
+                                {Boolean(ele.discountPercentage) ? (
+                                    <div className="flex gap-1 items-baseline">
+                                        <span className="text-xl text-text_normal">
+                                            ৳ {calculateReducedPrice(ele.price, ele.discountPercentage as number | string)}
+                                        </span>
+                                        <span className="text-xs text-gray-400">
+                                            <del>{ele.price}</del>
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <span className="text-xl text-text_normal">৳ {ele.price}</span>
+                                )}
+                            </div>
                         </div>
                     </SwiperSlide>
                 ))}
