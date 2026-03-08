@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { CartItem, useCart } from "./CartContext";
+import SearchBox from "./SearchBox";
 
 // ─── Helper: human-readable subtitle for a cart line item ────────────────────
 
@@ -23,6 +24,25 @@ const getItemSubtitle = (item: CartItem): string | null => {
     return null;
 };
 
+// ─── Search icon SVG ─────────────────────────────────────────────────────────
+
+const SearchIcon = () => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+    >
+        <path d="m21 21-4.34-4.34" />
+        <circle cx="11" cy="11" r="8" />
+    </svg>
+);
+
 // ─── Navbar ───────────────────────────────────────────────────────────────────
 
 const Navbar = () => {
@@ -31,6 +51,7 @@ const Navbar = () => {
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     const { items, totalQty, totalPrice, increaseQty, decreaseQty, removeItem } = useCart();
 
@@ -41,7 +62,6 @@ const Navbar = () => {
     const animateRef = useRef(animate);
     const fadeRef = useRef(fade);
 
-    // Derive effective values — on non-home pages animation is always off
     const effectiveVisible = isHome ? visible : true;
     const effectiveAnimate = isHome ? animate : false;
     const effectiveFade = isHome ? fade : false;
@@ -55,7 +75,6 @@ const Navbar = () => {
     ];
 
     useEffect(() => {
-        // Only attach scroll listener on the home page
         if (!isHome) return;
 
         const handleScroll = () => {
@@ -95,6 +114,13 @@ const Navbar = () => {
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, [isHome]);
+
+    // Close search on route change — in-render state adjustment (no useEffect)
+    const [prevPathname, setPrevPathname] = useState(pathname);
+    if (prevPathname !== pathname) {
+        setPrevPathname(pathname);
+        setIsSearchOpen(false);
+    }
 
     return (
         <>
@@ -138,23 +164,11 @@ const Navbar = () => {
                         </h1>
                         <div className="flex items-center gap-1">
                             <button
+                                onClick={() => setIsSearchOpen(true)}
                                 className={`w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${effectiveAnimate ? "text-white" : "text-text_normal"}`}
                                 aria-label="Search"
                             >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="m21 21-4.34-4.34" />
-                                    <circle cx="11" cy="11" r="8" />
-                                </svg>
+                                <SearchIcon />
                             </button>
                             <button
                                 onClick={() => setIsCartOpen(true)}
@@ -198,12 +212,28 @@ const Navbar = () => {
                                         key={href}
                                         href={href}
                                         className={`relative py-1.5 pb-1 transition-colors duration-200 group font-bold text-sm
-                                            ${effectiveAnimate ? (isActive ? "text-yellow-400" : "text-white hover:text-gray-300") : isActive ? "text-brand" : "text-text_normal"}`}
+                                            ${
+                                                effectiveAnimate
+                                                    ? isActive
+                                                        ? "text-yellow-400"
+                                                        : "text-white hover:text-gray-300"
+                                                    : isActive
+                                                      ? "text-brand"
+                                                      : "text-text_normal"
+                                            }`}
                                     >
                                         {label}
                                         <span
                                             className={`absolute bottom-0 left-0 h-0.5 transition-all duration-300 ease-out
-                                            ${effectiveAnimate ? (isActive ? "w-full bg-yellow-400" : "w-0 group-hover:w-full bg-white/70") : isActive ? "w-full bg-brand" : "w-0 group-hover:w-full bg-brand"}`}
+                                            ${
+                                                effectiveAnimate
+                                                    ? isActive
+                                                        ? "w-full bg-yellow-400"
+                                                        : "w-0 group-hover:w-full bg-white/70"
+                                                    : isActive
+                                                      ? "w-full bg-brand"
+                                                      : "w-0 group-hover:w-full bg-brand"
+                                            }`}
                                         />
                                     </Link>
                                 );
@@ -211,23 +241,11 @@ const Navbar = () => {
                         </div>
                         <div className="flex items-center gap-1">
                             <button
+                                onClick={() => setIsSearchOpen(true)}
                                 className={`w-10 h-10 hover:bg-white/20 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${effectiveAnimate ? "text-white" : "text-text_normal"}`}
                                 aria-label="Search"
                             >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="m21 21-4.34-4.34" />
-                                    <circle cx="11" cy="11" r="8" />
-                                </svg>
+                                <SearchIcon />
                             </button>
                             <button
                                 onClick={() => setIsCartOpen(true)}
@@ -260,7 +278,10 @@ const Navbar = () => {
                 </div>
             </nav>
 
-            {/* ── Shared Overlay ── */}
+            {/* key forces a fresh remount each open — state and fetch start clean */}
+            <SearchBox key={String(isSearchOpen)} isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+
+            {/* ── Shared Overlay (menu + cart) ── */}
             <div
                 onClick={() => {
                     setIsMenuOpen(false);
@@ -385,7 +406,6 @@ const Navbar = () => {
                                                     <div className="min-w-0">
                                                         <p className="text-sm font-semibold text-text_normal truncate">{item.name}</p>
                                                         <p className="text-xs text-gray-400">{item.category.name}</p>
-                                                        {/* Variant / Attar label */}
                                                         {subtitle && (
                                                             <span className="inline-block mt-1 text-[10px] font-semibold bg-brand/10 text-brand px-2 py-0.5 rounded-full">
                                                                 {subtitle}
@@ -427,7 +447,6 @@ const Navbar = () => {
                         )}
                     </div>
 
-                    {/* Sticky footer */}
                     {items.length > 0 && (
                         <div className="border-t border-gray-100 p-4 space-y-3 bg-white">
                             <div className="flex justify-between text-sm">
