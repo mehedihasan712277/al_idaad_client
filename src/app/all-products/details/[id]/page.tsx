@@ -7,7 +7,7 @@ const ProductDetailsPage = async ({ params }: { params: Promise<{ id: string }> 
 
     // return <div className="py-20 max-w-7xl mx-auto"></div>;
     return (
-        <div className="max-w-7xl mx-auto px-4 py-20">
+        <div className="max-w-7xl mx-auto px-4 pt-4 pb-20">
             <ProductDetailsClient product={singleProductData}></ProductDetailsClient>
         </div>
     );

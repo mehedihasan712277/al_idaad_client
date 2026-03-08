@@ -123,9 +123,10 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
             </nav>
 
             {/* ── Main grid ── */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 xl:gap-14">
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-8 xl:gap-14"> */}
+            <div className="flex flex-col sm:flex-row gap-4 lg:gap-8 xl:gap-14">
                 {/* ── LEFT: Image Gallery ── */}
-                <div className="flex gap-4 justify-between lg:justify-start">
+                <div className="flex gap-4 flex-col md:flex-row  ">
                     {/* Main image */}
                     <div className="relative">
                         {/* Badges */}
@@ -137,23 +138,22 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                             <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full">{category.name}</span>
                         </div>
 
-                        <div className="aspect-2/3 lg:h-150 rounded-2xl overflow-hidden bg-gray-100">
+                        <div className="aspect-2/3 sm:w-[45vw] lg:w-110 xl:w-120 rounded-2xl overflow-hidden bg-gray-100">
                             <Image src={allImages[activeImage]} alt={name} width={600} height={900} className="w-full aspect-2/3" priority />
                         </div>
                     </div>
 
                     {/* Thumbnail strip — below main image */}
                     {allImages.length > 1 && (
-                        <div className="flex gap-2 flex-col">
+                        <div className="flex gap-2 flex-wrap md:flex-col">
                             {allImages.map((img, i) => (
                                 <button
                                     key={i}
                                     onClick={() => setActiveImage(i)}
-                                    className={`shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-150
+                                    className={`shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-150 w-14 h-21 sm:w-16 sm:h-24
                                         ${activeImage === i ? "border-brand" : "border-transparent hover:border-gray-300"}`}
-                                    style={{ width: 64, height: 96 /* 2:3 ratio */ }}
                                 >
-                                    <Image src={img} alt={`${name} view ${i + 1}`} width={64} height={96} className="w-full h-full object-cover" />
+                                    <Image src={img} alt={`${name} view ${i + 1}`} width={64} height={96} className="w-14 h-21 sm:w-16 sm:h-24" />
                                 </button>
                             ))}
                         </div>
@@ -161,7 +161,7 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                 </div>
 
                 {/* ── RIGHT: Product Info ── */}
-                <div className="flex flex-col">
+                <div className="flex grow flex-col ">
                     {/* Category + brand */}
                     <div className="flex items-center gap-2 mb-3">
                         <span className="text-xs font-semibold text-brand uppercase tracking-widest">{category.name}</span>
@@ -470,9 +470,9 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                 </div>
             </div>
             {/* Description — at the bottom */}
-            <div className="pt-2">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Description</p>
-                <div dangerouslySetInnerHTML={{ __html: description }} className="text-sm text-gray-600 leading-relaxed ProseMirror" />
+            <div className="pt-4">
+                <p className=" font-bold text-gray-400 uppercase tracking-wider pb-4 mb-4 border-b border-border">Description</p>
+                <div dangerouslySetInnerHTML={{ __html: description }} className="text-sm text-gray-500 leading-relaxed ProseMirror" />
             </div>
         </div>
     );
