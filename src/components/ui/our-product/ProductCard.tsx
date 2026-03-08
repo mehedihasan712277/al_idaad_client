@@ -28,7 +28,7 @@ const ProductCard = ({ data }: { data: ProductType }) => {
                         {Boolean(discountPercentage) ? (
                             <div className="flex gap-1 items-baseline">
                                 <span className="text-xl text-text_normal">
-                                    ৳{calculateReducedPrice(price, discountPercentage as number | string)}
+                                    ৳ {calculateReducedPrice(price, discountPercentage as number | string)}
                                 </span>
                                 <span className="text-xs text-red-400">
                                     <del>{price}</del>
