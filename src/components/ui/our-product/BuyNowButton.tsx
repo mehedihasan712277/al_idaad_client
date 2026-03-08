@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ProductType } from "@/utils/types";
 import VariantSelectorModal from "./VariantSelectorModal";
 import toast from "react-hot-toast";
+import { calculateReducedPrice } from "@/utils/helper";
 import { useCart } from "@/components/shared/CartContext";
 
 const BuyNowButton = ({ product }: { product: ProductType }) => {
@@ -22,7 +23,8 @@ const BuyNowButton = ({ product }: { product: ProductType }) => {
             setModalOpen(true);
         } else {
             // No selection needed — add immediately and go to checkout
-            addItem({ product, resolvedPrice: product.price });
+            const resolvedPrice = product.discountPercentage ? calculateReducedPrice(product.price, product.discountPercentage) : product.price;
+            addItem({ product, resolvedPrice });
             toast.success("Added to cart 🛒");
             router.push("/checkout");
         }

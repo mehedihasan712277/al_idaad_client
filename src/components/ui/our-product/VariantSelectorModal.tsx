@@ -9,7 +9,7 @@ import { useState } from "react";
 import { ProductType, ProductVariant, AttarSize } from "@/utils/types";
 import toast from "react-hot-toast";
 import { useCart } from "@/components/shared/CartContext";
-import { buildCartKey } from "@/utils/helper";
+import { buildCartKey, calculateReducedPrice } from "@/utils/helper";
 
 interface Props {
     product: ProductType;
@@ -42,7 +42,7 @@ const VariantSelectorModal = ({ product, isOpen, onClose, onAfterAdd, text }: Pr
     const resolvedPrice = (() => {
         if (hasVariants && selectedVariant?.price != null) return selectedVariant.price;
         if (hasAttarSizes && selectedAttar) return selectedAttar.price;
-        return product.price;
+        return product.discountPercentage ? calculateReducedPrice(product.price, product.discountPercentage) : product.price;
     })();
 
     const cartKey = buildCartKey(product, selectedVariant ?? undefined, selectedAttar ?? undefined);

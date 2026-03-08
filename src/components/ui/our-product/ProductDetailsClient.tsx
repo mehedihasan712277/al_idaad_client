@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { ProductType, ProductVariant, AttarSize } from "@/utils/types";
 import { useCart } from "@/components/shared/CartContext";
-import { buildCartKey } from "@/utils/helper";
+import { buildCartKey, calculateReducedPrice } from "@/utils/helper";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -82,7 +82,7 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
             product,
             selectedVariant: selectedVariant ?? undefined,
             selectedAttarSize: selectedAttar ?? undefined,
-            resolvedPrice,
+            resolvedPrice: displayPrice,
         });
         toast.success("Added to cart 🛒");
     };
@@ -97,7 +97,7 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
             product,
             selectedVariant: selectedVariant ?? undefined,
             selectedAttarSize: selectedAttar ?? undefined,
-            resolvedPrice,
+            resolvedPrice: displayPrice,
         });
         toast.success("Added to cart 🛒");
         router.push("/checkout");
@@ -253,7 +253,9 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                                                 </div>
                                             </div>
                                             <span className={`text-sm font-bold shrink-0 ${isSelected ? "text-brand" : "text-text_normal"}`}>
-                                                {v.price != null ? `৳ ${v.price.toLocaleString()}` : `৳ ${price.toLocaleString()}`}
+                                                {v.price != null
+                                                    ? `৳ ${(discountPercentage ? calculateReducedPrice(v.price, discountPercentage) : v.price).toLocaleString()}`
+                                                    : `৳ ${(discountPercentage ? calculateReducedPrice(price, discountPercentage) : price).toLocaleString()}`}
                                             </span>
                                         </button>
                                     );
@@ -303,7 +305,8 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                                             </svg>
                                             <p className={`text-sm font-bold ${isSelected ? "text-brand" : "text-text_normal"}`}>{a.ml} ml</p>
                                             <p className={`text-xs font-semibold mt-0.5 ${isSelected ? "text-brand" : "text-gray-500"}`}>
-                                                ৳ {a.price.toLocaleString()}
+                                                ৳{" "}
+                                                {(discountPercentage ? calculateReducedPrice(a.price, discountPercentage) : a.price).toLocaleString()}
                                             </p>
                                             {attarInCart && (
                                                 <span className="absolute top-1 right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">

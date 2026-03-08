@@ -5,7 +5,7 @@ import { ProductType } from "@/utils/types";
 import VariantSelectorModal from "./VariantSelectorModal";
 import toast from "react-hot-toast";
 import { useCart } from "@/components/shared/CartContext";
-import { buildCartKey } from "@/utils/helper";
+import { buildCartKey, calculateReducedPrice } from "@/utils/helper";
 
 const ButtonContainer = ({ product }: { product: ProductType }) => {
     const { addItem, isInCart } = useCart();
@@ -22,7 +22,8 @@ const ButtonContainer = ({ product }: { product: ProductType }) => {
         if (needsSelection) {
             setModalOpen(true);
         } else {
-            addItem({ product, resolvedPrice: product.price });
+            const resolvedPrice = product.discountPercentage ? calculateReducedPrice(product.price, product.discountPercentage) : product.price;
+            addItem({ product, resolvedPrice });
             toast.success("Added to cart 🛒");
         }
     };
