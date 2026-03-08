@@ -103,7 +103,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ isOpen, onClose }) => {
 
     const handleResultClick = (product: ProductType) => {
         onClose();
-        router.push(`/product/details/${product._id}`);
+        router.push(`/all-products/details/${product._id}`);
     };
 
     if (!isOpen) return null;
