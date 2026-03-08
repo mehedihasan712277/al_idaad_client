@@ -27,6 +27,8 @@ const getItemSubtitle = (item: CartItem): string | null => {
 
 const Navbar = () => {
     const pathname = usePathname();
+    const isHome = pathname === "/";
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
 
@@ -39,6 +41,11 @@ const Navbar = () => {
     const animateRef = useRef(animate);
     const fadeRef = useRef(fade);
 
+    // Derive effective values — on non-home pages animation is always off
+    const effectiveVisible = isHome ? visible : true;
+    const effectiveAnimate = isHome ? animate : false;
+    const effectiveFade = isHome ? fade : false;
+
     const links = [
         { href: "/", label: "Home" },
         { href: "/all-products", label: "All Products" },
@@ -48,6 +55,9 @@ const Navbar = () => {
     ];
 
     useEffect(() => {
+        // Only attach scroll listener on the home page
+        if (!isHome) return;
+
         const handleScroll = () => {
             const scrollY = window.scrollY;
             let newVisible = visibleRef.current;
@@ -81,22 +91,19 @@ const Navbar = () => {
                 fadeRef.current = newFade;
             }
         };
+
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-    // const CartBadge = ({ animate: a }: { animate: boolean }) => (
-
-    // );
+    }, [isHome]);
 
     return (
         <>
             <nav
                 className={`fixed top-0 left-0 right-0 z-50 border border-border transform
-                ${visible ? "translate-y-0" : "-translate-y-full"}
-                ${animate ? "transition-transform duration-500 ease-in-out" : "transition-none"}
-                ${fade ? "opacity-0 animate-fadeIn" : "opacity-100"}
-                ${animate ? "bg-black/70 border-none mx-3 mt-4 rounded-2xl" : "bg-bg_main"}`}
+                ${effectiveVisible ? "translate-y-0" : "-translate-y-full"}
+                ${effectiveAnimate ? "transition-transform duration-500 ease-in-out" : "transition-none"}
+                ${effectiveFade ? "opacity-0 animate-fadeIn" : "opacity-100"}
+                ${effectiveAnimate ? "bg-black/70 border-none mx-3 mt-4 rounded-2xl" : "bg-bg_main"}`}
             >
                 <div className="h-18 md:h-25 px-4 max-w-7xl mx-auto flex items-center">
                     {/* ── MOBILE ── */}
@@ -104,7 +111,7 @@ const Navbar = () => {
                         <div className="flex items-center rotate-90">
                             <button
                                 onClick={() => setIsMenuOpen(true)}
-                                className={`w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${animate ? "text-white" : "text-text_normal"}`}
+                                className={`w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${effectiveAnimate ? "text-white" : "text-text_normal"}`}
                                 aria-label="Open menu"
                             >
                                 <svg
@@ -125,13 +132,13 @@ const Navbar = () => {
                             </button>
                         </div>
                         <h1
-                            className={`flex-1 text-center text-3xl font-bold font-proza-libre select-none ${animate ? "text-white" : "text-text_normal"}`}
+                            className={`flex-1 text-center text-3xl font-bold font-proza-libre select-none ${effectiveAnimate ? "text-white" : "text-text_normal"}`}
                         >
                             Al Idaad
                         </h1>
                         <div className="flex items-center gap-1">
                             <button
-                                className={`w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${animate ? "text-white" : "text-text_normal"}`}
+                                className={`w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${effectiveAnimate ? "text-white" : "text-text_normal"}`}
                                 aria-label="Search"
                             >
                                 <svg
@@ -151,7 +158,7 @@ const Navbar = () => {
                             </button>
                             <button
                                 onClick={() => setIsCartOpen(true)}
-                                className={`relative w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${animate ? "text-white hover:bg-white/20" : "text-text_normal"}`}
+                                className={`relative w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${effectiveAnimate ? "text-white hover:bg-white/20" : "text-text_normal"}`}
                                 aria-label="Cart"
                             >
                                 <svg
@@ -180,7 +187,9 @@ const Navbar = () => {
 
                     {/* ── DESKTOP ── */}
                     <div className="hidden lg:flex w-full items-center justify-between">
-                        <h1 className={`text-3xl font-bold font-proza-libre select-none ${animate ? "text-white" : "text-text_normal"}`}>Al Idaad</h1>
+                        <h1 className={`text-3xl font-bold font-proza-libre select-none ${effectiveAnimate ? "text-white" : "text-text_normal"}`}>
+                            Al Idaad
+                        </h1>
                         <div className="flex gap-4 items-center">
                             {links.map(({ href, label }) => {
                                 const isActive = pathname === href;
@@ -189,12 +198,12 @@ const Navbar = () => {
                                         key={href}
                                         href={href}
                                         className={`relative py-1.5 pb-1 transition-colors duration-200 group font-bold text-sm
-                                            ${animate ? (isActive ? "text-yellow-400" : "text-white hover:text-gray-300") : isActive ? "text-brand" : "text-text_normal"}`}
+                                            ${effectiveAnimate ? (isActive ? "text-yellow-400" : "text-white hover:text-gray-300") : isActive ? "text-brand" : "text-text_normal"}`}
                                     >
                                         {label}
                                         <span
                                             className={`absolute bottom-0 left-0 h-0.5 transition-all duration-300 ease-out
-                                            ${animate ? (isActive ? "w-full bg-yellow-400" : "w-0 group-hover:w-full bg-white/70") : isActive ? "w-full bg-brand" : "w-0 group-hover:w-full bg-brand"}`}
+                                            ${effectiveAnimate ? (isActive ? "w-full bg-yellow-400" : "w-0 group-hover:w-full bg-white/70") : isActive ? "w-full bg-brand" : "w-0 group-hover:w-full bg-brand"}`}
                                         />
                                     </Link>
                                 );
@@ -202,7 +211,7 @@ const Navbar = () => {
                         </div>
                         <div className="flex items-center gap-1">
                             <button
-                                className={`w-10 h-10 hover:bg-white/20 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${animate ? "text-white" : "text-text_normal"}`}
+                                className={`w-10 h-10 hover:bg-white/20 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${effectiveAnimate ? "text-white" : "text-text_normal"}`}
                                 aria-label="Search"
                             >
                                 <svg
@@ -222,7 +231,7 @@ const Navbar = () => {
                             </button>
                             <button
                                 onClick={() => setIsCartOpen(true)}
-                                className={`relative w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${animate ? "text-white hover:bg-white/20" : "text-text_normal"}`}
+                                className={`relative w-10 h-10 hover:bg-brand/50 active:scale-95 transition duration-150 flex justify-center items-center rounded-full ${effectiveAnimate ? "text-white hover:bg-white/20" : "text-text_normal"}`}
                                 aria-label="Cart"
                             >
                                 <svg
