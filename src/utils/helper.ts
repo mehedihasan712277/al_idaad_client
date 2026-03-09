@@ -1,5 +1,5 @@
 import DOMPurify from "dompurify";
-import { ProductType, ProductVariant, AttarSize } from "@/utils/types";
+import { ProductType, ProductVariant, AttarSize, SubCategoryType } from "@/utils/types";
 
 export const formatMongoDate = (isoDate: string): string => {
     const date = new Date(isoDate);
@@ -85,10 +85,34 @@ export const buildCartKey = (product: ProductType, variant?: ProductVariant, att
     return product._id;
 };
 
-//functin to calculate reduced price--------------------
+//function to calculate reduced price--------------------
 export const calculateReducedPrice = (price: string | number, discount: string | number): number => {
     const num_price = Number(price);
     const num_discount = Number(discount);
     const reduced_price = num_price - Math.round(num_price * (num_discount / 100));
     return reduced_price;
+};
+// function to create path of category-----------------------
+export const findCategoryPath = (data: SubCategoryType[], targetId: string): string | null => {
+    function dfs(node: SubCategoryType, path: string[]): string | null {
+        const newPath = [...path, node.name];
+
+        if (node._id === targetId) {
+            return newPath.join(" / ");
+        }
+
+        for (const sub of node.subCategories) {
+            const result = dfs(sub, newPath);
+            if (result) return result;
+        }
+
+        return null;
+    }
+
+    for (const category of data) {
+        const result = dfs(category, []);
+        if (result) return result;
+    }
+
+    return null;
 };

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { calculateReducedPrice } from "@/utils/helper";
 
 const ProductCard = ({ data }: { data: ProductType }) => {
-    const { _id, thumbnail, name, price, category, discountPercentage } = data;
+    const { _id, thumbnail, name, price, discountPercentage } = data;
     return (
         <div className="space-y-1 w-[calc(50vw-32px)] md:w-[calc(33vw-24px)] lg:w-[calc(25vw-24px)] xl:w-75 relative box-border">
             <Link href={`/all-products/details/${_id}`}>
@@ -42,7 +42,11 @@ const ProductCard = ({ data }: { data: ProductType }) => {
                         <ButtonContainer product={data} />
                     </div>
                 </div>
-                <span className="bg-yellow-400 px-3 py-1 rounded-full font-semibold  text-xs absolute top-2 right-2">{category.name}</span>
+                {Boolean(discountPercentage) && (
+                    <span className="bg-yellow-400  px-3 py-1 rounded-full font-semibold  text-sm absolute top-2 right-2">
+                        {discountPercentage}% Off
+                    </span>
+                )}
             </div>
         </div>
     );

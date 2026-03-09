@@ -37,7 +37,21 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
     const { addItem, isInCart, items } = useCart();
     const router = useRouter();
 
-    const { name, description, brand, category, price, discountPercentage, inStock, variants, attarSizes, thumbnail, images, ratings } = product;
+    const {
+        name,
+        description,
+        brand,
+        category,
+        price,
+        categoryIdList,
+        discountPercentage,
+        inStock,
+        variants,
+        attarSizes,
+        thumbnail,
+        images,
+        ratings,
+    } = product;
 
     const hasVariants = Array.isArray(variants) && variants.length > 0;
     const hasAttarSizes = Array.isArray(attarSizes) && attarSizes.length > 0;
@@ -106,7 +120,7 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
     return (
         <div className="max-w-7xl mx-auto">
             {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 text-xs text-gray-400 mb-6">
+            <nav className="flex flex-wrap items-center gap-2 text-xs text-gray-400 mb-4">
                 <Link href="/" className="hover:text-text_normal transition">
                     Home
                 </Link>
@@ -115,10 +129,10 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                     All Products
                 </Link>
                 <span>/</span>
-                <Link href={`/all-products?category=${category._id}`} className="hover:text-text_normal transition">
+                {/* <Link href={`/all-products?category=${category._id}`} className="hover:text-text_normal transition">
                     {category.name}
                 </Link>
-                <span>/</span>
+                <span>/</span> */}
                 <span className="text-text_normal font-medium truncate max-w-50">{name}</span>
             </nav>
 
@@ -135,7 +149,7 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                             {Boolean(discountPercentage) && inStock && (
                                 <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">-{discountPercentage}%</span>
                             )}
-                            <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full">{category.name}</span>
+                            {/* <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full">{category.name}</span> */}
                         </div>
 
                         <div className="aspect-2/3 sm:w-[45vw] lg:w-110 xl:w-120 rounded-2xl overflow-hidden bg-gray-100">
@@ -431,7 +445,7 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                         <div className="grid grid-cols-2 gap-3">
                             <div className="bg-gray-50 rounded-xl px-4 py-3">
                                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Category</p>
-                                <p className="text-sm font-semibold text-text_normal">{category.name}</p>
+                                <p className="text-sm font-semibold text-text_normal">{categoryIdList.map((e) => e.name).join(", ")}</p>
                             </div>
                             {brand && (
                                 <div className="bg-gray-50 rounded-xl px-4 py-3">

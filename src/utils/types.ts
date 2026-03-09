@@ -113,7 +113,10 @@ export interface ProductType {
         _id: string;
         name: string;
     }; //ignore this while filtering or any function
-    categoryIdList: string[]; //consider this, it contains the _id of lowest level of subcategory
+    categoryIdList: {
+        _id: string;
+        name: string;
+    }[]; //consider this, it contains the _id of lowest level of subcategory
     price: number;
     discountPercentage?: number;
 
