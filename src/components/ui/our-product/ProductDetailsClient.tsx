@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { ProductType, ProductVariant, AttarSize } from "@/utils/types";
 import { useCart } from "@/components/shared/CartContext";
-import { buildCartKey, calculateReducedPrice } from "@/utils/helper";
+import { buildCartKey } from "@/utils/helper";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -43,6 +43,7 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
         brand,
         category,
         price,
+        priceRange,
         categoryIdList,
         discountPercentage,
         inStock,
@@ -51,10 +52,12 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
         thumbnail,
         images,
         ratings,
+        deliveryCharge,
     } = product;
 
     const hasVariants = Array.isArray(variants) && variants.length > 0;
     const hasAttarSizes = Array.isArray(attarSizes) && attarSizes.length > 0;
+    const hasPrice = Boolean(price); // false when product uses priceRange (price === 0)
 
     // ── Image gallery state ───────────────────────────────────────────────────
     const allImages = [thumbnail, ...images.filter((img) => img !== thumbnail)];
@@ -64,19 +67,37 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
     const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
     const [selectedAttar, setSelectedAttar] = useState<AttarSize | null>(null);
 
-    // ── Derived ───────────────────────────────────────────────────────────────
-    const resolvedPrice = (() => {
+    // ── Price helpers ─────────────────────────────────────────────────────────
+
+    /** Apply discount to a single price value */
+    const applyDiscount = (p: number): number => (discountPercentage ? Math.round(p * (1 - discountPercentage / 100)) : p);
+
+    /**
+     * Resolved single price — null means "use priceRange" (no single price available
+     * and no variant/attar has been selected yet).
+     */
+    const resolvedSinglePrice: number | null = (() => {
         if (hasVariants && selectedVariant?.price != null) return selectedVariant.price;
         if (hasAttarSizes && selectedAttar) return selectedAttar.price;
-        return price;
+        if (hasPrice) return price;
+        return null; // fall through to range
     })();
 
-    const discountedPrice = discountPercentage ? Math.round(resolvedPrice * (1 - discountPercentage / 100)) : null;
-    const displayPrice = discountedPrice ?? resolvedPrice;
+    const showRange = resolvedSinglePrice === null;
+
+    // Final display values for single-price path
+    const displaySinglePrice = resolvedSinglePrice !== null ? applyDiscount(resolvedSinglePrice) : null;
+    const hasDiscount = Boolean(discountPercentage);
+
+    // Final display values for range path
+    const displayRangeMin = applyDiscount(priceRange.min);
+    const displayRangeMax = applyDiscount(priceRange.max);
+
+    // Price used when adding to cart (use min of range as sensible fallback)
+    const cartPrice = displaySinglePrice ?? displayRangeMin;
 
     const cartKey = buildCartKey(product, selectedVariant ?? undefined, selectedAttar ?? undefined);
     const alreadyInCart = isInCart(cartKey);
-
     const qtyInCart = items.find((i) => i.cartKey === cartKey)?.quantity ?? 0;
 
     const canAdd = (() => {
@@ -96,7 +117,7 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
             product,
             selectedVariant: selectedVariant ?? undefined,
             selectedAttarSize: selectedAttar ?? undefined,
-            resolvedPrice: displayPrice,
+            resolvedPrice: cartPrice,
         });
         toast.success("Added to cart 🛒");
     };
@@ -111,10 +132,22 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
             product,
             selectedVariant: selectedVariant ?? undefined,
             selectedAttarSize: selectedAttar ?? undefined,
-            resolvedPrice: displayPrice,
+            resolvedPrice: cartPrice,
         });
         toast.success("Added to cart 🛒");
         router.push("/checkout");
+    };
+
+    // ── Variant button price display ──────────────────────────────────────────
+    const variantButtonPrice = (v: ProductVariant): string => {
+        if (v.price != null) {
+            return `৳ ${applyDiscount(v.price).toLocaleString()}`;
+        }
+        if (hasPrice) {
+            return `৳ ${applyDiscount(price).toLocaleString()}`;
+        }
+        // Variant has no own price and product uses a range — show the range
+        return `৳ ${displayRangeMin.toLocaleString()} – ৳ ${displayRangeMax.toLocaleString()}`;
     };
 
     return (
@@ -135,7 +168,6 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
             </nav>
 
             {/* ── Main grid ── */}
-            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-8 xl:gap-14"> */}
             <div className="flex flex-col sm:flex-row gap-4 lg:gap-8 xl:gap-14">
                 {/* ── LEFT: Image Gallery ── */}
                 <div className="flex gap-4 flex-col md:flex-row  ">
@@ -144,10 +176,9 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                         {/* Badges */}
                         <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
                             {!inStock && <span className="bg-gray-800 text-white text-xs font-bold px-3 py-1 rounded-full">Out of Stock</span>}
-                            {Boolean(discountPercentage) && inStock && (
+                            {hasDiscount && inStock && (
                                 <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">-{discountPercentage}%</span>
                             )}
-                            {/* <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full">{category.name}</span> */}
                         </div>
 
                         <div className="aspect-2/3 sm:w-[45vw] lg:w-110 xl:w-120 rounded-2xl overflow-hidden bg-gray-100">
@@ -193,12 +224,30 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                         <StarRating rating={ratings} />
                     </div>
 
-                    {/* Price */}
-                    <div className="flex items-baseline gap-3 mb-5">
-                        <span className="text-3xl font-bold text-brand">৳ {displayPrice.toLocaleString()}</span>
-                        {discountedPrice && (
-                            <span className="text-lg text-gray-400 line-through font-medium">৳ {resolvedPrice.toLocaleString()}</span>
+                    {/* ── Price ── */}
+                    <div className="flex items-baseline gap-3 mb-5 flex-wrap">
+                        {showRange ? (
+                            // ── Range price (no single price, no selection yet) ──
+                            <>
+                                <span className="text-3xl font-bold text-brand">
+                                    ৳ {displayRangeMin.toLocaleString()} – ৳ {displayRangeMax.toLocaleString()}
+                                </span>
+                                {hasDiscount && (
+                                    <span className="text-lg text-gray-400 line-through font-medium">
+                                        ৳ {priceRange.min.toLocaleString()} – ৳ {priceRange.max.toLocaleString()}
+                                    </span>
+                                )}
+                            </>
+                        ) : (
+                            // ── Single price ──
+                            <>
+                                <span className="text-3xl font-bold text-brand">৳ {displaySinglePrice!.toLocaleString()}</span>
+                                {hasDiscount && (
+                                    <span className="text-lg text-gray-400 line-through font-medium">৳ {resolvedSinglePrice!.toLocaleString()}</span>
+                                )}
+                            </>
                         )}
+                        {/* "Select for exact price" hint */}
                         {(hasVariants && !selectedVariant) || (hasAttarSizes && !selectedAttar) ? (
                             <span className="text-xs text-gray-400 italic">
                                 {hasVariants ? "Select size for exact price" : "Select amount for exact price"}
@@ -265,9 +314,7 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                                                 </div>
                                             </div>
                                             <span className={`text-sm font-bold shrink-0 ${isSelected ? "text-brand" : "text-text_normal"}`}>
-                                                {v.price != null
-                                                    ? `৳ ${(discountPercentage ? calculateReducedPrice(v.price, discountPercentage) : v.price).toLocaleString()}`
-                                                    : `৳ ${(discountPercentage ? calculateReducedPrice(price, discountPercentage) : price).toLocaleString()}`}
+                                                {variantButtonPrice(v)}
                                             </span>
                                         </button>
                                     );
@@ -317,8 +364,7 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                                             </svg>
                                             <p className={`text-sm font-bold ${isSelected ? "text-brand" : "text-text_normal"}`}>{a.ml} ml</p>
                                             <p className={`text-xs font-semibold mt-0.5 ${isSelected ? "text-brand" : "text-gray-500"}`}>
-                                                ৳{" "}
-                                                {(discountPercentage ? calculateReducedPrice(a.price, discountPercentage) : a.price).toLocaleString()}
+                                                ৳ {applyDiscount(a.price).toLocaleString()}
                                             </p>
                                             {attarInCart && (
                                                 <span className="absolute top-1 right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
@@ -395,7 +441,6 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                             )}
                         </button>
 
-                        {/* Buy Now button — hidden once item is in cart (Checkout button takes its place) */}
                         {inStock && !alreadyInCart && (
                             <button
                                 onClick={handleBuyNow}
@@ -408,7 +453,6 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                             </button>
                         )}
 
-                        {/* Go to cart shortcut — only shows when item is in cart */}
                         {alreadyInCart && (
                             <Link
                                 href="/checkout"
@@ -479,14 +523,18 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                         </svg>
                         <div>
                             <p className="text-xs font-bold text-green-800">Cash on Delivery available</p>
-                            <p className="text-xs text-green-700">৳60 inside Dhaka · ৳120 outside Dhaka</p>
+                            <p className="text-xs text-green-700">
+                                ৳ {deliveryCharge.special.charge} inside {deliveryCharge.special.city} - ৳ {deliveryCharge.regular.charge} outside{" "}
+                                {deliveryCharge.special.city}
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
-            {/* Description — at the bottom */}
+
+            {/* Description */}
             <div className="pt-4">
-                <p className=" font-bold text-gray-400 uppercase tracking-wider pb-4 mb-4 border-b border-border">Description</p>
+                <p className="font-bold text-gray-400 uppercase tracking-wider pb-4 mb-4 border-b border-border">Description</p>
                 <div dangerouslySetInnerHTML={{ __html: description }} className="text-sm text-gray-500 leading-relaxed ProseMirror" />
             </div>
         </div>

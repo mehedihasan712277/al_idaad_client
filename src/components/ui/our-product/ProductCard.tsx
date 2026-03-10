@@ -20,9 +20,11 @@ const ProductCard = ({ data }: { data: ProductType }) => {
                 </div>
             </Link>
             <div className="px-1">
+                {/* name */}
                 <Link href={`/all-products/details/${_id}`}>
                     <p className="font-semibold my-1 hover:text-blue-500 transition duration-200">{name}</p>
                 </Link>
+                {/* product price or price range */}
                 <div className="flex justify-between gap-2 items-end">
                     {Boolean(price) ? (
                         <div>
