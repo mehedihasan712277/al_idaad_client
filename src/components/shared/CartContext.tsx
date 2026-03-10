@@ -24,6 +24,12 @@ export type CartItem = {
     // Unique key: same product + different variant = different line item
     // "<productId>" | "<productId>__v_<size>_<color>" | "<productId>__a_<ml>ml"
     cartKey: string;
+
+    // ✅ New
+    deliveryCharge: {
+        regular: { charge: number; city: "all" };
+        special: { charge: number; city: string };
+    };
 };
 
 export type AddItemPayload = {
@@ -109,6 +115,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
                 price: resolvedPrice,
                 quantity: 1,
                 cartKey,
+                deliveryCharge: product.deliveryCharge, // ✅ New
                 ...(selectedVariant && { selectedVariant }),
                 ...(selectedAttarSize && { selectedAttarSize }),
             };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCart } from "@/components/shared/CartContext";
+import { CartItem, useCart } from "@/components/shared/CartContext";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -132,7 +132,20 @@ const CheckoutPage = () => {
 
     if (orderId) return <OrderSuccess orderId={orderId} />;
 
-    const deliveryCharge = form.city.toLowerCase().includes("dhaka") ? 60 : 120;
+    // Per-item: check if user's city matches the product's special city → use special charge, else regular
+    const getItemDeliveryCharge = (item: CartItem, city: string): number => {
+        if (!city.trim()) return item.deliveryCharge.regular.charge;
+        const userCity = city.toLowerCase().trim();
+        const specialCity = item.deliveryCharge.special.city.toLowerCase().trim();
+        return userCity.includes(specialCity) || specialCity.includes(userCity)
+            ? item.deliveryCharge.special.charge
+            : item.deliveryCharge.regular.charge;
+    };
+
+    // For a single shipment to one address, use the highest charge across all items
+    const deliveryCharge = items.length > 0 ? Math.max(...items.map((item) => getItemDeliveryCharge(item, form.city))) : 0;
+
+    // total price
     const grandTotal = totalPrice + deliveryCharge;
 
     const validate = (): boolean => {
@@ -511,11 +524,22 @@ const CheckoutPage = () => {
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-500 flex items-center gap-1">
                                         Delivery Charge
-                                        {form.city && (
-                                            <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">
-                                                {form.city.toLowerCase().includes("dhaka") ? "Inside Dhaka" : "Outside Dhaka"}
-                                            </span>
-                                        )}
+                                        {form.city &&
+                                            items.length > 0 &&
+                                            (() => {
+                                                const maxItem = items.reduce((a, b) =>
+                                                    getItemDeliveryCharge(a, form.city) >= getItemDeliveryCharge(b, form.city) ? a : b,
+                                                );
+                                                const isSpecial = form.city
+                                                    .toLowerCase()
+                                                    .trim()
+                                                    .includes(maxItem.deliveryCharge.special.city.toLowerCase().trim());
+                                                return (
+                                                    <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded-full">
+                                                        {isSpecial ? `Inside ${maxItem.deliveryCharge.special.city}` : "Outside special zone"}
+                                                    </span>
+                                                );
+                                            })()}
                                     </span>
                                     <span className="font-semibold text-text_normal">৳ {deliveryCharge}</span>
                                 </div>
