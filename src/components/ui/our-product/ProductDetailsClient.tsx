@@ -129,10 +129,8 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                     All Products
                 </Link>
                 <span>/</span>
-                {/* <Link href={`/all-products?category=${category._id}`} className="hover:text-text_normal transition">
-                    {category.name}
-                </Link>
-                <span>/</span> */}
+                <span className="hover:text-text_normal transition">{category.name}</span>
+                <span>/</span>
                 <span className="text-text_normal font-medium truncate max-w-50">{name}</span>
             </nav>
 

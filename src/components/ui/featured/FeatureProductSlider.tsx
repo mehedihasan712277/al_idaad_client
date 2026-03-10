@@ -61,17 +61,38 @@ const FeatureProductSlider = ({ product }: { product: ProductType[] }) => {
                                 </div>
                             </div> */}
                             <div>
-                                {Boolean(ele.discountPercentage) ? (
-                                    <div className="flex gap-1 items-baseline">
-                                        <span className="text-xl text-text_normal">
-                                            ৳ {calculateReducedPrice(ele.price, ele.discountPercentage as number | string)}
-                                        </span>
-                                        <span className="text-xs text-gray-400">
-                                            <del>{ele.price}</del>
+                                {Boolean(ele.price) ? (
+                                    <div>
+                                        {Boolean(ele.discountPercentage) ? (
+                                            <div className="flex gap-1 items-baseline">
+                                                <span className="text-xl text-text_normal">
+                                                    ৳ {calculateReducedPrice(ele.price, ele.discountPercentage as number | string)}
+                                                </span>
+                                                <span className="text-xs text-red-400">
+                                                    <del>{ele.price}</del>
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <span className="text-xl text-text_normal">৳ {ele.price}</span>
+                                        )}
+                                    </div>
+                                ) : Boolean(ele.discountPercentage) ? (
+                                    <div className="flex flex-wrap gap-1 items-baseline">
+                                        <div className="flex sm:text-xl gap-1 flex-wrap">
+                                            <p className=" text-text_normal">
+                                                ৳ {calculateReducedPrice(ele.priceRange.min, ele.discountPercentage as number | string)}
+                                            </p>
+                                            -
+                                            <p className=" text-text_normal">
+                                                ৳ {calculateReducedPrice(ele.priceRange.max, ele.discountPercentage as number | string)}
+                                            </p>
+                                        </div>
+                                        <span className="text-xs text-red-400">
+                                            <del>{ele.priceRange.min}</del> - <del>{ele.priceRange.max}</del>
                                         </span>
                                     </div>
                                 ) : (
-                                    <span className="text-xl text-text_normal">৳ {ele.price}</span>
+                                    <span className="text-xl text-text_normal">{`৳ ${ele.priceRange.min} - ৳ ${ele.priceRange.max}`}</span>
                                 )}
                             </div>
                         </div>

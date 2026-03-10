@@ -112,12 +112,14 @@ export interface ProductType {
     category: {
         _id: string;
         name: string;
-    }; //ignore this while filtering or any function
+    };
     categoryIdList: {
         _id: string;
         name: string;
-    }[]; //consider this, it contains the _id of lowest level of subcategory
+    }[];
+    categoryIdListFilter: string[];
     price: number;
+    priceRange: { min: number; max: number };
     discountPercentage?: number;
 
     inStock: boolean;
@@ -135,6 +137,18 @@ export interface ProductType {
     images: string[];
     ratings: number;
     reviews?: string[];
+
+    deliveryCharge: {
+        regular: {
+            charge: number;
+            city: "all";
+        };
+        special: {
+            charge: number;
+            city: string;
+        };
+    };
+
     createdAt: string;
     updatedAt: string;
 }

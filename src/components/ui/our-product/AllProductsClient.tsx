@@ -262,7 +262,7 @@ const AllProductsClient = ({ products, categories }: AllProductsClientProps) => 
         return new Set(collectAllIds(node));
     })();
 
-    const filtered = selectedId === "all" ? [...products] : products.filter((p) => p.categoryIdList.some((id) => matchIds.has(id)));
+    const filtered = selectedId === "all" ? [...products] : products.filter((p) => p.categoryIdListFilter.some((id) => matchIds.has(id)));
 
     const sortedProducts = [...filtered].sort((a, b) => {
         if (sortOption === "price-asc") return a.price - b.price;
