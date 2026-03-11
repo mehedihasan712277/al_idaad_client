@@ -1,5 +1,5 @@
 import DOMPurify from "dompurify";
-import { ProductType, ProductVariant, AttarSize, SubCategoryType } from "@/utils/types";
+import { ProductType, ProductVariant, AttarSize, SubCategoryType, CategoryType } from "@/utils/types";
 
 export const formatMongoDate = (isoDate: string): string => {
     const date = new Date(isoDate);
@@ -115,4 +115,24 @@ export const findCategoryPath = (data: SubCategoryType[], targetId: string): str
     }
 
     return null;
+};
+// -----------------get lowest level of category-------------
+export const getLowestSubCategories = (categories: CategoryType[]): SubCategoryType[] => {
+    const result: SubCategoryType[] = [];
+
+    const traverse = (subCategories: SubCategoryType[]) => {
+        for (const sub of subCategories) {
+            if (!sub.subCategories || sub.subCategories.length === 0) {
+                result.push(sub);
+            } else {
+                traverse(sub.subCategories);
+            }
+        }
+    };
+
+    for (const category of categories) {
+        traverse(category.subCategories);
+    }
+
+    return result;
 };

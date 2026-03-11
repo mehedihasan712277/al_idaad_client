@@ -1,6 +1,7 @@
 import Banner from "@/components/ui/banner/Banner";
 import BestSoldProduct from "@/components/ui/best-selling/BestSoldProduct";
 import Blog from "@/components/ui/blog/Blog";
+import AllCategories from "@/components/ui/categories/AllCategories";
 import ChoouseUs from "@/components/ui/choose-us/ChoouseUs";
 import FeaturedProduct from "@/components/ui/featured/FeaturedProduct";
 import Offer from "@/components/ui/offer/Offer";
@@ -14,6 +15,7 @@ const Homepage = () => {
                 <Banner></Banner>
             </div>
             <div className="space-y-12 lg:space-y-20 py-20 px-4 max-w-7xl mx-auto">
+                <AllCategories></AllCategories>
                 <FeaturedProduct></FeaturedProduct>
                 <Offer></Offer>
                 <BestSoldProduct></BestSoldProduct>

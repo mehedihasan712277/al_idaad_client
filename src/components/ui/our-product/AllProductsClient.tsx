@@ -9,6 +9,7 @@ import { CategoryType, ProductType, SubCategoryType } from "@/utils/types";
 interface AllProductsClientProps {
     products: ProductType[];
     categories: CategoryType[];
+    activeCategory: string;
 }
 
 type AnyCategory = CategoryType | SubCategoryType;
@@ -250,8 +251,9 @@ const SortSelect = ({ value, onChange }: SortSelectProps) => (
 
 // ─── Main Client Component ────────────────────────────────────────────────────
 
-const AllProductsClient = ({ products, categories }: AllProductsClientProps) => {
-    const [selectedId, setSelectedId] = useState<string>("all");
+const AllProductsClient = ({ products, categories, activeCategory }: AllProductsClientProps) => {
+    const value = activeCategory || "all";
+    const [selectedId, setSelectedId] = useState<string>(value);
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [sortOption, setSortOption] = useState<SortOption>("default");
 
