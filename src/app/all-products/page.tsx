@@ -11,7 +11,7 @@ const AllProductPage = async ({ searchParams }: Props) => {
 
     return (
         <div className="pb-20 max-w-7xl px-4 mx-auto">
-            <AllProducts activeCategory={category}></AllProducts>
+            <AllProducts activeCategory={category || ""}></AllProducts>
         </div>
     );
 };
