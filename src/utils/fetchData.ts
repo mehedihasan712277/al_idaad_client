@@ -8,10 +8,12 @@ import {
     GetAllBlogsResponseType,
     GetAllCategoriesResponseType,
     GetAllProductsResponseType,
+    GetOfferBannerResponseType,
     GetSingleBlogCategoryResponseType,
     GetSingleBlogResponseType,
     GetSingleCategoryResponseType,
     GetSingleProductResponseType,
+    OfferType,
     ProductType,
 } from "./types";
 
@@ -118,4 +120,15 @@ export const getSingleProduct = async (id: string): Promise<ProductType> => {
 
     const data: GetSingleProductResponseType = await res.json();
     return data.data;
+};
+// ----------------------------------------------------------------------------------------------------
+// get offer banner
+export const getOfferBanner = async (): Promise<OfferType[]> => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/offers`, {
+        next: { revalidate: 300 },
+    });
+
+    const result: GetOfferBannerResponseType = await res.json();
+
+    return result.data;
 };

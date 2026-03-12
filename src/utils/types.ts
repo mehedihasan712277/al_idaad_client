@@ -163,3 +163,17 @@ export interface GetSingleProductResponseType {
     success: boolean;
     data: ProductType;
 }
+// offer banner------------------------------------
+export type OfferType = {
+    _id: string;
+    url: string;
+    productId: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type GetOfferBannerResponseType = {
+    success: boolean;
+    count: number;
+    data: OfferType[];
+};

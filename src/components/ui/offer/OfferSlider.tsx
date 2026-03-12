@@ -14,8 +14,9 @@ import "swiper/css/effect-fade";
 import { EffectFade, Autoplay } from "swiper/modules";
 import Image from "next/image";
 import Link from "next/link";
+import { OfferType } from "@/utils/types";
 
-const OfferSlider = () => {
+const OfferSlider = ({ offerBanner }: { offerBanner: OfferType[] }) => {
     return (
         <>
             <Swiper
@@ -34,18 +35,13 @@ const OfferSlider = () => {
                 modules={[EffectFade, Autoplay]}
                 className="mySwiper"
             >
-                {[
-                    { img: "https://i.postimg.cc/1XBknN5f/offer-banner-1.png" },
-                    { img: "https://i.postimg.cc/pL4gFvxy/offer-banner-2.png" },
-                    // { img: "https://i.postimg.cc/kMtp7Gy1/offer-t.jpg" },
-                    // { img: "https://i.postimg.cc/HkdKM9pK/thobe-4.jpg" },
-                ].map((speaker, index) => (
-                    <SwiperSlide key={index}>
+                {offerBanner.map((ele) => (
+                    <SwiperSlide key={ele._id}>
                         {/* Image */}
                         <div className="flex justify-center relative w-full aspect-5/3 lg:aspect-5/2">
-                            <Link href={`/all-products`}>
+                            <Link href={`/all-products/details/${ele.productId}`}>
                                 <Image
-                                    src={speaker.img}
+                                    src={ele.url}
                                     alt="al idaad offer product"
                                     width={1920}
                                     height={1068}
