@@ -92,6 +92,7 @@ export const calculateReducedPrice = (price: string | number, discount: string |
     const reduced_price = num_price - Math.round(num_price * (num_discount / 100));
     return reduced_price;
 };
+
 // function to create path of category-----------------------
 export const findCategoryPath = (data: SubCategoryType[], targetId: string): string | null => {
     function dfs(node: SubCategoryType, path: string[]): string | null {
@@ -116,6 +117,7 @@ export const findCategoryPath = (data: SubCategoryType[], targetId: string): str
 
     return null;
 };
+
 // -----------------get lowest level of category-------------
 export const getLowestSubCategories = (categories: CategoryType[]): SubCategoryType[] => {
     const result: SubCategoryType[] = [];
@@ -135,4 +137,37 @@ export const getLowestSubCategories = (categories: CategoryType[]): SubCategoryT
     }
 
     return result;
+};
+
+// ------------------function to find main category---------------------
+type MainParent = {
+    name: string;
+    _id: string;
+};
+interface Category {
+    _id: string;
+    name: string;
+    subCategories: Category[];
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export const findMainParentById = (categories: Category[], targetId: string, mainParent: MainParent | null = null): MainParent | null => {
+    for (const item of categories) {
+        const currentMainParent = mainParent || {
+            name: item.name,
+            _id: item._id,
+        };
+
+        if (item._id === targetId) {
+            return mainParent || currentMainParent;
+        }
+
+        if (item.subCategories.length > 0) {
+            const result = findMainParentById(item.subCategories, targetId, currentMainParent);
+            if (result) return result;
+        }
+    }
+
+    return null;
 };
