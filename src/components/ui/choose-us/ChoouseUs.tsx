@@ -71,31 +71,31 @@ const ChooseUs = () => {
 
             <p className="text-center font-medium mt-16 mb-12">TRUSTED BY THOUSANDS OF CUSTOMERS ACROSS BANGLADESH</p>
 
-            <div className="flex w-full text-center divide-x divide-gray-200 flex-wrap">
+            <div className="flex flex-col gap-4 sm:gap-0 sm:flex-row w-full text-center divide-x divide-gray-200">
                 <div className="flex-1 px-2 sm:px-3 md:px-4 xl:px-6 py-2 sm:py-3 md:py-4">
-                    <div className="text-xl sm:text-3xl md:text-4xl xl:text-5xl font-bold">
+                    <div className="text-4xl sm:text-3xl md:text-4xl xl:text-5xl font-bold">
                         <Counter end={1000} suffix="+" />
                     </div>
-                    <p className="text-xs sm:text-sm md:text-[16px] mt-1 sm:mt-2 font-light text-text_normal">Happy Customers Nationwide</p>
+                    <p className="text-xl sm:text-sm md:text-[16px] mt-1 sm:mt-2 font-light text-text_normal">Happy Customers Nationwide</p>
                 </div>
 
                 <div className="flex-1 px-2 sm:px-3 md:px-4 xl:px-6 py-2 sm:py-3 md:py-4">
-                    <div className="text-xl sm:text-3xl md:text-4xl xl:text-5xl font-bold">
+                    <div className="text-4xl sm:text-3xl md:text-4xl xl:text-5xl font-bold">
                         <Counter end={500} suffix="+" />
                     </div>
-                    <p className="text-xs sm:text-sm md:text-[16px] mt-1 sm:mt-2 font-light text-text_normal">Premium Products Available</p>
+                    <p className="text-xl sm:text-sm md:text-[16px] mt-1 sm:mt-2 font-light text-text_normal">Premium Products Available</p>
                 </div>
 
                 <div className="flex-1 px-2 sm:px-3 md:px-4 xl:px-6 py-2 sm:py-3 md:py-4">
-                    <div className="text-xl sm:text-3xl md:text-4xl xl:text-5xl font-bold">
+                    <div className="text-4xl sm:text-3xl md:text-4xl xl:text-5xl font-bold">
                         <Counter end={99} suffix="%" />
                     </div>
-                    <p className="text-xs sm:text-sm md:text-[16px] mt-1 sm:mt-2 font-light text-text_normal">Customer Satisfaction Rate</p>
+                    <p className="text-xl sm:text-sm md:text-[16px] mt-1 sm:mt-2 font-light text-text_normal">Customer Satisfaction Rate</p>
                 </div>
 
                 <div className="flex-1 px-2 sm:px-3 md:px-4 xl:px-6 py-2 sm:py-3 md:py-4">
-                    <div className="text-xl sm:text-3xl md:text-4xl xl:text-5xl font-bold">24/7</div>
-                    <p className="text-xs sm:text-sm md:text-[16px] mt-1 sm:mt-2 font-light text-text_normal">Customer Support Available</p>
+                    <div className="text-4xl sm:text-3xl md:text-4xl xl:text-5xl font-bold">24/7</div>
+                    <p className="text-xl sm:text-sm md:text-[16px] mt-1 sm:mt-2 font-light text-text_normal">Customer Support Available</p>
                 </div>
             </div>
 
