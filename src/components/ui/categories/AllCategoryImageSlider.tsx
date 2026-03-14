@@ -22,8 +22,8 @@ const AllCategoryImageSlider = ({ categories, categoryImages }: PropsType) => {
     return (
         <div className="relative w-full py-2">
             {/* Fade edges */}
-            <div className="pointer-events-none absolute left-0 top-0 h-full w-16 z-10 bg-linear-to-r from-bg_main to-transparent" />
-            <div className="pointer-events-none absolute right-0 top-0 h-full w-16 z-10 bg-linear-to-l from-bg_main to-transparent" />
+            {/* <div className="pointer-events-none absolute left-0 top-0 h-full w-16 z-10 bg-linear-to-r from-bg_main to-transparent" />
+            <div className="pointer-events-none absolute right-0 top-0 h-full w-16 z-10 bg-linear-to-l from-bg_main to-transparent" /> */}
 
             <Swiper
                 slidesPerView={"auto"}
