@@ -2,12 +2,14 @@ import {
     BannerType,
     BlogCategoryType,
     BlogType,
+    CategoryImageType,
     CategoryType,
     GetAllBannersResponseType,
     GetAllBlogCategoriesResponseType,
     GetAllBlogsResponseType,
     GetAllCategoriesResponseType,
     GetAllProductsResponseType,
+    GetCategoryImagesResponseType,
     GetOfferBannerResponseType,
     GetSingleBlogCategoryResponseType,
     GetSingleBlogResponseType,
@@ -129,6 +131,18 @@ export const getOfferBanner = async (): Promise<OfferType[]> => {
     });
 
     const result: GetOfferBannerResponseType = await res.json();
+
+    return result.data;
+};
+
+// ----------------------------------------------------------------------------------------------------
+//get category images
+export const getCategoryImage = async (): Promise<CategoryImageType[]> => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/category-images`, {
+        next: { revalidate: 300 },
+    });
+
+    const result: GetCategoryImagesResponseType = await res.json();
 
     return result.data;
 };

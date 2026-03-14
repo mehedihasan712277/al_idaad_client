@@ -177,3 +177,19 @@ export type GetOfferBannerResponseType = {
     count: number;
     data: OfferType[];
 };
+// category image-----------------------------------
+export interface CategoryImageType {
+    _id: string;
+    url: string;
+    categoryId: string;
+    categoryName: string;
+    categoryParentName: string;
+    createdAt?: string;
+    updatedAt?: string;
+}
+
+export interface GetCategoryImagesResponseType {
+    success: boolean;
+    count: number;
+    data: CategoryImageType[];
+}
