@@ -206,7 +206,7 @@ const Navbar = () => {
                         </h1>
                         <div className="flex gap-4 items-center">
                             {links.map(({ href, label }) => {
-                                const isActive = pathname === href;
+                                const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
                                 return (
                                     <Link
                                         key={href}
