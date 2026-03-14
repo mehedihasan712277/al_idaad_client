@@ -9,7 +9,7 @@ const Blog = async () => {
 
     return (
         <div>
-            <p className="text-3xl font-poppins text-center font-semibold mb-8">Our Latest News</p>
+            <p className="text-2xl sm:text-3xl font-poppins text-center mb-8">Our Latest News</p>
             <div className="hidden xl:flex justify-between">
                 {blogData.slice(0, 4).map((ele) => (
                     <div key={ele._id}>
