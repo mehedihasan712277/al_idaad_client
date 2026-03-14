@@ -20,7 +20,7 @@ const AllCategoryImageSlider = ({ categories, categoryImages }: PropsType) => {
     const categoryImageList = categoryImages.filter((ele) => categoryIdList.includes(ele.categoryId));
 
     return (
-        <div className="relative w-full py-2">
+        <div className="relative w-full">
             {/* Fade edges */}
             {/* <div className="pointer-events-none absolute left-0 top-0 h-full w-16 z-10 bg-linear-to-r from-bg_main to-transparent" />
             <div className="pointer-events-none absolute right-0 top-0 h-full w-16 z-10 bg-linear-to-l from-bg_main to-transparent" /> */}
@@ -38,7 +38,7 @@ const AllCategoryImageSlider = ({ categories, categoryImages }: PropsType) => {
                 className="mySwiper"
             >
                 {categoryImageList.map((ele) => (
-                    <SwiperSlide key={ele._id} className="w-auto! py-1">
+                    <SwiperSlide key={ele._id} className="w-auto!">
                         <Link href={`/all-products?category=${ele.categoryId}`}>
                             <div className="group w-36 md:w-44 border border-border bg-bg_main hover:border-brand hover:shadow-md transition-all duration-300 rounded-xl overflow-hidden cursor-pointer select-none">
                                 {/* Square image area */}
