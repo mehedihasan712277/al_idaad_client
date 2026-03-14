@@ -15,7 +15,9 @@ const Homepage = () => {
                 <Banner></Banner>
             </div>
             <div className="space-y-12 lg:space-y-20 py-20 px-4 max-w-7xl mx-auto">
-                <AllCategories></AllCategories>
+                <div className="-mt-4 lg:-mt-8 mb-12">
+                    <AllCategories></AllCategories>
+                </div>
                 <FeaturedProduct></FeaturedProduct>
                 <Offer></Offer>
                 <BestSoldProduct></BestSoldProduct>

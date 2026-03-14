@@ -8,8 +8,8 @@ const AllCategories = async () => {
     const categoryImageData = await getCategoryImage();
     return (
         <div>
-            <p className="font-poppins text-2xl sm:text-3xl text-center">Browse Catagories</p>
-            <p className="text-text_normal text-center my-2 mb-4">
+            <p className="font-poppins text-2xl sm:text-3xl leading-0 text-center">Browse Catagories</p>
+            <p className="text-text_normal text-center my-6">
                 Discover our diverse collection of categories and find the product that suits you best
             </p>
             {/* <AllCategoriesClient categories={categoryData}></AllCategoriesClient> */}
