@@ -1,10 +1,5 @@
 "use client";
 
-// ─── No useEffect for resetting state! ───────────────────────────────────────
-// The parent mounts this component fresh each time the modal opens by passing
-// key={modalOpen ? product._id : ""} — React remounts on key change,
-// so all useState values are naturally reset to their initials. Zero effects needed.
-
 import { useState } from "react";
 import { ProductType, ProductVariant, AttarSize } from "@/utils/types";
 import toast from "react-hot-toast";
@@ -15,19 +10,156 @@ interface Props {
     product: ProductType;
     isOpen: boolean;
     onClose: () => void;
-    /** Optional: called after the item is successfully added to cart.
-     *  Use this to redirect (e.g. to /checkout) after "Buy Now" flows. */
     onAfterAdd?: () => void;
     text: string;
 }
 
-const formatVariantLabel = (v: ProductVariant): string => {
-    const parts: string[] = [`Size: ${v.size}`];
-    if (v.color) parts.push(`Color: ${v.color}`);
-    if (v.chest) parts.push(`Chest: ${v.chest}"`);
-    if (v.length) parts.push(`Length: ${v.length}"`);
-    return parts.join(" · ");
+// ─── Variant Selector Sub-component ──────────────────────────────────────────
+
+type VariantSelectorProps = {
+    variants: ProductVariant[];
+    selectedVariant: ProductVariant | null;
+    setSelectedVariant: (v: ProductVariant | null) => void;
+    isInCart: (key: string) => boolean;
+    buildCartKeyFn: (v: ProductVariant) => string;
+    applyDiscount: (p: number) => number;
+    basePrice: number;
+    hasPrice: boolean;
 };
+
+const VariantSelector = ({
+    variants,
+    selectedVariant,
+    setSelectedVariant,
+    isInCart,
+    buildCartKeyFn,
+    applyDiscount,
+    basePrice,
+    hasPrice,
+}: VariantSelectorProps) => {
+    const colorGroups = variants.reduce<Record<string, ProductVariant[]>>((acc, v) => {
+        const key = v.color?.trim() || "__others__";
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(v);
+        return acc;
+    }, {});
+
+    const colorKeys = Object.keys(colorGroups);
+    const hasMultipleGroups = colorKeys.length > 1;
+
+    const [activeColor, setActiveColor] = useState<string>(colorKeys[0]);
+
+    const tabVariants = colorGroups[activeColor] ?? [];
+
+    const variantPrice = (v: ProductVariant): string => {
+        if (v.price != null) return `৳ ${applyDiscount(v.price).toLocaleString()}`;
+        if (hasPrice) return `৳ ${applyDiscount(basePrice).toLocaleString()}`;
+        return "Base price";
+    };
+
+    return (
+        <div className="pt-5">
+            <div className="flex items-center justify-between mb-3">
+                <p className="text-xs font-semibold text-gray-500">
+                    Available Sizes
+                    {selectedVariant && (
+                        <span className="ml-2 text-brand">
+                            — {selectedVariant.size}
+                            {selectedVariant.color ? ` · ${selectedVariant.color}` : ""}
+                        </span>
+                    )}
+                </p>
+                {selectedVariant && (
+                    <button onClick={() => setSelectedVariant(null)} className="text-xs text-gray-400 hover:text-red-400 transition">
+                        Clear
+                    </button>
+                )}
+            </div>
+
+            {/* Color Tabs */}
+            {hasMultipleGroups && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                    {colorKeys.map((key) => {
+                        const label = key === "__others__" ? "Others" : key;
+                        const isActive = activeColor === key;
+                        const groupHasSelection = colorGroups[key].some(
+                            (v) => v.size === selectedVariant?.size && v.color === selectedVariant?.color,
+                        );
+
+                        return (
+                            <button
+                                key={key}
+                                onClick={() => {
+                                    setActiveColor(key);
+                                    if (selectedVariant && selectedVariant.color !== (key === "__others__" ? undefined : key)) {
+                                        setSelectedVariant(null);
+                                    }
+                                }}
+                                className={`relative px-4 py-1.5 rounded-full text-xs font-semibold border-2 transition-all duration-150
+                                    ${
+                                        isActive
+                                            ? "border-brand bg-brand/5 text-brand"
+                                            : "border-gray-200 bg-gray-50 text-gray-500 hover:border-gray-300"
+                                    }`}
+                            >
+                                {label}
+                                {groupHasSelection && !isActive && <span className="absolute -top-1 -right-1 w-2 h-2 bg-brand rounded-full" />}
+                            </button>
+                        );
+                    })}
+                </div>
+            )}
+
+            {/* Size Chips */}
+            <div className="flex flex-wrap gap-2">
+                {tabVariants.map((v, i) => {
+                    const isSelected = selectedVariant?.size === v.size && selectedVariant?.color === v.color;
+                    const variantInCart = isInCart(buildCartKeyFn(v));
+
+                    return (
+                        <button
+                            key={i}
+                            onClick={() => setSelectedVariant(isSelected ? null : v)}
+                            className={`relative flex flex-col items-center justify-center px-4 py-2.5 rounded-xl border-2 transition-all duration-150 min-w-16
+                                ${isSelected ? "border-brand bg-brand/5" : "border-gray-100 bg-gray-50 hover:border-gray-300"}`}
+                        >
+                            <span className={`text-sm font-bold leading-tight ${isSelected ? "text-brand" : "text-text_normal"}`}>{v.size}</span>
+
+                            {(v.chest || v.length) && (
+                                <span className="text-[10px] text-gray-400 mt-0.5 whitespace-nowrap">
+                                    {v.chest ? `${v.chest}"` : ""}
+                                    {v.chest && v.length ? " · " : ""}
+                                    {v.length ? `${v.length}"` : ""}
+                                </span>
+                            )}
+
+                            <span className={`text-[11px] font-semibold mt-1 ${isSelected ? "text-brand" : "text-gray-500"}`}>{variantPrice(v)}</span>
+
+                            {variantInCart && (
+                                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                                    <svg
+                                        width="8"
+                                        height="8"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="white"
+                                        strokeWidth="3"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                </span>
+                            )}
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+// ─── Main Component ───────────────────────────────────────────────────────────
 
 const VariantSelectorModal = ({ product, isOpen, onClose, onAfterAdd, text }: Props) => {
     const { addItem, isInCart } = useCart();
@@ -35,13 +167,14 @@ const VariantSelectorModal = ({ product, isOpen, onClose, onAfterAdd, text }: Pr
     const hasVariants = Array.isArray(product.variants) && product.variants.length > 0;
     const hasAttarSizes = Array.isArray(product.attarSizes) && product.attarSizes.length > 0;
 
-    // ✅ Plain useState — reset is handled by the parent re-keying this component
     const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
     const [selectedAttar, setSelectedAttar] = useState<AttarSize | null>(null);
 
+    const applyDiscount = (p: number): number => (product.discountPercentage ? Math.round(p * (1 - product.discountPercentage / 100)) : p);
+
     const resolvedPrice = (() => {
-        if (hasVariants && selectedVariant?.price != null) return selectedVariant.price;
-        if (hasAttarSizes && selectedAttar) return selectedAttar.price;
+        if (hasVariants && selectedVariant?.price != null) return applyDiscount(selectedVariant.price);
+        if (hasAttarSizes && selectedAttar) return applyDiscount(selectedAttar.price);
         return product.discountPercentage ? calculateReducedPrice(product.price, product.discountPercentage) : product.price;
     })();
 
@@ -61,11 +194,7 @@ const VariantSelectorModal = ({ product, isOpen, onClose, onAfterAdd, text }: Pr
             selectedAttarSize: selectedAttar ?? undefined,
             resolvedPrice,
         });
-        toast.success("Added to cart 🛒", {
-            position: "bottom-center",
-            duration: 500,
-        });
-        // onClose();
+        toast.success("Added to cart 🛒", { position: "bottom-center", duration: 500 });
         onAfterAdd?.();
     };
 
@@ -120,53 +249,21 @@ const VariantSelectorModal = ({ product, isOpen, onClose, onAfterAdd, text }: Pr
                         </button>
                     </div>
 
-                    {/* ── THOBE VARIANTS ─────────────────────────────────────── */}
+                    {/* ── THOBE VARIANTS ── */}
                     {hasVariants && (
-                        <div className="pt-5">
-                            <p className="text-xs font-semibold text-gray-500 mb-3">Available Sizes</p>
-                            <div className="space-y-2">
-                                {product.variants!.map((v, i) => {
-                                    const isSelected = selectedVariant?.size === v.size && selectedVariant?.color === v.color;
-                                    const inCartAlready = isInCart(buildCartKey(product, v));
-
-                                    return (
-                                        <button
-                                            key={i}
-                                            onClick={() => setSelectedVariant(isSelected ? null : v)}
-                                            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 transition-all duration-150 text-left
-                                                ${isSelected ? "border-brand bg-brand/5" : "border-gray-100 hover:border-gray-300 bg-gray-50"}`}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div
-                                                    className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition
-                                                    ${isSelected ? "border-brand" : "border-gray-300"}`}
-                                                >
-                                                    {isSelected && <div className="w-2 h-2 rounded-full bg-brand" />}
-                                                </div>
-                                                <div>
-                                                    <p className={`text-sm font-semibold ${isSelected ? "text-brand" : "text-text_normal"}`}>
-                                                        {formatVariantLabel(v)}
-                                                    </p>
-                                                    {inCartAlready && (
-                                                        <p className="text-[10px] text-green-600 font-medium mt-0.5">Already in cart</p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            {v.price != null ? (
-                                                <span className={`text-sm font-bold ${isSelected ? "text-brand" : "text-text_normal"}`}>
-                                                    ৳ {v.price.toLocaleString()}
-                                                </span>
-                                            ) : (
-                                                <span className="text-xs text-gray-400 italic">Base price</span>
-                                            )}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
+                        <VariantSelector
+                            variants={product.variants!}
+                            selectedVariant={selectedVariant}
+                            setSelectedVariant={setSelectedVariant}
+                            isInCart={isInCart}
+                            buildCartKeyFn={(v) => buildCartKey(product, v)}
+                            applyDiscount={applyDiscount}
+                            basePrice={product.price}
+                            hasPrice={Boolean(product.price)}
+                        />
                     )}
 
-                    {/* ── ATTAR SIZES ────────────────────────────────────────── */}
+                    {/* ── ATTAR SIZES ── */}
                     {hasAttarSizes && (
                         <div className="pt-5">
                             <p className="text-xs font-semibold text-gray-500 mb-3">Available Sizes</p>
@@ -197,7 +294,7 @@ const VariantSelectorModal = ({ product, isOpen, onClose, onAfterAdd, text }: Pr
                                             </svg>
                                             <p className={`text-sm font-bold ${isSelected ? "text-brand" : "text-text_normal"}`}>{a.ml} ml</p>
                                             <p className={`text-sm font-semibold mt-0.5 ${isSelected ? "text-brand" : "text-gray-600"}`}>
-                                                ৳ {a.price.toLocaleString()}
+                                                ৳ {applyDiscount(a.price).toLocaleString()}
                                             </p>
                                             {inCartAlready && (
                                                 <span className="absolute top-1.5 right-1.5 text-[9px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-semibold">
@@ -211,7 +308,7 @@ const VariantSelectorModal = ({ product, isOpen, onClose, onAfterAdd, text }: Pr
                         </div>
                     )}
 
-                    {/* ── Price + Add button ─────────────────────────────────── */}
+                    {/* ── Price + Add button ── */}
                     <div className="mt-5 pt-4 border-t border-gray-100 flex flex-col sm:flex-row items-center gap-4 sm:gap-0 justify-between">
                         <div>
                             <p className="text-xs text-gray-400 text-center sm:text-start">
@@ -250,7 +347,7 @@ const VariantSelectorModal = ({ product, isOpen, onClose, onAfterAdd, text }: Pr
                                     <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
                                 </svg>
                             )}
-                            {text === "Add to Cart" ? (alreadyInCart ? "Click to Add One More" : `${text}`) : "Check Out"}
+                            {text === "Add to Cart" ? (alreadyInCart ? "Click to Add One More" : text) : "Check Out"}
                         </button>
                     </div>
                 </div>

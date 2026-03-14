@@ -31,6 +31,137 @@ const StarRating = ({ rating }: { rating: number }) => (
     </div>
 );
 
+// ─── Variant Selector ─────────────────────────────────────────────────────────
+
+type VariantSelectorProps = {
+    variants: ProductVariant[];
+    selectedVariant: ProductVariant | null;
+    setSelectedVariant: (v: ProductVariant | null) => void;
+    variantButtonPrice: (v: ProductVariant) => string;
+    isInCart: (key: string) => boolean;
+    buildCartKeyFn: (v: ProductVariant) => string;
+};
+
+const VariantSelector = ({ variants, selectedVariant, setSelectedVariant, variantButtonPrice, isInCart, buildCartKeyFn }: VariantSelectorProps) => {
+    // Group variants by color; no-color variants go into "__others__"
+    const colorGroups = variants.reduce<Record<string, ProductVariant[]>>((acc, v) => {
+        const key = v.color?.trim() || "__others__";
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(v);
+        return acc;
+    }, {});
+
+    const colorKeys = Object.keys(colorGroups);
+    const hasMultipleGroups = colorKeys.length > 1;
+
+    const [activeColor, setActiveColor] = useState<string>(colorKeys[0]);
+
+    const tabVariants = colorGroups[activeColor] ?? [];
+
+    return (
+        <div className="mb-6">
+            <div className="flex items-center justify-between mb-3">
+                <p className="text-sm font-bold text-text_normal">
+                    Select Size
+                    {selectedVariant && (
+                        <span className="ml-2 text-brand font-semibold">
+                            — {selectedVariant.size}
+                            {selectedVariant.color ? ` · ${selectedVariant.color}` : ""}
+                        </span>
+                    )}
+                </p>
+                {selectedVariant && (
+                    <button onClick={() => setSelectedVariant(null)} className="text-xs text-gray-400 hover:text-red-400 transition">
+                        Clear
+                    </button>
+                )}
+            </div>
+
+            {/* Color Tabs */}
+            {hasMultipleGroups && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                    {colorKeys.map((key) => {
+                        const label = key === "__others__" ? "Others" : key;
+                        const isActive = activeColor === key;
+                        const groupHasSelection = colorGroups[key].some(
+                            (v) => v.size === selectedVariant?.size && v.color === selectedVariant?.color,
+                        );
+
+                        return (
+                            <button
+                                key={key}
+                                onClick={() => {
+                                    setActiveColor(key);
+                                    if (selectedVariant && selectedVariant.color !== (key === "__others__" ? undefined : key)) {
+                                        setSelectedVariant(null);
+                                    }
+                                }}
+                                className={`relative px-4 py-1.5 rounded-full text-xs font-semibold border-2 transition-all duration-150
+                                    ${
+                                        isActive
+                                            ? "border-brand bg-brand/5 text-brand"
+                                            : "border-gray-200 bg-gray-50 text-gray-500 hover:border-gray-300"
+                                    }`}
+                            >
+                                {label}
+                                {groupHasSelection && !isActive && <span className="absolute -top-1 -right-1 w-2 h-2 bg-brand rounded-full" />}
+                            </button>
+                        );
+                    })}
+                </div>
+            )}
+
+            {/* Size Chips */}
+            <div className="flex flex-wrap gap-2">
+                {tabVariants.map((v, i) => {
+                    const isSelected = selectedVariant?.size === v.size && selectedVariant?.color === v.color;
+                    const variantInCart = isInCart(buildCartKeyFn(v));
+
+                    return (
+                        <button
+                            key={i}
+                            onClick={() => setSelectedVariant(isSelected ? null : v)}
+                            className={`relative flex flex-col items-center justify-center px-4 py-2.5 rounded-xl border-2 transition-all duration-150 min-w-16
+                                ${isSelected ? "border-brand bg-brand/5" : "border-gray-100 bg-gray-50 hover:border-gray-300"}`}
+                        >
+                            <span className={` font-bold leading-tight ${isSelected ? "text-brand" : "text-text_normal"}`}>{v.size}</span>
+
+                            {(v.chest || v.length) && (
+                                <span className="text-xs text-gray-400 mt-0.5 whitespace-nowrap">
+                                    {v.chest ? `${v.chest}"` : ""}
+                                    {v.chest && v.length ? " · " : ""}
+                                    {v.length ? `${v.length}"` : ""}
+                                </span>
+                            )}
+
+                            <span className={`text-sm font-semibold mt-1 ${isSelected ? "text-brand" : "text-gray-500"}`}>
+                                {variantButtonPrice(v)}
+                            </span>
+
+                            {variantInCart && (
+                                <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                                    <svg
+                                        width="8"
+                                        height="8"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="white"
+                                        strokeWidth="3"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                </span>
+                            )}
+                        </button>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 const ProductDetailsClient = ({ product }: { product: ProductType }) => {
@@ -57,7 +188,7 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
 
     const hasVariants = Array.isArray(variants) && variants.length > 0;
     const hasAttarSizes = Array.isArray(attarSizes) && attarSizes.length > 0;
-    const hasPrice = Boolean(price); // false when product uses priceRange (price === 0)
+    const hasPrice = Boolean(price);
 
     // ── Image gallery state ───────────────────────────────────────────────────
     const allImages = [thumbnail, ...images.filter((img) => img !== thumbnail)];
@@ -69,31 +200,23 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
 
     // ── Price helpers ─────────────────────────────────────────────────────────
 
-    /** Apply discount to a single price value */
     const applyDiscount = (p: number): number => (discountPercentage ? Math.round(p * (1 - discountPercentage / 100)) : p);
 
-    /**
-     * Resolved single price — null means "use priceRange" (no single price available
-     * and no variant/attar has been selected yet).
-     */
     const resolvedSinglePrice: number | null = (() => {
         if (hasVariants && selectedVariant?.price != null) return selectedVariant.price;
         if (hasAttarSizes && selectedAttar) return selectedAttar.price;
         if (hasPrice) return price;
-        return null; // fall through to range
+        return null;
     })();
 
     const showRange = resolvedSinglePrice === null;
 
-    // Final display values for single-price path
     const displaySinglePrice = resolvedSinglePrice !== null ? applyDiscount(resolvedSinglePrice) : null;
     const hasDiscount = Boolean(discountPercentage);
 
-    // Final display values for range path
     const displayRangeMin = applyDiscount(priceRange.min);
     const displayRangeMax = applyDiscount(priceRange.max);
 
-    // Price used when adding to cart (use min of range as sensible fallback)
     const cartPrice = displaySinglePrice ?? displayRangeMin;
 
     const cartKey = buildCartKey(product, selectedVariant ?? undefined, selectedAttar ?? undefined);
@@ -138,15 +261,9 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
         router.push("/checkout");
     };
 
-    // ── Variant button price display ──────────────────────────────────────────
     const variantButtonPrice = (v: ProductVariant): string => {
-        if (v.price != null) {
-            return `৳ ${applyDiscount(v.price).toLocaleString()}`;
-        }
-        if (hasPrice) {
-            return `৳ ${applyDiscount(price).toLocaleString()}`;
-        }
-        // Variant has no own price and product uses a range — show the range
+        if (v.price != null) return `৳ ${applyDiscount(v.price).toLocaleString()}`;
+        if (hasPrice) return `৳ ${applyDiscount(price).toLocaleString()}`;
         return `৳ ${displayRangeMin.toLocaleString()} – ৳ ${displayRangeMax.toLocaleString()}`;
     };
 
@@ -170,10 +287,9 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
             {/* ── Main grid ── */}
             <div className="flex flex-col sm:flex-row gap-4 lg:gap-8 xl:gap-14">
                 {/* ── LEFT: Image Gallery ── */}
-                <div className="flex gap-4 flex-col md:flex-row  ">
+                <div className="flex gap-4 flex-col md:flex-row">
                     {/* Main image */}
                     <div className="relative">
-                        {/* Badges */}
                         <div className="absolute top-3 left-3 z-10 flex flex-col gap-1.5">
                             {!inStock && <span className="bg-gray-800 text-white text-xs font-bold px-3 py-1 rounded-full">Out of Stock</span>}
                             {hasDiscount && inStock && (
@@ -186,7 +302,7 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                         </div>
                     </div>
 
-                    {/* Thumbnail strip — below main image */}
+                    {/* Thumbnail strip */}
                     {allImages.length > 1 && (
                         <div className="flex gap-2 flex-wrap md:flex-col">
                             {allImages.map((img, i) => (
@@ -204,7 +320,7 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                 </div>
 
                 {/* ── RIGHT: Product Info ── */}
-                <div className="flex grow flex-col ">
+                <div className="flex grow flex-col">
                     {/* Category + brand */}
                     <div className="flex items-center gap-2 mb-3">
                         <span className="text-xs font-semibold text-brand uppercase tracking-widest">{category.name}</span>
@@ -227,7 +343,6 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                     {/* ── Price ── */}
                     <div className="flex items-baseline gap-3 mb-5 flex-wrap">
                         {showRange ? (
-                            // ── Range price (no single price, no selection yet) ──
                             <>
                                 <span className="text-3xl font-bold text-brand">
                                     ৳ {displayRangeMin.toLocaleString()} – ৳ {displayRangeMax.toLocaleString()}
@@ -239,7 +354,6 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                                 )}
                             </>
                         ) : (
-                            // ── Single price ──
                             <>
                                 <span className="text-3xl font-bold text-brand">৳ {displaySinglePrice!.toLocaleString()}</span>
                                 {hasDiscount && (
@@ -247,7 +361,6 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                                 )}
                             </>
                         )}
-                        {/* "Select for exact price" hint */}
                         {(hasVariants && !selectedVariant) || (hasAttarSizes && !selectedAttar) ? (
                             <span className="text-xs text-gray-400 italic">
                                 {hasVariants ? "Select size for exact price" : "Select amount for exact price"}
@@ -258,69 +371,16 @@ const ProductDetailsClient = ({ product }: { product: ProductType }) => {
                     {/* Divider */}
                     <div className="border-t border-border mb-5" />
 
-                    {/* ── VARIANT SELECTOR (Thobe) ── */}
+                    {/* ── VARIANT SELECTOR ── */}
                     {hasVariants && (
-                        <div className="mb-6">
-                            <div className="flex items-center justify-between mb-3">
-                                <p className="text-sm font-bold text-text_normal">
-                                    Select Size
-                                    {selectedVariant && (
-                                        <span className="ml-2 text-brand font-semibold">
-                                            — {selectedVariant.size}
-                                            {selectedVariant.color ? ` / ${selectedVariant.color}` : ""}
-                                        </span>
-                                    )}
-                                </p>
-                                {selectedVariant && (
-                                    <button onClick={() => setSelectedVariant(null)} className="text-xs text-gray-400 hover:text-red-400 transition">
-                                        Clear
-                                    </button>
-                                )}
-                            </div>
-                            <div className="space-y-2">
-                                {variants!.map((v, i) => {
-                                    const isSelected = selectedVariant?.size === v.size && selectedVariant?.color === v.color;
-                                    const variantInCart = isInCart(buildCartKey(product, v));
-
-                                    return (
-                                        <button
-                                            key={i}
-                                            onClick={() => setSelectedVariant(isSelected ? null : v)}
-                                            className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 text-left transition-all duration-150
-                                                    ${isSelected ? "border-brand bg-brand/5" : "border-gray-100 hover:border-gray-300 bg-gray-50"}`}
-                                        >
-                                            <div className="flex items-center gap-3">
-                                                <div
-                                                    className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition
-                                                        ${isSelected ? "border-brand" : "border-gray-300"}`}
-                                                >
-                                                    {isSelected && <div className="w-2 h-2 rounded-full bg-brand" />}
-                                                </div>
-                                                <div>
-                                                    <p
-                                                        className={`text-sm font-semibold leading-tight ${isSelected ? "text-brand" : "text-text_normal"}`}
-                                                    >
-                                                        Size {v.size}
-                                                        {v.color ? ` · ${v.color}` : ""}
-                                                    </p>
-                                                    {(v.chest || v.length) && (
-                                                        <p className="text-xs text-gray-400 mt-0.5">
-                                                            {v.chest ? `Chest ${v.chest}"` : ""}
-                                                            {v.chest && v.length ? " · " : ""}
-                                                            {v.length ? `Length ${v.length}"` : ""}
-                                                        </p>
-                                                    )}
-                                                    {variantInCart && <p className="text-[10px] text-green-600 font-semibold mt-0.5">✓ In cart</p>}
-                                                </div>
-                                            </div>
-                                            <span className={`text-sm font-bold shrink-0 ${isSelected ? "text-brand" : "text-text_normal"}`}>
-                                                {variantButtonPrice(v)}
-                                            </span>
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
+                        <VariantSelector
+                            variants={variants!}
+                            selectedVariant={selectedVariant}
+                            setSelectedVariant={setSelectedVariant}
+                            variantButtonPrice={variantButtonPrice}
+                            isInCart={isInCart}
+                            buildCartKeyFn={(v) => buildCartKey(product, v)}
+                        />
                     )}
 
                     {/* ── ATTAR SIZE SELECTOR ── */}
