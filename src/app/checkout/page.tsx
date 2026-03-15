@@ -132,18 +132,18 @@ const CheckoutPage = () => {
 
     if (orderId) return <OrderSuccess orderId={orderId} />;
 
-    // Per-item: check if user's city matches the product's special city → use special charge, else regular
-    const getItemDeliveryCharge = (item: CartItem, city: string): number => {
-        if (!city.trim()) return item.deliveryCharge.regular.charge;
-        const userCity = city.toLowerCase().trim();
+    // Per-item: check if user's district matches the product's special city → use special charge, else regular
+    const getItemDeliveryCharge = (item: CartItem, district: string): number => {
+        if (!district.trim()) return item.deliveryCharge.regular.charge;
+        const userDistrict = district.toLowerCase().trim();
         const specialCity = item.deliveryCharge.special.city.toLowerCase().trim();
-        return userCity.includes(specialCity) || specialCity.includes(userCity)
+        return userDistrict.includes(specialCity) || specialCity.includes(userDistrict)
             ? item.deliveryCharge.special.charge
             : item.deliveryCharge.regular.charge;
     };
 
     // For a single shipment to one address, use the highest charge across all items
-    const deliveryCharge = items.length > 0 ? Math.max(...items.map((item) => getItemDeliveryCharge(item, form.city))) : 0;
+    const deliveryCharge = items.length > 0 ? Math.max(...items.map((item) => getItemDeliveryCharge(item, form.district))) : 0;
 
     // total price
     const grandTotal = totalPrice + deliveryCharge;
@@ -524,13 +524,13 @@ const CheckoutPage = () => {
                                 <div className="flex justify-between text-sm">
                                     <span className="text-gray-500 flex items-center gap-1">
                                         Delivery Charge
-                                        {form.city &&
+                                        {form.district &&
                                             items.length > 0 &&
                                             (() => {
                                                 const maxItem = items.reduce((a, b) =>
-                                                    getItemDeliveryCharge(a, form.city) >= getItemDeliveryCharge(b, form.city) ? a : b,
+                                                    getItemDeliveryCharge(a, form.district) >= getItemDeliveryCharge(b, form.district) ? a : b,
                                                 );
-                                                const isSpecial = form.city
+                                                const isSpecial = form.district
                                                     .toLowerCase()
                                                     .trim()
                                                     .includes(maxItem.deliveryCharge.special.city.toLowerCase().trim());
