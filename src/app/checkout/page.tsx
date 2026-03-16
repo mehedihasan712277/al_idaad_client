@@ -30,7 +30,8 @@ const INITIAL_FORM: FormData = {
 
 // ─── Success Screen ───────────────────────────────────────────────────────────
 
-const OrderSuccess = ({ orderId }: { orderId: string }) => (
+// ✅ Now accepts both trackingCode (from Steadfast) and orderId (MongoDB fallback)
+const OrderSuccess = ({ trackingCode, orderId, steadfastSuccess }: { trackingCode: string; orderId: string; steadfastSuccess: boolean }) => (
     <div className="min-h-screen bg-bg_main flex items-center justify-center px-4">
         <div className="text-center max-w-md w-full">
             <div className="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
@@ -47,8 +48,35 @@ const OrderSuccess = ({ orderId }: { orderId: string }) => (
                 </svg>
             </div>
             <h1 className="text-2xl font-bold text-text_normal mb-2">Order Placed!</h1>
-            <p className="text-gray-500 text-sm mb-1">Your order ID is</p>
-            <p className="font-mono font-bold text-brand text-lg mb-4">{orderId}</p>
+
+            {/* ✅ Show Steadfast tracking code as the primary identifier */}
+            {steadfastSuccess && trackingCode ? (
+                <>
+                    <p className="text-gray-500 text-sm mb-1">Your tracking code is</p>
+                    <p className="font-mono font-bold text-brand text-lg mb-1">{trackingCode}</p>
+                    <p className="text-xs text-gray-400 mb-4">
+                        Use this to track your delivery on{" "}
+                        <a
+                            href={`https://steadfast.com.bd/t/${trackingCode}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-brand underline"
+                        >
+                            steadfast.com.bd
+                        </a>
+                    </p>
+                </>
+            ) : (
+                <>
+                    {/* ✅ Steadfast failed — show DB order ID as fallback */}
+                    <p className="text-gray-500 text-sm mb-1">Your order ID is</p>
+                    <p className="font-mono font-bold text-brand text-lg mb-4">{orderId}</p>
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-4 text-left text-xs text-yellow-800">
+                        Your order was saved successfully. Courier tracking will be assigned shortly — we will contact you to confirm.
+                    </div>
+                </>
+            )}
+
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8 text-left">
                 <div className="flex gap-3">
                     <svg
@@ -98,9 +126,15 @@ const CheckoutPage = () => {
     const [form, setForm] = useState<FormData>(INITIAL_FORM);
     const [errors, setErrors] = useState<Partial<FormData>>({});
     const [loading, setLoading] = useState(false);
-    const [orderId, setOrderId] = useState<string | null>(null);
 
-    if (items.length === 0 && !orderId) {
+    // ✅ Store tracking info separately instead of a single orderId string
+    const [orderResult, setOrderResult] = useState<{
+        orderId: string;
+        trackingCode: string;
+        steadfastSuccess: boolean;
+    } | null>(null);
+
+    if (items.length === 0 && !orderResult) {
         return (
             <div className="min-h-screen bg-bg_main flex items-center justify-center px-4">
                 <div className="text-center">
@@ -130,7 +164,10 @@ const CheckoutPage = () => {
         );
     }
 
-    if (orderId) return <OrderSuccess orderId={orderId} />;
+    // ✅ Show success screen with tracking info
+    if (orderResult) {
+        return <OrderSuccess trackingCode={orderResult.trackingCode} orderId={orderResult.orderId} steadfastSuccess={orderResult.steadfastSuccess} />;
+    }
 
     // Per-item: check if user's district matches the product's special city → use special charge, else regular
     const getItemDeliveryCharge = (item: CartItem, district: string): number => {
@@ -228,9 +265,16 @@ const CheckoutPage = () => {
                 return;
             }
 
-            const newOrderId = data?.data?._id ?? data?._id ?? `ORD-${Date.now()}`;
+            // ✅ Extract tracking_code and orderId from the updated backend response shape:
+            // { success: true, data: { orderId, tracking_code, consignment_id, steadfastSuccess } }
+            const { orderId, tracking_code, steadfastSuccess } = data.data;
+
             clearCart();
-            setOrderId(newOrderId);
+            setOrderResult({
+                orderId: orderId ?? `ORD-${Date.now()}`,
+                trackingCode: tracking_code ?? "",
+                steadfastSuccess: steadfastSuccess ?? false,
+            });
         } catch {
             toast.error("Something went wrong. Please check your connection and try again.");
         } finally {
