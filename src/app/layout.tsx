@@ -50,8 +50,50 @@ const dmSerif = DM_Serif_Display({
 });
 
 export const metadata: Metadata = {
-    title: "Al Idaad",
-    description: "Al Idaad is a clothing brand mainly sells Thobe and Islamic items",
+    metadataBase: new URL("https://al-idaad-client.vercel.app"), // 🔁 replace with your real domain
+
+    title: {
+        default: "Al Idaad | Premium Clothing & Attar in Bangladesh",
+        template: "%s | Al Idaad",
+    },
+
+    description:
+        "Shop premium Islamic clothing in Bangladesh. Buy Thobe, Panjabi, Shirts, Pants and Attar from Al Idaad. جودة, style, and modest fashion in one place.",
+
+    keywords: [
+        "Al Idaad",
+        "clothing Bangladesh",
+        "Thobe Bangladesh",
+        "Panjabi Bangladesh",
+        "Attar Bangladesh",
+        "Modest fashion BD",
+        "Islamic dress for men",
+        "Arabic thobe BD",
+        "perfume attar Bangladesh",
+    ],
+
+    authors: [{ name: "Al Idaad" }],
+    creator: "Al Idaad",
+
+    openGraph: {
+        title: "Al Idaad | Clothing & Attar",
+        description: "Premium Thobe, Panjabi, Shirts & Attar in Bangladesh. Elevate your modest fashion with Al Idaad.",
+        url: "https://al-idaad-client.vercel.app",
+        siteName: "Al Idaad",
+        locale: "en_BD",
+        type: "website",
+    },
+
+    twitter: {
+        card: "summary_large_image",
+        title: "Al Idaad | Clothing Bangladesh",
+        description: "Buy Thobe, Panjabi & Attar online in Bangladesh.",
+    },
+
+    robots: {
+        index: true,
+        follow: true,
+    },
 };
 
 export default function RootLayout({

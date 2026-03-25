@@ -1,5 +1,18 @@
 import BlogPageClient from "@/components/ui/blog/BlogPageClient";
 import { getBlogCategories, getBlogs } from "@/utils/fetchData";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Blog",
+    description: "Read blogs about Islamic lifestyle, fashion, Thobe styling, Attar fragrance and modest fashion trends in Bangladesh.",
+
+    keywords: ["Islamic blog Bangladesh", "Thobe fashion tips", "Attar guide", "Modest fashion blog"],
+
+    openGraph: {
+        title: "Al Idaad Blog",
+        description: "Explore articles on Islamic fashion and lifestyle.",
+    },
+};
 
 const BlogPage = async () => {
     const blogData = await getBlogs();

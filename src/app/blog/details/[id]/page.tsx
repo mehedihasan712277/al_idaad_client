@@ -4,6 +4,36 @@ import { BlogType, GetSingleBlogResponseType } from "@/utils/types";
 import Image from "next/image";
 import Link from "next/link";
 
+import { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+    const { id } = await params;
+    const blog = await getSingleBlog(id);
+
+    if (!blog) {
+        return {
+            title: "Blog Not Found",
+        };
+    }
+
+    return {
+        title: blog.title,
+        description: blog.description.replace(/<[^>]*>?/gm, "").slice(0, 160),
+
+        keywords: [blog.title, blog.category?.name, "Islamic Fashion blog", "Al Idaad blog"],
+
+        openGraph: {
+            title: blog.title,
+            description: blog.description,
+            images: [
+                {
+                    url: blog.thumbnail,
+                },
+            ],
+        },
+    };
+}
+
 export const revalidate = 300;
 
 async function getSingleBlog(id: string): Promise<BlogType> {
