@@ -157,9 +157,7 @@ const Navbar = () => {
                                 </svg>
                             </button>
                         </div>
-                        <h1
-                            className={`flex-1 text-center text-3xl font-bold font-proza-libre select-none ${effectiveAnimate ? "text-white" : "text-text_normal"}`}
-                        >
+                        <h1 className={`flex-1 text-center font-dm-serif text-3xl select-none ${effectiveAnimate ? "text-white" : "text-text_dark"}`}>
                             Al Idaad
                         </h1>
                         <div className="flex items-center gap-1">
@@ -201,9 +199,7 @@ const Navbar = () => {
 
                     {/* ── DESKTOP ── */}
                     <div className="hidden lg:flex w-full items-center justify-between">
-                        <h1 className={`text-3xl font-bold font-proza-libre select-none ${effectiveAnimate ? "text-white" : "text-text_normal"}`}>
-                            Al Idaad
-                        </h1>
+                        <h1 className={`text-3xl select-none font-dm-serif ${effectiveAnimate ? "text-white" : "text-text_dark"}`}>Al Idaad</h1>
                         <div className="flex gap-4 items-center">
                             {links.map(({ href, label }) => {
                                 const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);

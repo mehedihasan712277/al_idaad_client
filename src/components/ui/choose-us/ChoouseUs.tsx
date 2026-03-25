@@ -63,13 +63,13 @@ const Counter = ({ end, duration = 2000, suffix = "" }: CounterProps) => {
 const ChooseUs = () => {
     return (
         <section>
-            <h2 className="heading text-center">
+            <h2 className="heading text-center font-bold">
                 Why Choose <span className="text-brand">Al Idaad</span>
             </h2>
 
             <p className="text-center">Your trusted partner for quality products and exceptional service across Bangladesh</p>
 
-            <p className="text-center font-medium mt-16 mb-12">TRUSTED BY THOUSANDS OF CUSTOMERS ACROSS BANGLADESH</p>
+            <p className="text-center mt-4 mb-12">TRUSTED BY THOUSANDS OF CUSTOMERS ACROSS BANGLADESH</p>
 
             <div className="flex flex-col gap-4 sm:gap-0 sm:flex-row w-full text-center divide-x divide-gray-200">
                 <div className="flex-1 px-2 sm:px-3 md:px-4 xl:px-6 py-2 sm:py-3 md:py-4">

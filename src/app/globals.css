@@ -4,6 +4,9 @@
     --font-outfit: var(--font-outfit);
     --font-poppins: var(--font-poppins);
     --font-proza-libre: var(--font-proza-libre);
+    /* --font-belanosima: var(--font-belanosima);
+    --font-oswald: var(--font-oswald); */
+    --font-dm-serif: var(--font-dm-serif);
 
     /* primary color */
     --color-brand: #fe9a00;
@@ -23,6 +26,9 @@
     --color-border: #dddddd;
 
     /* ----------responsive--------- */
+}
+.font-dm-serif {
+    font-family: var(--font-dm-serif), serif;
 }
 
 .ProseMirror h1 {

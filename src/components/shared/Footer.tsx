@@ -11,7 +11,7 @@ const Footer = () => {
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:justify-between gap-10 border-b border-gray-800 pb-8 mb-8">
                 <div className="space-y-4">
                     <div className="md:pb-4 w-fit">
-                        <p className="font-proza-libre text-4xl font-semibold">Al Idaad</p>
+                        <p className="font-dm-serif text-5xl tracking-widest font-semibold">Al Idaad</p>
                         <p className="font-proza-libre">A symbol of trust, quality & elegency</p>
                     </div>
                     <div className="flex gap-6 items-center">
