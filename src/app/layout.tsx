@@ -5,6 +5,7 @@ import Navbar from "@/components/shared/Navbar";
 import Footer from "@/components/shared/Footer";
 import { Toaster } from "react-hot-toast";
 import { CartProvider } from "@/components/shared/CartContext";
+import WhatsApp from "@/components/shared/WhatsApp";
 
 const outfit = Outfit({
     subsets: ["latin"],
@@ -111,10 +112,10 @@ export default function RootLayout({
                         <Navbar></Navbar>
                         {children}
                         <Toaster position="bottom-right" reverseOrder={false} />
-
                         <Footer></Footer>
                     </div>
                 </CartProvider>
+                <WhatsApp></WhatsApp>
             </body>
         </html>
     );

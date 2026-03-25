@@ -72,11 +72,6 @@ const socialLinks: SocialLink[] = [
     },
 ];
 
-const hours = [
-    { day: "Mon – Fri", time: "9:00 AM – 8:00 PM" },
-    { day: "Sat – Sun", time: "10:00 AM – 6:00 PM" },
-];
-
 export default function ContactPage() {
     const [hovered, setHovered] = useState<number | null>(null);
 
@@ -156,13 +151,11 @@ export default function ContactPage() {
                             />
                         </div>
 
-                        <div className="flex gap-3 mt-4">
-                            {hours.map((h) => (
-                                <div key={h.day} className="flex-1 p-3 bg-gray-50 rounded-lg border-border border">
-                                    <p className="text-xs text-gray-400 mb-1">{h.day}</p>
-                                    <p className="font-semibold text-sm">{h.time}</p>
-                                </div>
-                            ))}
+                        <div className="flex mt-4">
+                            <div className="flex-1 p-3 bg-gray-50 rounded-lg border-border border">
+                                <p className="text-xs text-gray-400 mb-1">Wednesday - Friday</p>
+                                <p className="font-semibold text-sm">10.00 am - 11.00 pm</p>
+                            </div>
                         </div>
                     </div>
 
