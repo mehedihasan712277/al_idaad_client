@@ -25,7 +25,7 @@
     /* border color */
     --color-border: #dddddd;
 
-    /* ----------responsive--------- */
+    --animate-ripple: ripple 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
 }
 .font-dm-serif {
     font-family: var(--font-dm-serif), serif;
@@ -257,4 +257,16 @@ button {
 
 .animate-fadeIn {
     animation: fadeIn 0.7s ease forwards;
+}
+
+/* ---- WhatsApp ripple ---- */
+@keyframes ripple {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    100% {
+        transform: scale(2.8);
+        opacity: 0;
+    }
 }
