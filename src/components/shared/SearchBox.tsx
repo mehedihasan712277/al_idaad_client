@@ -42,8 +42,9 @@ const SearchBox: React.FC<SearchBoxProps> = ({ isOpen, onClose }) => {
                 const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
                 const data: GetAllProductsResponseType = await res.json();
                 if (data.success) setProducts(data.data);
-            } catch (err) {
-                console.error("SearchBox: failed to fetch products", err);
+            } catch {
+                throw new Error("SearchBox: failed to fetch products");
+                // console.log("error");
             } finally {
                 setLoading(false);
             }
