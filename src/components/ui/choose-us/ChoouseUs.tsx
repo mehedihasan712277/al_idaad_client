@@ -100,14 +100,14 @@ const ChooseUs = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row sm:justify-between gap-5 mt-20">
-                <div className="flex flex-col items-center gap-3 p-6 lg:p-8 rounded-xl shadow hover:shadow-xl transition duration-150 flex-1">
+                <div className="flex flex-col items-center gap-3 p-6 lg:p-8 rounded-xl shadow hover:shadow-xl transition duration-150 flex-1 border-border border">
                     <Image src={delivery} width={50} height={50} alt="al idaad delivery"></Image>
 
                     <p className="text-center font-bold text-2xl sm:text-xl">Fast Delivery</p>
                     <p className="text-center text-text_normal sm:text-sm xl:text-[16px]">Quick delivery across Bangladesh with Pathao courier</p>
                 </div>
 
-                <div className="flex flex-col items-center gap-3 p-6 lg:p-8 rounded-xl shadow hover:shadow-xl transition duration-150 flex-1">
+                <div className="flex flex-col items-center gap-3 p-6 lg:p-8 rounded-xl shadow hover:shadow-xl transition duration-150 flex-1 border-border border">
                     <Image src={hundred} width={50} height={50} alt="al idaad delivery"></Image>
 
                     <p className="text-center font-bold text-xl">100% Authentic</p>
@@ -116,7 +116,7 @@ const ChooseUs = () => {
                     </p>
                 </div>
 
-                <div className="flex flex-col items-center gap-3 p-6 lg:p-8 rounded-xl shadow hover:shadow-xl transition duration-150 flex-1">
+                <div className="flex flex-col items-center gap-3 p-6 lg:p-8 rounded-xl shadow hover:shadow-xl transition duration-150 flex-1 border-border border">
                     <Image src={rtn} width={50} height={50} alt="al idaad delivery"></Image>
 
                     <p className="text-center font-bold text-xl">Easy Returns</p>
