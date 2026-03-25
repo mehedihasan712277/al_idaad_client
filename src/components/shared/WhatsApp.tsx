@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const WhatsApp = () => {
     return (
-        <div className="w-20 h-20 fixed z-40 bottom-6 right-6 flex items-center justify-center">
+        <div className="w-20 h-20 fixed z-40 bottom-2 right-2 flex items-center justify-center">
             {/* Ripple rings */}
             <span className="absolute w-12 h-12 rounded-full bg-green-300 opacity-40 animate-ripple" />
             <span className="absolute w-12 h-12 rounded-full bg-green-300 opacity-20 animate-ripple [animation-delay:0.6s]" />
