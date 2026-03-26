@@ -81,7 +81,7 @@ const BlogDetailsPage = async ({ params }: { params: Promise<{ id: string }> }) 
                 </div>
 
                 <div className="w-full lg:w-200 xl:w-200 aspect-3/2 relative rounded overflow-hidden">
-                    <Image src={thumbnail} alt={title} fill />
+                    <Image src={thumbnail} alt={title} fill className="w-full aspect-3/2" />
                 </div>
                 <div dangerouslySetInnerHTML={{ __html: description }} className="text-soft ProseMirror" />
             </div>
