@@ -129,7 +129,7 @@ const Navbar = () => {
                 ${effectiveVisible ? "translate-y-0" : "-translate-y-full"}
                 ${effectiveAnimate ? "transition-transform duration-500 ease-in-out" : "transition-none"}
                 ${effectiveFade ? "opacity-0 animate-fadeIn" : "opacity-100"}
-                ${effectiveAnimate ? "bg-black/70 border-none mx-3 mt-4 rounded-2xl" : "bg-bg_main"}`}
+                ${effectiveAnimate ? "bg-black/70 border-none mx-3 mt-2 rounded-2xl" : "bg-bg_main"}`}
             >
                 <div className="h-18 md:h-25 px-4 max-w-7xl mx-auto flex items-center">
                     {/* ── MOBILE ── */}

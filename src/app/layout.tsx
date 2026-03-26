@@ -51,7 +51,7 @@ const dmSerif = DM_Serif_Display({
 });
 
 export const metadata: Metadata = {
-    metadataBase: new URL("https://al-idaad-client.vercel.app"), // 🔁 replace with your real domain
+    metadataBase: new URL("https://alidaad.com"), // 🔁 replace with your real domain
 
     title: {
         default: "Al Idaad | Premium Clothing & Attar in Bangladesh",
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Al Idaad | Clothing & Attar",
         description: "Premium Thobe, Panjabi, Shirts & Attar in Bangladesh. Elevate your modest fashion with Al Idaad.",
-        url: "https://al-idaad-client.vercel.app",
+        url: "https://alidaad.com",
         siteName: "Al Idaad",
         locale: "en_BD",
         type: "website",

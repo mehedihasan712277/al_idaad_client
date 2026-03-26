@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { GetAllProductsResponseType, GetAllBlogsResponseType, ProductType, BlogType } from "@/utils/types"; // 🔁 adjust path if needed
 
-const BASE_URL = "https://al-idaad-client.vercel.app";
+const BASE_URL = "https://alidaad.com";
 
 // ✅ Fetch products
 async function getProducts(): Promise<ProductType[]> {

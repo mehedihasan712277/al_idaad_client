@@ -9,9 +9,9 @@ export default function robots(): MetadataRoute.Robots {
             },
             {
                 userAgent: "*",
-                disallow: ["/api/", "/admin/", "/dashboard/", "/checkout/"],
+                disallow: ["/api/", "/checkout/"],
             },
         ],
-        sitemap: "https://al-idaad-client.vercel.app/sitemap.xml", // 🔁 change domain
+        sitemap: "https://alidaad.com/sitemap.xml", // 🔁 change domain
     };
 }
