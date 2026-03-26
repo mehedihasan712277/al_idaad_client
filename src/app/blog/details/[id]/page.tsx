@@ -80,8 +80,8 @@ const BlogDetailsPage = async ({ params }: { params: Promise<{ id: string }> }) 
                     <p className="text-brand">{category.name}</p>
                 </div>
 
-                <div className="w-full lg:w-200 xl:w-200 aspect-video relative rounded overflow-hidden">
-                    <Image src={thumbnail} alt={title} fill className="object-cover" />
+                <div className="w-full lg:w-200 xl:w-200 aspect-3/2 relative rounded overflow-hidden">
+                    <Image src={thumbnail} alt={title} fill />
                 </div>
                 <div dangerouslySetInnerHTML={{ __html: description }} className="text-soft ProseMirror" />
             </div>
