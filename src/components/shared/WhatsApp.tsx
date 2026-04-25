@@ -11,7 +11,7 @@ const WhatsApp = () => {
 
             {/* Icon button */}
             <a
-                href="https://wa.me/8801734874385"
+                href="https://wa.me/8801603435817"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="relative z-10 flex items-center justify-center w-12 h-12 bg-green-300/60 rounded-full shadow-lg hover:scale-110 transition-transform duration-200"

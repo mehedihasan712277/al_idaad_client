@@ -191,7 +191,7 @@ const faqs = [
     {
         id: 10,
         question: "How do I contact customer support?",
-        answer: "We're here to help! You can reach us through multiple channels: use our live chat feature on the website (bottom right corner), email us at alidaadshop@gmail.com, or call our hotline during business hours (10 AM – 8 PM, 7 days a week).\n\nYou can also reach us through our social media pages on Facebook and Instagram. We typically respond to all inquiries within 24 hours, but usually much faster during business hours.",
+        answer: "We're here to help! You can reach us through multiple channels: use our live chat feature on the website (bottom right corner), email us at mehedihasan712277@gmail.com, or call our hotline during business hours (10 AM – 8 PM, 7 days a week).\n\nYou can also reach us through our social media pages on Facebook and Instagram. We typically respond to all inquiries within 24 hours, but usually much faster during business hours.",
         icon: (
             <svg
                 width="20"
@@ -299,7 +299,7 @@ export default function FAQ() {
                         </h1>
                         <p className="text-stone-400 text-sm max-w-sm mx-auto leading-relaxed">
                             Everything you need to know about shopping with Al-Idaat. Can&apos;t find what you&apos;re looking for?{" "}
-                            <a href="mailto:alidaadshop@gmail.com" className="text-amber-500 hover:underline">
+                            <a href="mailto:mehedihasan712277@gmail.com" className="text-amber-500 hover:underline">
                                 Contact us.
                             </a>
                         </p>
@@ -315,8 +315,8 @@ export default function FAQ() {
                     {/* Footer note */}
                     <p className="text-center text-stone-400 text-xs mt-10">
                         Still have questions? Email us at{" "}
-                        <a href="mailto:alidaadshop@gmail.com" className="text-amber-500 hover:underline">
-                            alidaadshop@gmail.com
+                        <a href="mailto:mehedihasan712277@gmail.com" className="text-amber-500 hover:underline">
+                            mehedihasan712277@gmail.com
                         </a>
                     </p>
                 </div>

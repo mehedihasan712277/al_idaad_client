@@ -27,11 +27,11 @@ interface SocialLink {
 const contactCards: ContactCard[] = [
     {
         label: "WhatsApp",
-        value: "+8801734874385",
+        value: "+8801603435817",
         sub: "Chat with us directly",
         gradient: "from-[#25D366] to-[#128C7E]",
         shadow: "shadow-green-300/40",
-        href: "https://wa.me/8801734874385",
+        href: "https://wa.me/8801603435817",
     },
     {
         label: "Our Location",
@@ -43,11 +43,11 @@ const contactCards: ContactCard[] = [
     },
     {
         label: "Email Us",
-        value: "alidaadshop@gmail.com",
+        value: "mehedihasan712277@gmail.com",
         sub: "Reply within 24 hours",
         gradient: "from-[#6C63FF] to-[#3B82F6]",
         shadow: "shadow-violet-300/40",
-        href: "mailto:alidaadshop@gmail.com",
+        href: "mailto:mehedihasan712277@gmail.com",
     },
 ];
 
@@ -193,7 +193,7 @@ export default function ContactPage() {
                         <h2 className="font-bold text-xl mb-1">Ready to place an order?</h2>
                         <p className="text-white/80 text-sm">Message us on WhatsApp — fastest response guaranteed.</p>
                     </div>
-                    <a href="https://wa.me/8801734874385" className="bg-white text-[#128C7E] font-bold px-6 py-3 rounded-lg">
+                    <a href="https://wa.me/8801603435817" className="bg-white text-[#128C7E] font-bold px-6 py-3 rounded-lg">
                         Chat on WhatsApp
                     </a>
                 </div>
